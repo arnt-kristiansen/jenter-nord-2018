@@ -595,12 +595,15 @@ function handleRegister() {
         return;
     }
 
-    // Check if first user
-    db.ref('teams/j2018/coaches').once('value')
-        .then(function(snapshot) {
-            var isFirstUser = !snapshot.exists();
-            return auth.createUserWithEmailAndPassword(email, password)
-                .then(function(result) {
+    showError('');
+    document.getElementById('authError').style.display = 'none';
+
+    auth.createUserWithEmailAndPassword(email, password)
+        .then(function(result) {
+            // Now we are logged in, so we can read/write the database
+            return db.ref('teams/j2018/coaches').once('value')
+                .then(function(snapshot) {
+                    var isFirstUser = !snapshot.exists();
                     var userData = {
                         name: name,
                         email: email,

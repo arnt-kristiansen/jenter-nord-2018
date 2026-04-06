@@ -1,592 +1,878 @@
+
 <!DOCTYPE html>
 <html lang="no">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>J2018 VIF Lagstyring</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Nord Jenter 2018</title>
 <style>
 :root {
-  --vif-red: #E00A19;
-  --vif-dark: #1a1a2e;
-  --vif-darker: #16162a;
-  --vif-blue: #0f3460;
-  --vif-light: #e8e8e8;
-  --vif-gold: #FFD700;
-  --vif-green: #27ae60;
-  --vif-orange: #f39c12;
-  --card-bg: rgba(255,255,255,0.05);
-  --card-border: rgba(255,255,255,0.1);
+  --primary: #003B7E;
+  --primary-dark: #002855;
+  --primary-light: #0056B3;
+  --accent: #FFD700;
+  --white: #FFFFFF;
+  --light-bg: #E8F0FE;
+  --light-gray: #F5F7FA;
+  --gray: #6B7280;
+  --dark: #1A1A2E;
+  --success: #10B981;
+  --danger: #EF4444;
+  --warning: #F59E0B;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: var(--vif-dark);
-  color: var(--vif-light);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--light-bg);
+  color: var(--dark);
   min-height: 100vh;
-  padding-bottom: 80px;
+  padding-top: 120px;
+  padding-bottom: 20px;
 }
 
-/* HEADER */
-.header {
-  background: linear-gradient(135deg, var(--vif-red), #b50815);
-  padding: 15px 20px;
-  text-align: center;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-.header h1 { font-size: 1.3em; }
-.header small { opacity: 0.8; font-size: 0.75em; }
-.sync-status {
-  font-size: 0.65em;
-  margin-top: 4px;
-  opacity: 0.7;
-}
-.sync-status.online { color: #90EE90; }
-.sync-status.offline { color: #FFB347; }
-
-/* NAV */
-.nav {
+/* TOP NAVIGATION */
+.top-header {
   position: fixed;
-  bottom: 0;
+  top: 0;
   left: 0;
   right: 0;
-  background: var(--vif-darker);
+  z-index: 1000;
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+  box-shadow: 0 2px 15px rgba(0,59,126,0.3);
+}
+
+.header-title {
+  text-align: center;
+  padding: 10px 16px 6px;
+  color: var(--white);
+}
+
+.header-title h1 {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.header-title span {
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+.top-nav {
   display: flex;
   justify-content: space-around;
-  padding: 8px 0;
-  border-top: 2px solid var(--vif-red);
-  z-index: 100;
+  padding: 6px 8px 8px;
+  gap: 4px;
 }
-.nav-item {
+
+.top-nav button {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 5px 8px;
+  gap: 2px;
+  padding: 6px 2px;
   border: none;
-  background: none;
-  color: rgba(255,255,255,0.5);
-  font-size: 0.65em;
-  cursor: pointer;
-  transition: all 0.3s;
+  background: transparent;
+  color: rgba(255,255,255,0.6);
+  font-size: 10px;
+  font-weight: 500;
   border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
 }
-.nav-item.active { color: var(--vif-red); }
-.nav-item span { font-size: 1.6em; margin-bottom: 2px; }
 
-/* SECTIONS */
-.section { display: none; padding: 15px; max-width: 600px; margin: 0 auto; }
-.section.active { display: block; }
-.section-title {
-  font-size: 1.2em;
-  margin-bottom: 15px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.top-nav button.active {
+  background: rgba(255,255,255,0.2);
+  color: var(--white);
 }
+
+.top-nav button .nav-icon {
+  font-size: 20px;
+}
+
+/* PAGES */
+.page { display: none; padding: 16px; max-width: 600px; margin: 0 auto; }
+.page.active { display: block; }
 
 /* CARDS */
 .card {
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 12px;
-  padding: 15px;
-  margin-bottom: 12px;
-  transition: transform 0.2s;
+  background: var(--white);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 12px rgba(0,59,126,0.08);
+  border: 1px solid rgba(0,59,126,0.06);
 }
-.card:hover { transform: translateY(-1px); }
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.card-header h2 {
+  font-size: 18px;
+  color: var(--primary);
+}
 
 /* BUTTONS */
 .btn {
   padding: 10px 20px;
   border: none;
-  border-radius: 8px;
-  font-size: 0.9em;
-  cursor: pointer;
-  transition: all 0.3s;
+  border-radius: 10px;
+  font-size: 14px;
   font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
 }
-.btn-primary {
-  background: var(--vif-red);
-  color: white;
-  width: 100%;
-  margin-top: 10px;
-}
-.btn-primary:hover { background: #c50917; }
-.btn-secondary {
-  background: var(--vif-blue);
-  color: white;
-}
-.btn-small {
-  padding: 5px 12px;
-  font-size: 0.75em;
-  border-radius: 6px;
-}
-.btn-danger { background: #e74c3c; color: white; }
-.btn-success { background: var(--vif-green); color: white; }
-.btn-gold { background: var(--vif-gold); color: #333; }
 
-/* FORMS */
-.form-group { margin-bottom: 12px; }
-.form-group label {
-  display: block;
-  margin-bottom: 5px;
-  font-size: 0.85em;
-  color: rgba(255,255,255,0.7);
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  color: var(--white);
 }
-.form-group input,
-.form-group select,
-.form-group textarea {
+
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,59,126,0.3); }
+
+.btn-success { background: var(--success); color: var(--white); }
+.btn-danger { background: var(--danger); color: var(--white); }
+.btn-warning { background: var(--warning); color: var(--white); }
+
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+
+.btn-full { width: 100%; padding: 14px; font-size: 16px; }
+
+/* INPUTS */
+input, select, textarea {
   width: 100%;
-  padding: 10px;
-  border: 1px solid var(--card-border);
-  border-radius: 8px;
-  background: rgba(255,255,255,0.08);
-  color: white;
-  font-size: 0.9em;
+  padding: 12px;
+  border: 2px solid #E5E7EB;
+  border-radius: 10px;
+  font-size: 14px;
+  margin-bottom: 12px;
+  transition: border-color 0.2s;
+  font-family: inherit;
 }
-.form-group textarea { min-height: 80px; resize: vertical; }
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gray);
+  margin-bottom: 4px;
+}
+
+/* STAT GRID */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.stat-card {
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  color: var(--white);
+  border-radius: 14px;
+  padding: 16px;
+  text-align: center;
+}
+
+.stat-card .stat-number {
+  font-size: 32px;
+  font-weight: 800;
+}
+
+.stat-card .stat-label {
+  font-size: 11px;
+  opacity: 0.85;
+  margin-top: 4px;
+}
+
+.stat-card.gold {
+  background: linear-gradient(135deg, var(--accent), #FFB800);
+  color: var(--primary-dark);
+}
+
+/* PLAYER LIST */
+.player-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: var(--light-bg);
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+
+.player-info { display: flex; align-items: center; gap: 12px; }
+
+.player-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.player-name { font-weight: 600; font-size: 15px; }
+.player-pos { font-size: 12px; color: var(--gray); }
+
+.player-actions { display: flex; gap: 6px; }
+
+/* TRAINING BLOCKS */
+.training-block {
+  background: var(--light-bg);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 10px;
+  border-left: 4px solid var(--primary);
+}
+
+.training-block.block-warmup { border-left-color: var(--success); }
+.training-block.block-main { border-left-color: var(--primary); }
+.training-block.block-game { border-left-color: var(--warning); }
+.training-block.block-cooldown { border-left-color: var(--gray); }
+
+.block-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.block-type {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  color: var(--white);
+}
+
+.block-type.warmup { background: var(--success); }
+.block-type.main { background: var(--primary); }
+.block-type.game { background: var(--warning); }
+.block-type.cooldown { background: var(--gray); }
+
+.block-duration { font-size: 12px; color: var(--gray); font-weight: 600; }
+
+.block-title { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
+.block-desc { font-size: 13px; color: var(--gray); line-height: 1.4; }
+
+/* TRAINING TEMPLATES */
+.template-card {
+  background: var(--light-bg);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.2s;
+}
+
+.template-card:hover { border-color: var(--primary); }
+.template-card.selected { border-color: var(--primary); background: rgba(0,59,126,0.05); }
+
+.template-name { font-weight: 700; font-size: 15px; color: var(--primary); }
+.template-desc { font-size: 12px; color: var(--gray); margin-top: 4px; }
+
+/* MATCH */
+.match-score {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.match-team { text-align: center; }
+.match-team-name { font-weight: 700; font-size: 16px; margin-bottom: 8px; }
+
+.score-display {
+  font-size: 48px;
+  font-weight: 800;
+  color: var(--primary);
+  min-width: 60px;
+  text-align: center;
+}
+
+.score-vs { font-size: 20px; color: var(--gray); font-weight: 700; }
+
+.score-btn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--white);
+  margin: 4px;
+}
+
+.score-btn.plus { background: var(--success); }
+.score-btn.minus { background: var(--danger); }
+
+/* TROPHY */
+.trophy-card {
+  background: linear-gradient(135deg, #FFD700, #FFB800);
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 16px;
+  color: var(--primary-dark);
+}
+
+.trophy-icon { font-size: 48px; margin-bottom: 8px; }
+.trophy-title { font-size: 20px; font-weight: 800; }
+.trophy-player { font-size: 24px; font-weight: 700; margin: 8px 0; }
+.trophy-reason { font-size: 14px; opacity: 0.8; }
+
+/* GOAL LIST */
+.goal-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  background: var(--light-bg);
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+
+.goal-check {
+  font-size: 20px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.goal-text { font-size: 14px; line-height: 1.4; }
+.goal-text.completed { text-decoration: line-through; opacity: 0.5; }
 
 /* MODAL */
 .modal-overlay {
   display: none;
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.7);
-  z-index: 200;
-  justify-content: center;
+  background: rgba(0,0,0,0.5);
+  z-index: 2000;
   align-items: center;
+  justify-content: center;
   padding: 20px;
 }
+
 .modal-overlay.active { display: flex; }
+
 .modal {
-  background: var(--vif-dark);
-  border: 1px solid var(--card-border);
-  border-radius: 16px;
-  padding: 20px;
+  background: var(--white);
+  border-radius: 20px;
+  padding: 24px;
   width: 100%;
   max-width: 500px;
   max-height: 85vh;
   overflow-y: auto;
 }
-.modal h3 { margin-bottom: 15px; }
 
-/* STATS */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  margin-bottom: 15px;
-}
-.stat-card {
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 12px;
-  padding: 15px;
-  text-align: center;
-}
-.stat-card .number {
-  font-size: 1.8em;
-  font-weight: bold;
-  color: var(--vif-red);
-}
-.stat-card .label {
-  font-size: 0.75em;
-  opacity: 0.7;
-  margin-top: 4px;
-}
+.modal h2 { margin-bottom: 16px; color: var(--primary); }
 
-/* PLAYER CARD */
-.player-card {
+.modal-actions { display: flex; gap: 10px; margin-top: 16px; }
+.modal-actions .btn { flex: 1; }
+
+/* ATTENDANCE */
+.attendance-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-.player-info h4 { margin-bottom: 3px; }
-.player-info small { opacity: 0.6; }
-.player-actions { display: flex; gap: 6px; }
-
-/* PROGRESS */
-.progress-bar {
-  width: 100%;
-  height: 8px;
-  background: rgba(255,255,255,0.1);
-  border-radius: 4px;
-  overflow: hidden;
-  margin-top: 6px;
-}
-.progress-fill {
-  height: 100%;
-  border-radius: 4px;
-  transition: width 0.5s;
-  background: var(--vif-green);
+  padding: 10px 12px;
+  background: var(--light-bg);
+  border-radius: 10px;
+  margin-bottom: 6px;
 }
 
-/* TROPHY */
-.trophy-card {
-  text-align: center;
-  padding: 20px;
-}
-.trophy-emoji { font-size: 3em; margin-bottom: 8px; }
-.trophy-player { font-size: 1.2em; font-weight: bold; color: var(--vif-gold); }
-.trophy-reason { font-size: 0.85em; opacity: 0.8; margin-top: 5px; }
-
-/* TEMPLATE CARD */
-.template-card {
-  border-left: 4px solid var(--vif-red);
+.att-toggle {
+  width: 50px;
+  height: 28px;
+  border-radius: 14px;
+  border: none;
   cursor: pointer;
-}
-.template-card:hover { border-left-color: var(--vif-gold); }
-.template-card h4 { margin-bottom: 5px; }
-.template-card .duration { font-size: 0.8em; color: var(--vif-gold); }
-.template-card .description { font-size: 0.8em; opacity: 0.7; margin-top: 5px; }
-
-/* GOAL CATEGORIES */
-.goal-category {
-  margin-bottom: 15px;
-  border-left: 3px solid var(--vif-red);
-  padding-left: 12px;
-}
-.goal-category h4 {
-  font-size: 0.9em;
-  margin-bottom: 8px;
-  color: var(--vif-gold);
-}
-.goal-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 0;
-  font-size: 0.85em;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-}
-.goal-item input[type="checkbox"] {
-  width: 20px;
-  height: 20px;
-  accent-color: var(--vif-green);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--white);
+  transition: all 0.2s;
 }
 
-/* WEEK TABS */
-.week-tabs {
-  display: flex;
-  gap: 5px;
-  overflow-x: auto;
-  padding-bottom: 10px;
-  margin-bottom: 15px;
-}
-.week-tab {
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 0.75em;
-  white-space: nowrap;
-  border: 1px solid var(--card-border);
-  background: var(--card-bg);
-  color: white;
+.att-toggle.present { background: var(--success); }
+.att-toggle.absent { background: var(--danger); }
+
+/* SESSION LIST */
+.session-item {
+  background: var(--light-bg);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 10px;
   cursor: pointer;
-}
-.week-tab.active {
-  background: var(--vif-red);
-  border-color: var(--vif-red);
+  transition: all 0.2s;
 }
 
-/* MATCH RESULT */
-.match-score {
-  font-size: 1.5em;
-  font-weight: bold;
-  text-align: center;
-  color: var(--vif-gold);
+.session-item:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+
+.session-date { font-weight: 700; color: var(--primary); font-size: 14px; }
+.session-info { font-size: 12px; color: var(--gray); margin-top: 4px; }
+
+/* HISTORY LIST */
+.history-item {
+  background: var(--light-bg);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 10px;
 }
+
+.history-date { font-size: 12px; color: var(--gray); }
+.history-result { font-size: 18px; font-weight: 800; color: var(--primary); }
+.history-teams { font-size: 14px; font-weight: 600; }
 
 /* EMPTY STATE */
 .empty-state {
   text-align: center;
-  padding: 30px;
-  opacity: 0.6;
+  padding: 40px 20px;
+  color: var(--gray);
 }
-.empty-state span { font-size: 2.5em; margin-bottom: 10px; display: block; }
 
-/* LOADING */
-.loading {
-  text-align: center;
-  padding: 40px;
+.empty-state .empty-icon { font-size: 48px; margin-bottom: 12px; }
+.empty-state p { font-size: 14px; }
+
+/* ADD BLOCK BUTTON */
+.add-block-btn {
+  width: 100%;
+  padding: 14px;
+  border: 2px dashed var(--primary);
+  border-radius: 12px;
+  background: transparent;
+  color: var(--primary);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 10px;
+  transition: all 0.2s;
 }
-.spinner {
-  border: 3px solid rgba(255,255,255,0.1);
-  border-top: 3px solid var(--vif-red);
+
+.add-block-btn:hover {
+  background: rgba(0,59,126,0.05);
+}
+
+/* REMOVE BLOCK */
+.remove-block-btn {
+  background: none;
+  border: none;
+  color: var(--danger);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 2px 6px;
+}
+
+/* WEEK SELECTOR */
+.week-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.week-selector button {
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  animation: spin 1s linear infinite;
-  margin: 0 auto 15px;
+  border: 2px solid var(--primary);
+  background: var(--white);
+  color: var(--primary);
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
 }
-@keyframes spin { to { transform: rotate(360deg); } }
 
-/* TAGS */
+.week-selector button:hover {
+  background: var(--primary);
+  color: var(--white);
+}
+
+.week-selector span {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+/* TAG */
 .tag {
   display: inline-block;
-  padding: 3px 10px;
-  border-radius: 12px;
-  font-size: 0.7em;
-  margin: 2px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-right: 4px;
+  margin-bottom: 4px;
 }
-.tag-red { background: rgba(224,10,25,0.3); color: #ff6b6b; }
-.tag-green { background: rgba(39,174,96,0.3); color: #6bff9e; }
-.tag-blue { background: rgba(15,52,96,0.3); color: #6bb5ff; }
-.tag-gold { background: rgba(255,215,0,0.3); color: var(--vif-gold); }
 
-/* SUGGESTION */
-.suggestion-box {
-  background: rgba(255,215,0,0.1);
-  border: 1px solid rgba(255,215,0,0.3);
-  border-radius: 10px;
-  padding: 12px;
-  margin-bottom: 15px;
-}
-.suggestion-box h4 {
-  color: var(--vif-gold);
-  font-size: 0.85em;
-  margin-bottom: 5px;
-}
-.suggestion-box p { font-size: 0.8em; opacity: 0.8; }
+.tag-blue { background: rgba(0,59,126,0.1); color: var(--primary); }
+.tag-green { background: rgba(16,185,129,0.1); color: var(--success); }
+.tag-yellow { background: rgba(245,158,11,0.1); color: var(--warning); }
 
-/* FLEX UTILS */
-.flex-between {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+@media (max-width: 380px) {
+  .top-nav button { font-size: 9px; }
+  .top-nav button .nav-icon { font-size: 18px; }
 }
-.gap-10 { gap: 10px; }
-.mt-10 { margin-top: 10px; }
-.mb-10 { margin-bottom: 10px; }
-.text-center { text-align: center; }
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
-<div class="header">
-  <h1>⚽ J2018 VIF Lagstyring</h1>
-  <small>Vålerenga Fotball — Jentelag 2018</small>
-  <div id="syncStatus" class="sync-status">⏳ Kobler til...</div>
+<!-- TOP NAVIGATION -->
+<div class="top-header">
+  <div class="header-title">
+    <h1>⚽ Nord Jenter 2018</h1>
+    <span>Fotballklubb Nord — Karmøy</span>
+  </div>
+  <nav class="top-nav">
+    <button class="active" onclick="showPage('dashboard')">
+      <span class="nav-icon">🏠</span>
+      Hjem
+    </button>
+    <button onclick="showPage('players')">
+      <span class="nav-icon">👥</span>
+      Spillere
+    </button>
+    <button onclick="showPage('training')">
+      <span class="nav-icon">⚽</span>
+      Trening
+    </button>
+    <button onclick="showPage('matches')">
+      <span class="nav-icon">🏟️</span>
+      Kamper
+    </button>
+    <button onclick="showPage('trophy')">
+      <span class="nav-icon">🏆</span>
+      Trofé
+    </button>
+    <button onclick="showPage('goals')">
+      <span class="nav-icon">🎯</span>
+      Mål
+    </button>
+  </nav>
 </div>
 
 <!-- DASHBOARD -->
-<div id="dashboard" class="section active">
-  <div class="stats-grid" id="dashStats"></div>
-  
-  <div id="dashSuggestion" class="suggestion-box" style="display:none;">
-    <h4>💡 Forslag denne uken</h4>
-    <p id="suggestionText"></p>
+<div id="page-dashboard" class="page active">
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-number" id="stat-players">0</div>
+      <div class="stat-label">Spillere</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" id="stat-trainings">0</div>
+      <div class="stat-label">Treninger</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" id="stat-matches">0</div>
+      <div class="stat-label">Kamper</div>
+    </div>
+    <div class="stat-card gold">
+      <div class="stat-number" id="stat-trophies">0</div>
+      <div class="stat-label">Trofeer delt ut</div>
+    </div>
   </div>
 
-  <div class="section-title">🏆 Siste ukens pokal</div>
-  <div id="dashTrophy"></div>
-
-  <div class="section-title mt-10">📋 Neste trening</div>
-  <div id="dashNextSession"></div>
-</div>
-
-<!-- PLAYERS -->
-<div id="players" class="section">
-  <div class="flex-between mb-10">
-    <div class="section-title">👥 Spillere</div>
-    <button class="btn btn-primary btn-small" onclick="openModal('playerModal')">+ Legg til</button>
+  <div class="card">
+    <div class="card-header">
+      <h2>📅 Neste trening</h2>
+    </div>
+    <div id="next-training">
+      <div class="empty-state">
+        <p>Ingen kommende treninger planlagt</p>
+      </div>
+    </div>
   </div>
-  <div id="playerList"></div>
-</div>
 
-<!-- GOALS -->
-<div id="goals" class="section">
-  <div class="section-title">🎯 Læringsmål (VIF 6-7 år)</div>
-  <div id="goalProgress" class="card mb-10"></div>
-  <div id="goalList"></div>
-</div>
-
-<!-- TRAINING -->
-<div id="training" class="section">
-  <div class="flex-between mb-10">
-    <div class="section-title">🏋️ Treninger</div>
-    <button class="btn btn-primary btn-small" onclick="openModal('sessionModal')">+ Ny trening</button>
+  <div class="card">
+    <div class="card-header">
+      <h2>📋 Siste aktivitet</h2>
+    </div>
+    <div id="recent-activity">
+      <div class="empty-state">
+        <p>Ingen aktivitet ennå</p>
+      </div>
+    </div>
   </div>
-  <div id="sessionList"></div>
 </div>
 
-<!-- MATCHES -->
-<div id="matches" class="section">
-  <div class="flex-between mb-10">
-    <div class="section-title">⚽ Kamper</div>
-    <button class="btn btn-primary btn-small" onclick="openModal('matchModal')">+ Ny kamp</button>
+<!-- PLAYERS PAGE -->
+<div id="page-players" class="page">
+  <div class="card">
+    <div class="card-header">
+      <h2>👥 Spillere</h2>
+      <button class="btn btn-primary btn-sm" onclick="openAddPlayer()">+ Legg til</button>
+    </div>
+    <div id="player-list">
+      <div class="empty-state">
+        <div class="empty-icon">👥</div>
+        <p>Ingen spillere lagt til ennå</p>
+      </div>
+    </div>
   </div>
-  <div id="matchList"></div>
 </div>
 
-<!-- TROPHIES -->
-<div id="trophies" class="section">
-  <div class="flex-between mb-10">
-    <div class="section-title">🏆 Ukens pokal</div>
-    <button class="btn btn-gold btn-small" onclick="openModal('trophyModal')">+ Ny pokal</button>
+<!-- TRAINING PAGE -->
+<div id="page-training" class="page">
+  <div class="card">
+    <div class="card-header">
+      <h2>⚽ Treninger</h2>
+      <button class="btn btn-primary btn-sm" onclick="openAddTraining()">+ Ny trening</button>
+    </div>
+    <div id="training-list">
+      <div class="empty-state">
+        <div class="empty-icon">⚽</div>
+        <p>Ingen treninger planlagt</p>
+      </div>
+    </div>
   </div>
-  <div id="trophyList"></div>
+
+  <div class="card">
+    <div class="card-header">
+      <h2>📚 Treningsmaler</h2>
+    </div>
+    <div class="week-selector">
+      <button onclick="changeWeek(-1)">◀</button>
+      <span id="week-label">Uke 1</span>
+      <button onclick="changeWeek(1)">▶</button>
+    </div>
+    <div id="template-view"></div>
+  </div>
 </div>
 
-<!-- TEMPLATES -->
-<div id="templates" class="section">
-  <div class="section-title">📚 VIF Treningsopplegg</div>
-  <div class="week-tabs" id="weekTabs"></div>
-  <div id="templateList"></div>
+<!-- MATCHES PAGE -->
+<div id="page-matches" class="page">
+  <div class="card">
+    <div class="card-header">
+      <h2>🏟️ Kamper</h2>
+      <button class="btn btn-primary btn-sm" onclick="openAddMatch()">+ Ny kamp</button>
+    </div>
+    <div id="match-list">
+      <div class="empty-state">
+        <div class="empty-icon">🏟️</div>
+        <p>Ingen kamper registrert</p>
+      </div>
+    </div>
+  </div>
 </div>
 
-<!-- NAVIGATION -->
-<nav class="nav">
-  <button class="nav-item active" onclick="showSection('dashboard')"><span>🏠</span>Hjem</button>
-  <button class="nav-item" onclick="showSection('players')"><span>👥</span>Spillere</button>
-  <button class="nav-item" onclick="showSection('goals')"><span>🎯</span>Mål</button>
-  <button class="nav-item" onclick="showSection('training')"><span>🏋️</span>Trening</button>
-  <button class="nav-item" onclick="showSection('matches')"><span>⚽</span>Kamper</button>
-  <button class="nav-item" onclick="showSection('trophies')"><span>🏆</span>Pokaler</button>
-  <button class="nav-item" onclick="showSection('templates')"><span>📚</span>Opplegg</button>
-</nav>
+<!-- TROPHY PAGE -->
+<div id="page-trophy" class="page">
+  <div class="card">
+    <div class="card-header">
+      <h2>🏆 Ukens spiller</h2>
+      <button class="btn btn-primary btn-sm" onclick="openAddTrophy()">+ Ny trofé</button>
+    </div>
+    <div id="trophy-display"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h2>📜 Trofé-historikk</h2>
+    </div>
+    <div id="trophy-history"></div>
+  </div>
+</div>
+
+<!-- GOALS PAGE -->
+<div id="page-goals" class="page">
+  <div class="card">
+    <div class="card-header">
+      <h2>🎯 Læringsmål (6-7 år)</h2>
+    </div>
+    <div id="goals-list"></div>
+  </div>
+</div>
 
 <!-- MODALS -->
-<!-- Player Modal -->
-<div class="modal-overlay" id="playerModal">
+
+<!-- Add Player Modal -->
+<div class="modal-overlay" id="modal-player">
   <div class="modal">
-    <h3>👤 Legg til spiller</h3>
-    <div class="form-group">
-      <label>Navn</label>
-      <input type="text" id="playerName" placeholder="Fullt navn">
+    <h2>👤 Legg til spiller</h2>
+    <label>Navn</label>
+    <input type="text" id="player-name" placeholder="Fullt navn">
+    <label>Posisjon</label>
+    <select id="player-position">
+      <option value="Spiller">Spiller</option>
+      <option value="Keeper">Keeper</option>
+    </select>
+    <label>Fødselsdato</label>
+    <input type="date" id="player-dob">
+    <label>Foresatt kontakt</label>
+    <input type="text" id="player-parent" placeholder="Telefon/e-post">
+    <div class="modal-actions">
+      <button class="btn btn-danger" onclick="closeModal('modal-player')">Avbryt</button>
+      <button class="btn btn-primary" onclick="savePlayer()">Lagre</button>
     </div>
-    <div class="form-group">
-      <label>Posisjon (valgfritt)</label>
-      <select id="playerPosition">
-        <option value="">Ikke valgt</option>
-        <option value="Keeper">Keeper</option>
-        <option value="Forsvar">Forsvar</option>
-        <option value="Midtbane">Midtbane</option>
-        <option value="Angrep">Angrep</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Notater</label>
-      <textarea id="playerNotes" placeholder="Allergier, hensyn, osv."></textarea>
-    </div>
-    <button class="btn btn-primary" onclick="savePlayer()">Lagre spiller</button>
-    <button class="btn btn-secondary mt-10" onclick="closeModal('playerModal')" style="width:100%">Avbryt</button>
   </div>
 </div>
 
-<!-- Session Modal -->
-<div class="modal-overlay" id="sessionModal">
+<!-- Add Training Modal -->
+<div class="modal-overlay" id="modal-training">
   <div class="modal">
-    <h3>🏋️ Ny trening</h3>
-    <div class="form-group">
-      <label>Dato</label>
-      <input type="date" id="sessionDate">
+    <h2>⚽ Ny trening</h2>
+    <label>Dato</label>
+    <input type="date" id="training-date">
+    <label>Tid</label>
+    <input type="time" id="training-time" value="17:00">
+    <label>Sted</label>
+    <input type="text" id="training-location" placeholder="F.eks. Nordheim kunstgress">
+    <label>Tema</label>
+    <input type="text" id="training-theme" placeholder="F.eks. Ballkontroll">
+    
+    <h3 style="margin: 16px 0 10px; color: var(--primary);">📋 Aktivitetsblokker</h3>
+    <div id="training-blocks"></div>
+    <button class="add-block-btn" onclick="addTrainingBlock()">+ Legg til aktivitetsblokk</button>
+    
+    <div class="modal-actions">
+      <button class="btn btn-danger" onclick="closeModal('modal-training')">Avbryt</button>
+      <button class="btn btn-primary" onclick="saveTraining()">Lagre</button>
     </div>
-    <div class="form-group">
-      <label>Tittel</label>
-      <input type="text" id="sessionTitle" placeholder="F.eks. Ballkontroll">
-    </div>
-    <div class="form-group">
-      <label>Bruk VIF-mal (valgfritt)</label>
-      <select id="sessionTemplate" onchange="applyTemplate()">
-        <option value="">Ingen mal</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Plan / Øvelser</label>
-      <textarea id="sessionPlan" placeholder="Beskriv øvelsene..." rows="6"></textarea>
-    </div>
-    <div class="form-group">
-      <label>Utstyr</label>
-      <input type="text" id="sessionEquipment" placeholder="Kjegler, vester, mål...">
-    </div>
-    <div class="form-group">
-      <label>Notater</label>
-      <textarea id="sessionNotes" placeholder="Observasjoner etterpå..."></textarea>
-    </div>
-    <button class="btn btn-primary" onclick="saveSession()">Lagre trening</button>
-    <button class="btn btn-secondary mt-10" onclick="closeModal('sessionModal')" style="width:100%">Avbryt</button>
   </div>
 </div>
 
-<!-- Match Modal -->
-<div class="modal-overlay" id="matchModal">
+<!-- View Training Modal -->
+<div class="modal-overlay" id="modal-view-training">
   <div class="modal">
-    <h3>⚽ Ny kamp</h3>
-    <div class="form-group">
-      <label>Dato</label>
-      <input type="date" id="matchDate">
+    <h2>⚽ Treningsdetaljer</h2>
+    <div id="view-training-content"></div>
+    <h3 style="margin: 16px 0 10px; color: var(--primary);">✅ Oppmøte</h3>
+    <div id="attendance-list"></div>
+    <div class="modal-actions">
+      <button class="btn btn-danger" onclick="deleteTraining()">🗑️ Slett</button>
+      <button class="btn btn-warning" onclick="editCurrentTraining()">✏️ Rediger</button>
+      <button class="btn btn-primary" onclick="closeModal('modal-view-training')">Lukk</button>
     </div>
-    <div class="form-group">
-      <label>Motstander</label>
-      <input type="text" id="matchOpponent" placeholder="Lag-navn">
+  </div>
+</div>
+
+<!-- Edit Training Modal -->
+<div class="modal-overlay" id="modal-edit-training">
+  <div class="modal">
+    <h2>✏️ Rediger trening</h2>
+    <label>Dato</label>
+    <input type="date" id="edit-training-date">
+    <label>Tid</label>
+    <input type="time" id="edit-training-time">
+    <label>Sted</label>
+    <input type="text" id="edit-training-location">
+    <label>Tema</label>
+    <input type="text" id="edit-training-theme">
+    
+    <h3 style="margin: 16px 0 10px; color: var(--primary);">📋 Aktivitetsblokker</h3>
+    <div id="edit-training-blocks"></div>
+    <button class="add-block-btn" onclick="addEditTrainingBlock()">+ Legg til aktivitetsblokk</button>
+    
+    <div class="modal-actions">
+      <button class="btn btn-danger" onclick="closeModal('modal-edit-training')">Avbryt</button>
+      <button class="btn btn-primary" onclick="updateTraining()">Oppdater</button>
     </div>
-    <div class="form-group">
-      <label>Mål for (VIF)</label>
-      <input type="number" id="matchGoalsFor" min="0" value="0">
+  </div>
+</div>
+
+<!-- Add Match Modal -->
+<div class="modal-overlay" id="modal-match">
+  <div class="modal">
+    <h2>🏟️ Ny kamp</h2>
+    <label>Dato</label>
+    <input type="date" id="match-date">
+    <label>Motstander</label>
+    <input type="text" id="match-opponent" placeholder="Motstanderlag">
+    <label>Sted</label>
+    <input type="text" id="match-location" placeholder="Bane">
+    <label>Type</label>
+    <select id="match-type">
+      <option value="Treningskamp">Treningskamp</option>
+      <option value="Turnering">Turnering</option>
+      <option value="Serie">Serie</option>
+    </select>
+    <div class="modal-actions">
+      <button class="btn btn-danger" onclick="closeModal('modal-match')">Avbryt</button>
+      <button class="btn btn-primary" onclick="saveMatch()">Lagre</button>
     </div>
-    <div class="form-group">
-      <label>Mål mot</label>
-      <input type="number" id="matchGoalsAgainst" min="0" value="0">
+  </div>
+</div>
+
+<!-- View Match Modal -->
+<div class="modal-overlay" id="modal-view-match">
+  <div class="modal">
+    <h2>🏟️ Kampdetaljer</h2>
+    <div id="view-match-content"></div>
+    <div class="match-score" id="match-score-area"></div>
+    <div class="modal-actions">
+      <button class="btn btn-danger" onclick="deleteMatch()">🗑️ Slett</button>
+      <button class="btn btn-primary" onclick="closeModal('modal-view-match')">Lukk</button>
     </div>
-    <div class="form-group">
-      <label>Notater</label>
-      <textarea id="matchNotes" placeholder="Hvordan spilte laget?"></textarea>
-    </div>
-    <button class="btn btn-primary" onclick="saveMatch()">Lagre kamp</button>
-    <button class="btn btn-secondary mt-10" onclick="closeModal('matchModal')" style="width:100%">Avbryt</button>
   </div>
 </div>
 
 <!-- Trophy Modal -->
-<div class="modal-overlay" id="trophyModal">
+<div class="modal-overlay" id="modal-trophy">
   <div class="modal">
-    <h3>🏆 Ukens pokal</h3>
-    <div class="form-group">
-      <label>Dato</label>
-      <input type="date" id="trophyDate">
+    <h2>🏆 Ukens spiller</h2>
+    <label>Spiller</label>
+    <select id="trophy-player"></select>
+    <label>Begrunnelse</label>
+    <textarea id="trophy-reason" rows="3" placeholder="Hvorfor fortjener denne spilleren trofeet?"></textarea>
+    <label>Uke</label>
+    <input type="number" id="trophy-week" min="1" max="52" placeholder="Ukenummer">
+    <div class="modal-actions">
+      <button class="btn btn-danger" onclick="closeModal('modal-trophy')">Avbryt</button>
+      <button class="btn btn-primary" onclick="saveTrophy()">Lagre</button>
     </div>
-    <div class="form-group">
-      <label>Spiller</label>
-      <select id="trophyPlayer">
-        <option value="">Velg spiller...</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Kategori</label>
-      <select id="trophyCategory">
-        <option value="⭐">⭐ Innsats</option>
-        <option value="🎯">🎯 Ferdighet</option>
-        <option value="🤝">🤝 Lagspiller</option>
-        <option value="🔥">🔥 Utvikling</option>
-        <option value="😊">😊 Holdning</option>
-        <option value="💪">💪 Mot</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Begrunnelse</label>
-      <textarea id="trophyReason" placeholder="Hvorfor får spilleren pokalen?"></textarea>
-    </div>
-    <button class="btn btn-primary" onclick="saveTrophy()">Del ut pokal 🏆</button>
-    <button class="btn btn-secondary mt-10" onclick="closeModal('trophyModal')" style="width:100%">Avbryt</button>
   </div>
 </div>
 
-<!-- FIREBASE SDK -->
+<!-- Use Template Modal -->
+<div class="modal-overlay" id="modal-use-template">
+  <div class="modal">
+    <h2>📋 Bruk treningsmal</h2>
+    <label>Dato</label>
+    <input type="date" id="template-date">
+    <label>Tid</label>
+    <input type="time" id="template-time" value="17:00">
+    <label>Sted</label>
+    <input type="text" id="template-location" placeholder="F.eks. Nordheim kunstgress">
+    <div id="template-preview"></div>
+    <div class="modal-actions">
+      <button class="btn btn-danger" onclick="closeModal('modal-use-template')">Avbryt</button>
+      <button class="btn btn-primary" onclick="saveTemplateTraining()">Opprett trening</button>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
 <script>
-// ============================================
-// FIREBASE CONFIG
-// ============================================
+// Firebase Config
 const firebaseConfig = {
-  apiKey: "AIzaSyCUI8ojxbVcD_R1Vt-wKxU0iE2XCHhqODk",
+  apiKey: "AIzaSyBQjnKOAPpBsMVcp_oPBGLOjEMBbUGsdjY",
   authDomain: "j2018-nord.firebaseapp.com",
   projectId: "j2018-nord",
   storageBucket: "j2018-nord.firebasestorage.app",
@@ -595,742 +881,819 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
 const db = firebase.firestore();
+const auth = firebase.auth();
 
-// Enable offline persistence
-db.enablePersistence().catch(err => {
-  console.log('Persistence error:', err.code);
-});
+db.enablePersistence().catch(err => console.log('Persistence:', err.code));
 
-// Team base path
-const TEAM = 'teams/j2018';
+const TEAM_PATH = 'teams/j2018';
 
-// ============================================
-// VIF TRAINING TEMPLATES
-// ============================================
-const VIF_TEMPLATES = [
-  {
-    week: 1, title: "Ballkontroll",
-    duration: "60 min",
-    description: "Grunnleggende ballkontroll og føling",
-    equipment: "1 ball per spiller, kjegler",
-    plan: `🟢 Oppvarming (10 min):
-- Ballføring fritt i område, ulike deler av foten
-- "Trafikklys" — rød=stopp, grønn=gå, gul=sakte
+// State
+let players = [];
+let trainings = [];
+let matches = [];
+let trophies = [];
+let goals = [];
+let currentWeek = 1;
+let currentTrainingId = null;
+let currentMatchId = null;
+let selectedTemplate = null;
+let blockCounter = 0;
+let editBlockCounter = 0;
 
-⚽ Hoveddel 1 (15 min):
-- Såle-rulle frem og tilbake
-- Innside-utside i sikksakk mellom kjegler
-- "Klokka" — stå på ball, rull rundt med såle
-
-⚽ Hoveddel 2 (15 min):
-- 750-touch challenge: Tell berøringer på 5 min
-- Kast opp, dempe med lår/bryst/fot
-- Ballkontroll-stafett med vendinger
-
-🎮 Spill (15 min):
-- 3v3 på liten bane, fokus: mange berøringer
-- Bonuspoeng for finter
-
-🔵 Avslutning (5 min):
-- Ball-trylling: Hvem kan flest triks?
-- Oppsummering: Hva lærte vi?`
-  },
-  {
-    week: 2, title: "1v1 og dribling",
-    duration: "60 min",
-    description: "Finte, drible forbi motstander, vinne dueller",
-    equipment: "Baller, kjegler, småmål/vester",
-    plan: `🟢 Oppvarming (10 min):
-- Dribling i felt, beskytt egen ball
-- "Haien kommer" — trener jager, spillere dribbler unna
-
-⚽ Hoveddel 1 (15 min):
-- Finte-skole: Saks, drag-back, Cruyff-turn
-- Øv finter mot kjegle, så mot passiv forsvarer
-- 1v1 til linje — dribble over motstanderens linje
-
-⚽ Hoveddel 2 (15 min):
-- 1v1 med avslutning på mål
-- "Kongen av banen" — vinner blir stående
-- Finte-konkurranse: Hvem lurer treneren?
-
-🎮 Spill (15 min):
-- 4v4, bonuspoeng for vellykket finte
-- Fri lek med mål
-
-🔵 Avslutning (5 min):
-- Vis din beste finte for laget
-- Høy-fem-runde`
-  },
-  {
-    week: 3, title: "Pasninger",
-    duration: "60 min",
-    description: "Pasning og mottak, spille sammen",
-    equipment: "Baller, kjegler, vester",
-    plan: `🟢 Oppvarming (10 min):
-- Pasning i par, korte avstander
-- "Vegg-pasning" — spill vegg med trener
-
-⚽ Hoveddel 1 (15 min):
-- Innside-pasning teknikk: Støttefot, treffpunkt
-- Pasning gjennom "porter" (kjegle-par)
-- Mottak-og-vending: Ta imot, snu, spill videre
-
-⚽ Hoveddel 2 (15 min):
-- Trekant-spill: 3 spillere, flytt ballen raskt
-- "Postkontoret" — pass til riktig stasjon etter farge
-- Pasning + bevegelse: Spill og løp
-
-🎮 Spill (15 min):
-- 4v4 med "5 pasninger = mål"-regel
-- Vanlig spill siste 5 min
-
-🔵 Avslutning (5 min):
-- Lengste pasning-konkurranse
-- Hva var vanskeligst i dag?`
-  },
-  {
-    week: 4, title: "Skudd og avslutninger",
-    duration: "60 min",
-    description: "Skuddteknikk, avslutninger på mål",
-    equipment: "Baller, stort mål, kjegler",
-    plan: `🟢 Oppvarming (10 min):
-- Skyte på vegg/nett fra kort hold
-- Dribling med avslutning
-
-⚽ Hoveddel 1 (15 min):
-- Skuddteknikk: Vrist, innside, plassering
-- Skudd fra ulike vinkler
-- "Hjørne-jakten" — treff hjørnene, poeng per treff
-
-⚽ Hoveddel 2 (15 min):
-- Drible forbi kjegle + skudd
-- 1v1 mot keeper med avslutning
-- "Tidsbombe" — skyt før tiden går ut
-
-🎮 Spill (15 min):
-- 4v4, fokus: avslutt når du kan!
-- Avslutnings-konkurranse siste 5 min
-
-🔵 Avslutning (5 min):
-- Straffespark-konkurranse
-- Hvem scoret finest mål?`
-  },
-  {
-    week: 5, title: "Forsvarsspill",
-    duration: "60 min",
-    description: "Enkel forsvarsposisjonering, vinne ball tilbake",
-    equipment: "Baller, kjegler, vester",
-    plan: `🟢 Oppvarming (10 min):
-- Skygge-løp: Følg motstanderen
-- "Tyv og politi" med ball
-
-⚽ Hoveddel 1 (15 min):
-- Forsvarsposisjon: Lav tyngde, mellom ball og mål
-- Øvelse: Steng pasningslinjen
-- 1v1 forsvar — press uten å stupe inn
-
-⚽ Hoveddel 2 (15 min):
-- 2v1 forsvarsspill: Forsink og vent på hjelp
-- Vinne ball → rask overgang til angrep
-- "Balltyv" — hvem vinner flest baller?
-
-🎮 Spill (15 min):
-- 4v4, bonuspoeng for ball-erobring
-- Keeper-øvelse for de som vil
-
-🔵 Avslutning (5 min):
-- Hvem var beste forsvarer?
-- Tøying i sirkel`
-  },
-  {
-    week: 6, title: "Små-spill og samhandling",
-    duration: "60 min",
-    description: "Spille sammen i smålag, bevegelse og samarbeid",
-    equipment: "Baller, småmål, vester, kjegler",
-    plan: `🟢 Oppvarming (10 min):
-- Ballføring med pasning på signal
-- "Byt ball" — alle dribbler, byt ball med annen spiller
-
-⚽ Hoveddel 1 (15 min):
-- 2v1 angrep: Overlapp, veggspill
-- 3v1 i ruter: Hold ballen i laget
-- Bevegelse uten ball: "Vis deg!"
-
-⚽ Hoveddel 2 (15 min):
-- 3v3 turneringer (korte kamper, 3 min)
-- Bredde-spill: Bruk hele banen
-- "Frys"-spill: Trener roper frys, sjekk posisjoner
-
-🎮 Spill (15 min):
-- 4v4 / 5v5 fri lek
-- Oppmuntre samarbeid
-
-🔵 Avslutning (5 min):
-- Lagprat: Hva gjorde vi bra sammen?
-- Heiarop`
-  },
-  {
-    week: 7, title: "Hurtighet og bevegelse",
-    duration: "60 min",
-    description: "Fart, retningsforandringer, reaksjonsevne",
-    equipment: "Baller, kjegler, stiger(valgfritt)",
-    plan: `🟢 Oppvarming (10 min):
-- Jogg, sprint, stopp på signal
-- "Speil" — kopier makkerens bevegelser
-
-⚽ Hoveddel 1 (15 min):
-- Sprint-stafetter med ball
-- Sikksakk-løp mellom kjegler med ball
-- Reaksjonsøvelse: Trener peker retning, sprint dit
-
-⚽ Hoveddel 2 (15 min):
-- 1v1 med fartselement: Ball kastes ut, hvem når først?
-- "Eksplosiv start" — sitt/ligg, reis deg, sprint til ball
-- Vendinger i fart med ball
-
-🎮 Spill (15 min):
-- 4v4 på smal bane (mye løping)
-- "Lynkamp" — 1 min kamper, full fart
-
-🔵 Avslutning (5 min):
-- Hvem er raskest? Sprint-finale (for gøy)
-- Tøying`
-  },
-  {
-    week: 8, title: "Bredde og spille ut",
-    duration: "60 min",
-    description: "Bruke bredden, spille fra keeper/forsvar, posisjoner",
-    equipment: "Baller, stort mål, kjegler, vester",
-    plan: `🟢 Oppvarming (10 min):
-- Pasningsspill i bredden: Spill ball side til side
-- Dribling med "se opp"-kommando
-
-⚽ Hoveddel 1 (15 min):
-- Keeper kaster ut → forsvar → midtbane → angrep
-- Øv: Spill ut fra bak, ikke bare skyt langt
-- Posisjonsøvelse: Hvor skal du stå?
-
-⚽ Hoveddel 2 (15 min):
-- Breddespill: Kantspiller mottar, slå inn
-- 4v4 med "kantsoner" — mål teller dobbelt fra kant
-- Innlegg og avslutninger
-
-🎮 Spill (15 min):
-- 5v5 med fokus på bredde
-- Oppmuntre spill via kantene
-
-🔵 Avslutning (5 min):
-- Tegn banen: Hvor stod du i dag?
-- Oppsummering og ros`
-  }
-];
-
-// ============================================
-// VIF LEARNING GOALS
-// ============================================
-const VIF_LEARNING_GOALS = [
-  { id: 'lg1', category: 'Ballkontroll', title: '750+ ballberøringer per trening', icon: '⚽' },
-  { id: 'lg2', category: 'Ballkontroll', title: 'Føre ball med begge føtter', icon: '👟' },
-  { id: 'lg3', category: 'Ballkontroll', title: 'Dempe ball fra luften', icon: '🎯' },
-  { id: 'lg4', category: '1v1', title: 'Gjennomføre minst 2 finter', icon: '🔥' },
-  { id: 'lg5', category: '1v1', title: 'Tørre å utfordre i 1v1', icon: '💪' },
-  { id: 'lg6', category: 'Pasning', title: 'Innside-pasning til medspiller', icon: '🤝' },
-  { id: 'lg7', category: 'Pasning', title: 'Mottak og vending', icon: '🔄' },
-  { id: 'lg8', category: 'Skudd', title: 'Skudd med vrist og innside', icon: '🥅' },
-  { id: 'lg9', category: 'Forståelse', title: 'Forstå bredde i spill', icon: '↔️' },
-  { id: 'lg10', category: 'Forståelse', title: 'Vite forskjell på angrep og forsvar', icon: '🧠' },
-  { id: 'lg11', category: 'Holdning', title: 'Heie på lagkamerater', icon: '📣' },
-  { id: 'lg12', category: 'Holdning', title: 'Vise innsats hele treningen', icon: '⭐' }
-];
-
-// ============================================
-// APP STATE
-// ============================================
-let appData = {
-  players: [],
-  sessions: [],
-  matches: [],
-  trophies: [],
-  learningGoals: {}
-};
-
-let unsubscribers = [];
-let isOnline = true;
-
-// ============================================
-// AUTH & INIT
-// ============================================
+// Auth
 auth.signInAnonymously().then(() => {
-  console.log('Anonym innlogging OK');
-  updateSyncStatus(true);
+  console.log('Authenticated');
   initListeners();
-}).catch(err => {
-  console.error('Auth feil:', err);
-  updateSyncStatus(false);
-});
+}).catch(err => console.error('Auth error:', err));
 
-function updateSyncStatus(online) {
-  isOnline = online;
-  const el = document.getElementById('syncStatus');
-  if (online) {
-    el.textContent = '🟢 Synkronisert';
-    el.className = 'sync-status online';
-  } else {
-    el.textContent = '🟠 Offline-modus';
-    el.className = 'sync-status offline';
-  }
-}
-
-// ============================================
-// FIRESTORE LISTENERS
-// ============================================
+// Real-time listeners
 function initListeners() {
   // Players
-  const unsub1 = db.collection(`${TEAM}/players`).orderBy('name')
-    .onSnapshot(snap => {
-      appData.players = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      renderPlayers();
-      updateTrophyPlayerSelect();
-      renderDashboard();
-    }, err => console.error('Players listen error:', err));
-  
-  // Sessions
-  const unsub2 = db.collection(`${TEAM}/sessions`).orderBy('date', 'desc')
-    .onSnapshot(snap => {
-      appData.sessions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      renderSessions();
-      renderDashboard();
-    }, err => console.error('Sessions listen error:', err));
+  db.collection(`${TEAM_PATH}/players`).orderBy('name').onSnapshot(snap => {
+    players = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderPlayers();
+    updateStats();
+  });
+
+  // Trainings
+  db.collection(`${TEAM_PATH}/trainings`).orderBy('date', 'desc').onSnapshot(snap => {
+    trainings = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderTrainings();
+    renderNextTraining();
+    updateStats();
+  });
 
   // Matches
-  const unsub3 = db.collection(`${TEAM}/matches`).orderBy('date', 'desc')
-    .onSnapshot(snap => {
-      appData.matches = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      renderMatches();
-      renderDashboard();
-    }, err => console.error('Matches listen error:', err));
+  db.collection(`${TEAM_PATH}/matches`).orderBy('date', 'desc').onSnapshot(snap => {
+    matches = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderMatches();
+    updateStats();
+  });
 
   // Trophies
-  const unsub4 = db.collection(`${TEAM}/trophies`).orderBy('date', 'desc')
-    .onSnapshot(snap => {
-      appData.trophies = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      renderTrophies();
-      renderDashboard();
-    }, err => console.error('Trophies listen error:', err));
+  db.collection(`${TEAM_PATH}/trophies`).orderBy('week', 'desc').onSnapshot(snap => {
+    trophies = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderTrophies();
+    updateStats();
+  });
 
-  // Learning Goals
-  const unsub5 = db.doc(`${TEAM}/meta/learningGoals`).onSnapshot(snap => {
-    appData.learningGoals = snap.exists ? snap.data() : {};
+  // Goals
+  db.collection(`${TEAM_PATH}/goals`).onSnapshot(snap => {
+    goals = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    if (goals.length === 0) initDefaultGoals();
     renderGoals();
-    renderDashboard();
-  }, err => console.error('Goals listen error:', err));
-
-  unsubscribers = [unsub1, unsub2, unsub3, unsub4, unsub5];
+  });
 }
 
-// ============================================
-// NAVIGATION
-// ============================================
-function showSection(id) {
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+// Navigation
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.top-nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById(`page-${page}`).classList.add('active');
   event.currentTarget.classList.add('active');
-  
-  if (id === 'templates') renderTemplates();
+  if (page === 'training') renderTemplateWeek();
 }
 
-// ============================================
-// MODALS
-// ============================================
+// Stats
+function updateStats() {
+  document.getElementById('stat-players').textContent = players.length;
+  document.getElementById('stat-trainings').textContent = trainings.length;
+  document.getElementById('stat-matches').textContent = matches.length;
+  document.getElementById('stat-trophies').textContent = trophies.length;
+  renderRecentActivity();
+}
+
+// PLAYERS
+function renderPlayers() {
+  const container = document.getElementById('player-list');
+  if (players.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">👥</div><p>Ingen spillere lagt til ennå</p></div>';
+    return;
+  }
+  container.innerHTML = players.map(p => `
+    <div class="player-item">
+      <div class="player-info">
+        <div class="player-avatar">${p.name.charAt(0)}</div>
+        <div>
+          <div class="player-name">${p.name}</div>
+          <div class="player-pos">${p.position || 'Spiller'}${p.parent ? ' • ' + p.parent : ''}</div>
+        </div>
+      </div>
+      <div class="player-actions">
+        <button class="btn btn-danger btn-sm" onclick="deletePlayer('${p.id}')">🗑️</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openAddPlayer() {
+  document.getElementById('player-name').value = '';
+  document.getElementById('player-position').value = 'Spiller';
+  document.getElementById('player-dob').value = '';
+  document.getElementById('player-parent').value = '';
+  openModal('modal-player');
+}
+
+function savePlayer() {
+  const name = document.getElementById('player-name').value.trim();
+  if (!name) return alert('Skriv inn navn!');
+  db.collection(`${TEAM_PATH}/players`).add({
+    name,
+    position: document.getElementById('player-position').value,
+    dob: document.getElementById('player-dob').value,
+    parent: document.getElementById('player-parent').value.trim(),
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  });
+  closeModal('modal-player');
+}
+
+function deletePlayer(id) {
+  if (confirm('Slette denne spilleren?')) {
+    db.collection(`${TEAM_PATH}/players`).doc(id).delete();
+  }
+}
+
+// TRAININGS
+function renderTrainings() {
+  const container = document.getElementById('training-list');
+  if (trainings.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">⚽</div><p>Ingen treninger planlagt</p></div>';
+    return;
+  }
+  container.innerHTML = trainings.map(t => `
+    <div class="session-item" onclick="viewTraining('${t.id}')">
+      <div class="session-date">📅 ${formatDate(t.date)} kl ${t.time || '17:00'}</div>
+      <div class="session-info">
+        📍 ${t.location || 'Ikke angitt'} • 🎯 ${t.theme || 'Generell trening'}
+        ${t.blocks ? ' • ' + t.blocks.length + ' aktiviteter' : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+function openAddTraining() {
+  document.getElementById('training-date').value = '';
+  document.getElementById('training-time').value = '17:00';
+  document.getElementById('training-location').value = '';
+  document.getElementById('training-theme').value = '';
+  document.getElementById('training-blocks').innerHTML = '';
+  blockCounter = 0;
+  
+  // Add default 4 blocks
+  addTrainingBlock('Oppvarming', 'warmup', 10);
+  addTrainingBlock('Hovedøvelse 1', 'main', 15);
+  addTrainingBlock('Hovedøvelse 2', 'main', 15);
+  addTrainingBlock('Smålagsspill', 'game', 15);
+  
+  openModal('modal-training');
+}
+
+function addTrainingBlock(title, type, duration) {
+  blockCounter++;
+  const id = blockCounter;
+  const container = document.getElementById('training-blocks');
+  const types = type || 'warmup';
+  const blockHTML = `
+    <div class="training-block block-${types}" id="block-${id}">
+      <div class="block-header">
+        <select onchange="updateBlockColor(${id}, this.value)" style="width:auto; margin:0; padding:6px; font-size:12px;">
+          <option value="warmup" ${types==='warmup'?'selected':''}>🟢 Oppvarming</option>
+          <option value="main" ${types==='main'?'selected':''}>🔵 Hovedøvelse</option>
+          <option value="game" ${types==='game'?'selected':''}>🟡 Spill</option>
+          <option value="cooldown" ${types==='cooldown'?'selected':''}>⚪ Avslutning</option>
+        </select>
+        <button class="remove-block-btn" onclick="removeBlock(${id})">✕</button>
+      </div>
+      <input type="text" id="block-title-${id}" placeholder="Aktivitetsnavn" value="${title||''}" style="margin-bottom:8px;">
+      <input type="number" id="block-duration-${id}" placeholder="Minutter" value="${duration||15}" style="width:100px; display:inline-block; margin-bottom:8px;"> min
+      <textarea id="block-desc-${id}" rows="2" placeholder="Beskrivelse av aktiviteten..." style="margin-bottom:0;"></textarea>
+    </div>
+  `;
+  container.insertAdjacentHTML('beforeend', blockHTML);
+}
+
+function removeBlock(id) {
+  const block = document.getElementById(`block-${id}`);
+  if (block) block.remove();
+}
+
+function updateBlockColor(id, type) {
+  const block = document.getElementById(`block-${id}`);
+  block.className = `training-block block-${type}`;
+}
+
+function getTrainingBlocks() {
+  const blocks = [];
+  document.querySelectorAll('#training-blocks .training-block').forEach(el => {
+    const id = el.id.replace('block-', '');
+    const type = el.querySelector('select').value;
+    const title = document.getElementById(`block-title-${id}`).value.trim();
+    const duration = parseInt(document.getElementById(`block-duration-${id}`).value) || 15;
+    const desc = document.getElementById(`block-desc-${id}`).value.trim();
+    blocks.push({ type, title, duration, desc });
+  });
+  return blocks;
+}
+
+function saveTraining() {
+  const date = document.getElementById('training-date').value;
+  if (!date) return alert('Velg dato!');
+  
+  const blocks = getTrainingBlocks();
+  
+  db.collection(`${TEAM_PATH}/trainings`).add({
+    date,
+    time: document.getElementById('training-time').value,
+    location: document.getElementById('training-location').value.trim(),
+    theme: document.getElementById('training-theme').value.trim(),
+    blocks,
+    attendance: {},
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  });
+  closeModal('modal-training');
+}
+
+function viewTraining(id) {
+  currentTrainingId = id;
+  const t = trainings.find(x => x.id === id);
+  if (!t) return;
+
+  let blocksHTML = '';
+  if (t.blocks && t.blocks.length > 0) {
+    blocksHTML = '<h3 style="margin:12px 0 8px; color:var(--primary);">📋 Aktiviteter</h3>';
+    blocksHTML += t.blocks.map(b => `
+      <div class="training-block block-${b.type}">
+        <div class="block-header">
+          <span class="block-type ${b.type}">${getBlockLabel(b.type)}</span>
+          <span class="block-duration">${b.duration} min</span>
+        </div>
+        <div class="block-title">${b.title || 'Uten navn'}</div>
+        ${b.desc ? `<div class="block-desc">${b.desc}</div>` : ''}
+      </div>
+    `).join('');
+  }
+
+  document.getElementById('view-training-content').innerHTML = `
+    <div style="margin-bottom:12px;">
+      <div style="font-size:16px; font-weight:700; color:var(--primary);">📅 ${formatDate(t.date)} kl ${t.time || '17:00'}</div>
+      <div style="font-size:14px; color:var(--gray); margin-top:4px;">📍 ${t.location || 'Ikke angitt'}</div>
+      <div style="font-size:14px; color:var(--gray);">🎯 ${t.theme || 'Generell trening'}</div>
+    </div>
+    ${blocksHTML}
+  `;
+
+  // Attendance
+  const attContainer = document.getElementById('attendance-list');
+  if (players.length === 0) {
+    attContainer.innerHTML = '<p style="font-size:13px; color:var(--gray);">Legg til spillere først</p>';
+  } else {
+    const att = t.attendance || {};
+    attContainer.innerHTML = players.map(p => {
+      const present = att[p.id] === true;
+      return `
+        <div class="attendance-item">
+          <span style="font-weight:600;">${p.name}</span>
+          <button class="att-toggle ${present ? 'present' : 'absent'}" 
+                  onclick="toggleAttendance('${id}', '${p.id}', ${!present})">
+            ${present ? '✅' : '❌'}
+          </button>
+        </div>
+      `;
+    }).join('');
+  }
+
+  openModal('modal-view-training');
+}
+
+function toggleAttendance(trainingId, playerId, present) {
+  db.collection(`${TEAM_PATH}/trainings`).doc(trainingId).update({
+    [`attendance.${playerId}`]: present
+  });
+}
+
+function editCurrentTraining() {
+  const t = trainings.find(x => x.id === currentTrainingId);
+  if (!t) return;
+  
+  closeModal('modal-view-training');
+  
+  document.getElementById('edit-training-date').value = t.date;
+  document.getElementById('edit-training-time').value = t.time || '17:00';
+  document.getElementById('edit-training-location').value = t.location || '';
+  document.getElementById('edit-training-theme').value = t.theme || '';
+  
+  // Populate blocks
+  const container = document.getElementById('edit-training-blocks');
+  container.innerHTML = '';
+  editBlockCounter = 0;
+  
+  if (t.blocks && t.blocks.length > 0) {
+    t.blocks.forEach(b => addEditTrainingBlock(b.title, b.type, b.duration, b.desc));
+  } else {
+    addEditTrainingBlock('Oppvarming', 'warmup', 10);
+    addEditTrainingBlock('Hovedøvelse', 'main', 20);
+    addEditTrainingBlock('Spill', 'game', 15);
+  }
+  
+  openModal('modal-edit-training');
+}
+
+function addEditTrainingBlock(title, type, duration, desc) {
+  editBlockCounter++;
+  const id = editBlockCounter;
+  const types = type || 'warmup';
+  const container = document.getElementById('edit-training-blocks');
+  const blockHTML = `
+    <div class="training-block block-${types}" id="edit-block-${id}">
+      <div class="block-header">
+        <select onchange="updateEditBlockColor(${id}, this.value)" style="width:auto; margin:0; padding:6px; font-size:12px;">
+          <option value="warmup" ${types==='warmup'?'selected':''}>🟢 Oppvarming</option>
+          <option value="main" ${types==='main'?'selected':''}>🔵 Hovedøvelse</option>
+          <option value="game" ${types==='game'?'selected':''}>🟡 Spill</option>
+          <option value="cooldown" ${types==='cooldown'?'selected':''}>⚪ Avslutning</option>
+        </select>
+        <button class="remove-block-btn" onclick="removeEditBlock(${id})">✕</button>
+      </div>
+      <input type="text" id="edit-block-title-${id}" placeholder="Aktivitetsnavn" value="${title||''}" style="margin-bottom:8px;">
+      <input type="number" id="edit-block-duration-${id}" placeholder="Minutter" value="${duration||15}" style="width:100px; display:inline-block; margin-bottom:8px;"> min
+      <textarea id="edit-block-desc-${id}" rows="2" placeholder="Beskrivelse..." style="margin-bottom:0;">${desc||''}</textarea>
+    </div>
+  `;
+  container.insertAdjacentHTML('beforeend', blockHTML);
+}
+
+function removeEditBlock(id) {
+  const block = document.getElementById(`edit-block-${id}`);
+  if (block) block.remove();
+}
+
+function updateEditBlockColor(id, type) {
+  const block = document.getElementById(`edit-block-${id}`);
+  block.className = `training-block block-${type}`;
+}
+
+function getEditTrainingBlocks() {
+  const blocks = [];
+  document.querySelectorAll('#edit-training-blocks .training-block').forEach(el => {
+    const id = el.id.replace('edit-block-', '');
+    const type = el.querySelector('select').value;
+    const title = document.getElementById(`edit-block-title-${id}`).value.trim();
+    const duration = parseInt(document.getElementById(`edit-block-duration-${id}`).value) || 15;
+    const desc = document.getElementById(`edit-block-desc-${id}`).value.trim();
+    blocks.push({ type, title, duration, desc });
+  });
+  return blocks;
+}
+
+function updateTraining() {
+  if (!currentTrainingId) return;
+  const blocks = getEditTrainingBlocks();
+  
+  db.collection(`${TEAM_PATH}/trainings`).doc(currentTrainingId).update({
+    date: document.getElementById('edit-training-date').value,
+    time: document.getElementById('edit-training-time').value,
+    location: document.getElementById('edit-training-location').value.trim(),
+    theme: document.getElementById('edit-training-theme').value.trim(),
+    blocks
+  });
+  closeModal('modal-edit-training');
+}
+
+function deleteTraining() {
+  if (confirm('Slette denne treningen?')) {
+    db.collection(`${TEAM_PATH}/trainings`).doc(currentTrainingId).delete();
+    closeModal('modal-view-training');
+  }
+}
+
+function getBlockLabel(type) {
+  const labels = { warmup: 'Oppvarming', main: 'Hovedøvelse', game: 'Spill', cooldown: 'Avslutning' };
+  return labels[type] || type;
+}
+
+// TRAINING TEMPLATES
+const templates = [
+  {
+    week: 1, name: 'Ballkontroll & Lek',
+    blocks: [
+      { type: 'warmup', title: 'Ballvenner', duration: 10, desc: 'Alle har ball — drible fritt, på signal: stopp ballen, sitt på ballen, hopp over ballen.' },
+      { type: 'main', title: 'Fotball-bowling', duration: 12, desc: 'Sett opp kjegler. Trille ballen og prøv å velte dem. Hvem klarer flest?' },
+      { type: 'main', title: 'Kaptein på ballen', duration: 10, desc: 'Drible gjennom hinderløype. Bruk innsiden av foten. Høyre og venstre fot.' },
+      { type: 'game', title: 'Smålagsspill 3v3', duration: 15, desc: 'Små baner, små mål. Fokus på å ha det gøy!' }
+    ]
+  },
+  {
+    week: 2, name: '1 mot 1 & Finter',
+    blocks: [
+      { type: 'warmup', title: 'Hale-sisten', duration: 10, desc: 'Alle har en vest i buksen. Prøv å ta andres haler mens du beskytter din egen.' },
+      { type: 'main', title: 'Finte-skole', duration: 12, desc: 'Øv på enkel finte: skuddfinten. Lat som du skyter, dra ballen til siden.' },
+      { type: 'main', title: '1v1 til minimål', duration: 12, desc: 'Par mot par. Prøv å drible forbi og score.' },
+      { type: 'game', title: 'Smålagsspill 4v4', duration: 15, desc: 'Bruk fintene dere har øvd på!' }
+    ]
+  },
+  {
+    week: 3, name: 'Pasning & Samarbeid',
+    blocks: [
+      { type: 'warmup', title: 'Pasnings-sirkel', duration: 10, desc: 'Stå i ring. Pass til hverandre med innsiden av foten. Si navnet til den du sender til!' },
+      { type: 'main', title: 'Tunnel-pasning', duration: 10, desc: 'Par: en står med beina i V, den andre triller gjennom tunnelen.' },
+      { type: 'main', title: 'Pasning & Bevegelse', duration: 12, desc: 'Send ball, løp til ny plass. Alltid i bevegelse!' },
+      { type: 'game', title: 'Smålagsspill 3v3', duration: 15, desc: 'Bonuspoeng for pasninger før scoring!' }
+    ]
+  },
+  {
+    week: 4, name: 'Skudd & Avslutninger',
+    blocks: [
+      { type: 'warmup', title: 'Skudd-stafett', duration: 10, desc: 'Lag i kø. Drible til kjegle, skyt på mål, hent ballen, neste!' },
+      { type: 'main', title: 'Skudd fra ulike vinkler', duration: 12, desc: 'Plasser baller rundt 16-meteren. Skyt fra forskjellige steder.' },
+      { type: 'main', title: 'Mottak & skudd', duration: 12, desc: 'Trener triller ball, ta imot, skyt. Bruk vrista!' },
+      { type: 'game', title: 'Smålagsspill m/fokus', duration: 15, desc: 'Hvert mål teller dobbelt fra innenfor sonen!' }
+    ]
+  },
+  {
+    week: 5, name: 'Forsvar & Gjenvinning',
+    blocks: [
+      { type: 'warmup', title: 'Bok-tyven', duration: 10, desc: 'Alle dribbler. 2 "tyver" prøver å sparke ballen ut. Hvem beholder ballen lengst?' },
+      { type: 'main', title: 'Skygge-forsvar', duration: 12, desc: 'Par: en dribbler, en følger som skygge. Bytt roller.' },
+      { type: 'main', title: 'Vinn ballen tilbake', duration: 10, desc: '1v1 — forsvareren prøver å vinne ballen og score selv.' },
+      { type: 'game', title: 'Smålagsspill 4v4', duration: 15, desc: 'Bonuspoeng for å vinne ballen tilbake!' }
+    ]
+  },
+  {
+    week: 6, name: 'Smålagsspill & Posisjon',
+    blocks: [
+      { type: 'warmup', title: 'Nummerspill', duration: 10, desc: 'Alle får nummer. Trener roper tall — de løper og spiller 1v1, 2v2 osv.' },
+      { type: 'main', title: 'Finn rommet', duration: 12, desc: 'Spill 3v1: tre spillere prøver å beholde ballen. Finn åpne rom!' },
+      { type: 'main', title: 'Angrepsspill', duration: 12, desc: '3v2 mot mål. Overtall — finn den som er ledig!' },
+      { type: 'game', title: 'Turnering 3v3', duration: 15, desc: 'Mini-turnering med flere lag. Korte kamper!' }
+    ]
+  },
+  {
+    week: 7, name: 'Hurtighet & Reaksjon',
+    blocks: [
+      { type: 'warmup', title: 'Trafikklyset', duration: 10, desc: 'Grønt=drible fort, Gult=sakte, Rødt=stopp. Lytt og reager!' },
+      { type: 'main', title: 'Sprint & Drible', duration: 12, desc: 'Sprint til kjegle, ta ball, drible tilbake. Hvem er raskest?' },
+      { type: 'main', title: 'Reaksjonslek', duration: 10, desc: 'Stå rygg mot trener. På signal: snu, finn ballen, drible til mål.' },
+      { type: 'game', title: 'Smålagsspill 3v3', duration: 15, desc: 'Raske kamper! 2 min per kamp, bytter motstander.' }
+    ]
+  },
+  {
+    week: 8, name: 'Bredde & Kreativitet',
+    blocks: [
+      { type: 'warmup', title: 'Kreativ dribbling', duration: 10, desc: 'Drible fritt. Prøv nye triks! Såle, utsiden, vending.' },
+      { type: 'main', title: 'Bruk hele banen', duration: 12, desc: 'Spill 4v2 på bred bane. Bruk kantene!' },
+      { type: 'main', title: 'Fri-form øvelse', duration: 12, desc: 'Spillerne velger selv hva de vil øve på. Trener hjelper.' },
+      { type: 'game', title: 'Avslutningskamp', duration: 15, desc: 'Full kamp med alt dere har lært!' }
+    ]
+  }
+];
+
+function changeWeek(dir) {
+  currentWeek = Math.max(1, Math.min(8, currentWeek + dir));
+  renderTemplateWeek();
+}
+
+function renderTemplateWeek() {
+  document.getElementById('week-label').textContent = `Uke ${currentWeek}`;
+  const t = templates.find(x => x.week === currentWeek);
+  if (!t) return;
+
+  const container = document.getElementById('template-view');
+  container.innerHTML = `
+    <div style="margin-bottom:12px;">
+      <div style="font-size:16px; font-weight:700; color:var(--primary);">${t.name}</div>
+    </div>
+    ${t.blocks.map(b => `
+      <div class="training-block block-${b.type}">
+        <div class="block-header">
+          <span class="block-type ${b.type}">${getBlockLabel(b.type)}</span>
+          <span class="block-duration">${b.duration} min</span>
+        </div>
+        <div class="block-title">${b.title}</div>
+        <div class="block-desc">${b.desc}</div>
+      </div>
+    `).join('')}
+    <button class="btn btn-primary btn-full" onclick="useTemplate(${t.week})" style="margin-top:10px;">
+      📋 Bruk denne malen
+    </button>
+  `;
+}
+
+function useTemplate(week) {
+  selectedTemplate = templates.find(t => t.week === week);
+  document.getElementById('template-date').value = '';
+  document.getElementById('template-time').value = '17:00';
+  document.getElementById('template-location').value = '';
+  
+  document.getElementById('template-preview').innerHTML = `
+    <div style="margin-top:12px; padding:12px; background:var(--light-bg); border-radius:10px;">
+      <div style="font-weight:700; color:var(--primary);">${selectedTemplate.name}</div>
+      <div style="font-size:13px; color:var(--gray); margin-top:4px;">
+        ${selectedTemplate.blocks.length} aktiviteter • ${selectedTemplate.blocks.reduce((s,b) => s+b.duration, 0)} min totalt
+      </div>
+    </div>
+  `;
+  openModal('modal-use-template');
+}
+
+function saveTemplateTraining() {
+  const date = document.getElementById('template-date').value;
+  if (!date || !selectedTemplate) return alert('Velg dato!');
+  
+  db.collection(`${TEAM_PATH}/trainings`).add({
+    date,
+    time: document.getElementById('template-time').value,
+    location: document.getElementById('template-location').value.trim(),
+    theme: selectedTemplate.name,
+    blocks: selectedTemplate.blocks,
+    attendance: {},
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  });
+  closeModal('modal-use-template');
+}
+
+// MATCHES
+function renderMatches() {
+  const container = document.getElementById('match-list');
+  if (matches.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">🏟️</div><p>Ingen kamper registrert</p></div>';
+    return;
+  }
+  container.innerHTML = matches.map(m => `
+    <div class="session-item" onclick="viewMatch('${m.id}')">
+      <div class="session-date">📅 ${formatDate(m.date)} — ${m.type || 'Kamp'}</div>
+      <div class="session-info">
+        🔵 Nord J2018 vs ${m.opponent || '?'} ${m.homeScore !== undefined ? `• ${m.homeScore} - ${m.awayScore}` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+function openAddMatch() {
+  document.getElementById('match-date').value = '';
+  document.getElementById('match-opponent').value = '';
+  document.getElementById('match-location').value = '';
+  document.getElementById('match-type').value = 'Treningskamp';
+  openModal('modal-match');
+}
+
+function saveMatch() {
+  const date = document.getElementById('match-date').value;
+  const opponent = document.getElementById('match-opponent').value.trim();
+  if (!date || !opponent) return alert('Fyll inn dato og motstander!');
+  
+  db.collection(`${TEAM_PATH}/matches`).add({
+    date,
+    opponent,
+    location: document.getElementById('match-location').value.trim(),
+    type: document.getElementById('match-type').value,
+    homeScore: 0,
+    awayScore: 0,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  });
+  closeModal('modal-match');
+}
+
+function viewMatch(id) {
+  currentMatchId = id;
+  const m = matches.find(x => x.id === id);
+  if (!m) return;
+
+  document.getElementById('view-match-content').innerHTML = `
+    <div style="text-align:center; margin-bottom:8px;">
+      <div style="font-size:14px; color:var(--gray);">${formatDate(m.date)} • ${m.type}</div>
+      <div style="font-size:13px; color:var(--gray);">📍 ${m.location || 'Ikke angitt'}</div>
+    </div>
+  `;
+
+  document.getElementById('match-score-area').innerHTML = `
+    <div class="match-team">
+      <div class="match-team-name">🔵 Nord J2018</div>
+      <div>
+        <button class="score-btn minus" onclick="updateScore('home', -1)">−</button>
+        <button class="score-btn plus" onclick="updateScore('home', 1)">+</button>
+      </div>
+    </div>
+    <div>
+      <div class="score-display">${m.homeScore || 0} - ${m.awayScore || 0}</div>
+      <div class="score-vs" style="text-align:center; font-size:12px; margin-top:4px;">RESULTAT</div>
+    </div>
+    <div class="match-team">
+      <div class="match-team-name">${m.opponent}</div>
+      <div>
+        <button class="score-btn minus" onclick="updateScore('away', -1)">−</button>
+        <button class="score-btn plus" onclick="updateScore('away', 1)">+</button>
+      </div>
+    </div>
+  `;
+
+  openModal('modal-view-match');
+}
+
+function updateScore(team, change) {
+  const m = matches.find(x => x.id === currentMatchId);
+  if (!m) return;
+  const field = team === 'home' ? 'homeScore' : 'awayScore';
+  const newScore = Math.max(0, (m[field] || 0) + change);
+  db.collection(`${TEAM_PATH}/matches`).doc(currentMatchId).update({ [field]: newScore });
+}
+
+function deleteMatch() {
+  if (confirm('Slette denne kampen?')) {
+    db.collection(`${TEAM_PATH}/matches`).doc(currentMatchId).delete();
+    closeModal('modal-view-match');
+  }
+}
+
+// TROPHIES
+function renderTrophies() {
+  const display = document.getElementById('trophy-display');
+  const history = document.getElementById('trophy-history');
+
+  if (trophies.length === 0) {
+    display.innerHTML = '<div class="empty-state"><div class="empty-icon">🏆</div><p>Ingen trofeer delt ut ennå</p></div>';
+    history.innerHTML = '';
+    return;
+  }
+
+  const latest = trophies[0];
+  display.innerHTML = `
+    <div class="trophy-card">
+      <div class="trophy-icon">🏆</div>
+      <div class="trophy-title">Ukens spiller — Uke ${latest.week}</div>
+      <div class="trophy-player">${latest.playerName}</div>
+      <div class="trophy-reason">${latest.reason || ''}</div>
+    </div>
+  `;
+
+  history.innerHTML = trophies.map(t => `
+    <div class="history-item">
+      <div class="history-date">Uke ${t.week}</div>
+      <div class="history-result">🏆 ${t.playerName}</div>
+      <div style="font-size:13px; color:var(--gray);">${t.reason || ''}</div>
+    </div>
+  `).join('');
+}
+
+function openAddTrophy() {
+  const select = document.getElementById('trophy-player');
+  select.innerHTML = players.map(p => `<option value="${p.id}" data-name="${p.name}">${p.name}</option>`).join('');
+  if (players.length === 0) {
+    select.innerHTML = '<option>Legg til spillere først</option>';
+  }
+  document.getElementById('trophy-reason').value = '';
+  document.getElementById('trophy-week').value = getWeekNumber();
+  openModal('modal-trophy');
+}
+
+function saveTrophy() {
+  const select = document.getElementById('trophy-player');
+  const option = select.options[select.selectedIndex];
+  if (!option || players.length === 0) return alert('Velg en spiller!');
+
+  db.collection(`${TEAM_PATH}/trophies`).add({
+    playerId: option.value,
+    playerName: option.dataset.name || option.text,
+    reason: document.getElementById('trophy-reason').value.trim(),
+    week: parseInt(document.getElementById('trophy-week').value) || getWeekNumber(),
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  });
+  closeModal('modal-trophy');
+}
+
+// GOALS
+const defaultGoals = [
+  '750+ ballberøringer per trening',
+  'Kan drible med innsiden av begge føtter',
+  'Kan stoppe ballen med sålen',
+  'Kan slå en enkel pasning langs bakken',
+  'Tør å prøve finter i spill',
+  'Forstår når laget har og ikke har ballen',
+  'Skyter på mål med vrista',
+  'Kan spille 3v3 med forståelse',
+  'Viser god innsats og prøver sitt beste',
+  'Er en god lagkamerat og heier på andre',
+  'Har det gøy på trening og kamp',
+  'Tør å prøve nye ting selv om det er vanskelig'
+];
+
+function initDefaultGoals() {
+  defaultGoals.forEach(text => {
+    db.collection(`${TEAM_PATH}/goals`).add({
+      text,
+      completed: false,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+  });
+}
+
+function renderGoals() {
+  const container = document.getElementById('goals-list');
+  if (goals.length === 0) return;
+
+  container.innerHTML = goals.map(g => `
+    <div class="goal-item" onclick="toggleGoal('${g.id}', ${!g.completed})">
+      <span class="goal-check">${g.completed ? '✅' : '⬜'}</span>
+      <span class="goal-text ${g.completed ? 'completed' : ''}">${g.text}</span>
+    </div>
+  `).join('');
+}
+
+function toggleGoal(id, completed) {
+  db.collection(`${TEAM_PATH}/goals`).doc(id).update({ completed });
+}
+
+// NEXT TRAINING (Dashboard)
+function renderNextTraining() {
+  const container = document.getElementById('next-training');
+  const today = new Date().toISOString().split('T')[0];
+  const upcoming = trainings.filter(t => t.date >= today).sort((a,b) => a.date.localeCompare(b.date));
+  
+  if (upcoming.length === 0) {
+    container.innerHTML = '<div class="empty-state"><p>Ingen kommende treninger</p></div>';
+    return;
+  }
+
+  const t = upcoming[0];
+  container.innerHTML = `
+    <div style="padding:12px; background:var(--light-bg); border-radius:10px;">
+      <div style="font-weight:700; color:var(--primary);">📅 ${formatDate(t.date)} kl ${t.time || '17:00'}</div>
+      <div style="font-size:13px; color:var(--gray); margin-top:4px;">📍 ${t.location || 'Ikke angitt'} • 🎯 ${t.theme || 'Trening'}</div>
+      ${t.blocks ? `<div style="font-size:12px; color:var(--gray); margin-top:4px;">${t.blocks.length} aktiviteter planlagt</div>` : ''}
+    </div>
+  `;
+}
+
+// RECENT ACTIVITY
+function renderRecentActivity() {
+  const container = document.getElementById('recent-activity');
+  const activities = [];
+
+  trainings.slice(0, 3).forEach(t => {
+    activities.push({
+      date: t.date,
+      text: `⚽ Trening: ${t.theme || 'Generell'} — ${formatDate(t.date)}`
+    });
+  });
+
+  matches.slice(0, 3).forEach(m => {
+    activities.push({
+      date: m.date,
+      text: `🏟️ Kamp: Nord J2018 vs ${m.opponent} ${m.homeScore !== undefined ? `(${m.homeScore}-${m.awayScore})` : ''}`
+    });
+  });
+
+  trophies.slice(0, 2).forEach(t => {
+    activities.push({
+      date: '9999',
+      text: `🏆 Ukens spiller (uke ${t.week}): ${t.playerName}`
+    });
+  });
+
+  if (activities.length === 0) {
+    container.innerHTML = '<div class="empty-state"><p>Ingen aktivitet ennå</p></div>';
+    return;
+  }
+
+  container.innerHTML = activities.slice(0, 5).map(a => `
+    <div style="padding:8px 0; border-bottom:1px solid #eee; font-size:13px;">${a.text}</div>
+  `).join('');
+}
+
+// UTILS
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  const days = ['søndag','mandag','tirsdag','onsdag','torsdag','fredag','lørdag'];
+  const months = ['jan','feb','mar','apr','mai','jun','jul','aug','sep','okt','nov','des'];
+  const d = new Date(dateStr);
+  return `${days[d.getDay()]} ${d.getDate()}. ${months[d.getMonth()]}`;
+}
+
+function getWeekNumber() {
+  const d = new Date();
+  d.setHours(0,0,0,0);
+  d.setDate(d.getDate() + 3 - (d.getDay() + 6) % 7);
+  const week1 = new Date(d.getFullYear(), 0, 4);
+  return 1 + Math.round(((d - week1) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
+}
+
 function openModal(id) {
   document.getElementById(id).classList.add('active');
-  if (id === 'sessionModal') populateTemplateSelect();
-  if (id === 'trophyModal') updateTrophyPlayerSelect();
-  // Set default date to today
-  const today = new Date().toISOString().split('T')[0];
-  const dateInputs = document.getElementById(id).querySelectorAll('input[type="date"]');
-  dateInputs.forEach(d => { if (!d.value) d.value = today; });
 }
 
 function closeModal(id) {
   document.getElementById(id).classList.remove('active');
-  // Clear form
-  const modal = document.getElementById(id);
-  modal.querySelectorAll('input:not([type="date"]), textarea').forEach(el => el.value = '');
-  modal.querySelectorAll('select').forEach(el => el.selectedIndex = 0);
 }
 
-// ============================================
-// PLAYERS
-// ============================================
-function savePlayer() {
-  const name = document.getElementById('playerName').value.trim();
-  if (!name) return alert('Skriv inn navn!');
-  
-  db.collection(`${TEAM}/players`).add({
-    name: name,
-    position: document.getElementById('playerPosition').value,
-    notes: document.getElementById('playerNotes').value.trim(),
-    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-  }).then(() => {
-    closeModal('playerModal');
-  }).catch(err => alert('Feil: ' + err.message));
-}
+// Close modal on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) overlay.classList.remove('active');
+  });
+});
 
-function deletePlayer(id, name) {
-  if (confirm(`Slette ${name}?`)) {
-    db.doc(`${TEAM}/players/${id}`).delete();
-  }
-}
-
-function renderPlayers() {
-  const el = document.getElementById('playerList');
-  if (appData.players.length === 0) {
-    el.innerHTML = '<div class="empty-state"><span>👥</span><p>Ingen spillere ennå.<br>Legg til spillerne dine!</p></div>';
-    return;
-  }
-  el.innerHTML = appData.players.map(p => `
-    <div class="card player-card">
-      <div class="player-info">
-        <h4>${p.name}</h4>
-        <small>${p.position || 'Ikke valgt posisjon'}${p.notes ? ' — ' + p.notes : ''}</small>
-      </div>
-      <div class="player-actions">
-        <button class="btn btn-danger btn-small" onclick="deletePlayer('${p.id}', '${p.name}')">🗑️</button>
-      </div>
-    </div>
-  `).join('');
-}
-
-// ============================================
-// SESSIONS
-// ============================================
-function populateTemplateSelect() {
-  const sel = document.getElementById('sessionTemplate');
-  sel.innerHTML = '<option value="">Ingen mal</option>' + 
-    VIF_TEMPLATES.map((t, i) => `<option value="${i}">Uke ${t.week}: ${t.title}</option>`).join('');
-}
-
-function applyTemplate() {
-  const idx = document.getElementById('sessionTemplate').value;
-  if (idx === '') return;
-  const t = VIF_TEMPLATES[idx];
-  document.getElementById('sessionTitle').value = t.title;
-  document.getElementById('sessionPlan').value = t.plan;
-  document.getElementById('sessionEquipment').value = t.equipment;
-}
-
-function saveSession() {
-  const title = document.getElementById('sessionTitle').value.trim();
-  const date = document.getElementById('sessionDate').value;
-  if (!title || !date) return alert('Fyll inn dato og tittel!');
-
-  db.collection(`${TEAM}/sessions`).add({
-    date: date,
-    title: title,
-    plan: document.getElementById('sessionPlan').value.trim(),
-    equipment: document.getElementById('sessionEquipment').value.trim(),
-    notes: document.getElementById('sessionNotes').value.trim(),
-    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-  }).then(() => {
-    closeModal('sessionModal');
-  }).catch(err => alert('Feil: ' + err.message));
-}
-
-function deleteSession(id) {
-  if (confirm('Slette denne treningen?')) {
-    db.doc(`${TEAM}/sessions/${id}`).delete();
-  }
-}
-
-function renderSessions() {
-  const el = document.getElementById('sessionList');
-  if (appData.sessions.length === 0) {
-    el.innerHTML = '<div class="empty-state"><span>🏋️</span><p>Ingen treninger ennå.<br>Bruk VIF-maler for å komme i gang!</p></div>';
-    return;
-  }
-  el.innerHTML = appData.sessions.map(s => `
-    <div class="card">
-      <div class="flex-between">
-        <div>
-          <h4>${s.title}</h4>
-          <small>📅 ${formatDate(s.date)}</small>
-        </div>
-        <button class="btn btn-danger btn-small" onclick="deleteSession('${s.id}')">🗑️</button>
-      </div>
-      ${s.equipment ? `<div class="mt-10"><span class="tag tag-blue">🎒 ${s.equipment}</span></div>` : ''}
-      ${s.plan ? `<pre style="font-size:0.75em; opacity:0.8; margin-top:8px; white-space:pre-wrap; font-family:inherit;">${s.plan.substring(0, 200)}${s.plan.length > 200 ? '...' : ''}</pre>` : ''}
-      ${s.notes ? `<div style="font-size:0.8em; margin-top:8px; color:var(--vif-gold);">📝 ${s.notes}</div>` : ''}
-    </div>
-  `).join('');
-}
-
-// ============================================
-// MATCHES
-// ============================================
-function saveMatch() {
-  const date = document.getElementById('matchDate').value;
-  const opponent = document.getElementById('matchOpponent').value.trim();
-  if (!date || !opponent) return alert('Fyll inn dato og motstander!');
-
-  db.collection(`${TEAM}/matches`).add({
-    date: date,
-    opponent: opponent,
-    goalsFor: parseInt(document.getElementById('matchGoalsFor').value) || 0,
-    goalsAgainst: parseInt(document.getElementById('matchGoalsAgainst').value) || 0,
-    notes: document.getElementById('matchNotes').value.trim(),
-    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-  }).then(() => {
-    closeModal('matchModal');
-  }).catch(err => alert('Feil: ' + err.message));
-}
-
-function deleteMatch(id) {
-  if (confirm('Slette denne kampen?')) {
-    db.doc(`${TEAM}/matches/${id}`).delete();
-  }
-}
-
-function renderMatches() {
-  const el = document.getElementById('matchList');
-  if (appData.matches.length === 0) {
-    el.innerHTML = '<div class="empty-state"><span>⚽</span><p>Ingen kamper registrert ennå.</p></div>';
-    return;
-  }
-  el.innerHTML = appData.matches.map(m => {
-    const result = m.goalsFor > m.goalsAgainst ? '🟢 Seier' : m.goalsFor < m.goalsAgainst ? '🔴 Tap' : '🟡 Uavgjort';
-    return `
-    <div class="card">
-      <div class="flex-between">
-        <small>📅 ${formatDate(m.date)}</small>
-        <button class="btn btn-danger btn-small" onclick="deleteMatch('${m.id}')">🗑️</button>
-      </div>
-      <div class="text-center mt-10">
-        <div style="font-size:0.9em; opacity:0.7;">VIF vs ${m.opponent}</div>
-        <div class="match-score">${m.goalsFor} — ${m.goalsAgainst}</div>
-        <div><span class="tag ${m.goalsFor > m.goalsAgainst ? 'tag-green' : m.goalsFor < m.goalsAgainst ? 'tag-red' : 'tag-gold'}">${result}</span></div>
-      </div>
-      ${m.notes ? `<div style="font-size:0.8em; margin-top:8px; opacity:0.7;">📝 ${m.notes}</div>` : ''}
-    </div>
-  `}).join('');
-}
-
-// ============================================
-// TROPHIES
-// ============================================
-function updateTrophyPlayerSelect() {
-  const sel = document.getElementById('trophyPlayer');
-  sel.innerHTML = '<option value="">Velg spiller...</option>' +
-    appData.players.map(p => `<option value="${p.name}">${p.name}</option>`).join('');
-}
-
-function saveTrophy() {
-  const player = document.getElementById('trophyPlayer').value;
-  const reason = document.getElementById('trophyReason').value.trim();
-  const date = document.getElementById('trophyDate').value;
-  if (!player || !reason) return alert('Velg spiller og skriv begrunnelse!');
-
-  db.collection(`${TEAM}/trophies`).add({
-    date: date,
-    player: player,
-    category: document.getElementById('trophyCategory').value,
-    reason: reason,
-    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-  }).then(() => {
-    closeModal('trophyModal');
-  }).catch(err => alert('Feil: ' + err.message));
-}
-
-function deleteTrophy(id) {
-  if (confirm('Slette denne pokalen?')) {
-    db.doc(`${TEAM}/trophies/${id}`).delete();
-  }
-}
-
-function renderTrophies() {
-  const el = document.getElementById('trophyList');
-  if (appData.trophies.length === 0) {
-    el.innerHTML = '<div class="empty-state"><span>🏆</span><p>Ingen pokaler delt ut ennå.<br>Motiver spillerne!</p></div>';
-    return;
-  }
-  el.innerHTML = appData.trophies.map(t => `
-    <div class="card trophy-card">
-      <div class="flex-between" style="justify-content:flex-end;"><button class="btn btn-danger btn-small" onclick="deleteTrophy('${t.id}')">🗑️</button></div>
-      <div class="trophy-emoji">${t.category || '🏆'}</div>
-      <div class="trophy-player">${t.player}</div>
-      <div class="trophy-reason">"${t.reason}"</div>
-      <small style="opacity:0.5;">📅 ${formatDate(t.date)}</small>
-    </div>
-  `).join('');
-}
-
-// ============================================
-// LEARNING GOALS
-// ============================================
-function toggleGoal(goalId) {
-  const current = appData.learningGoals[goalId] || false;
-  db.doc(`${TEAM}/meta/learningGoals`).set({
-    [goalId]: !current
-  }, { merge: true });
-}
-
-function renderGoals() {
-  const goals = VIF_LEARNING_GOALS;
-  const completed = Object.values(appData.learningGoals).filter(v => v).length;
-  const total = goals.length;
-  const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
-
-  document.getElementById('goalProgress').innerHTML = `
-    <div class="flex-between">
-      <strong>Fremgang</strong>
-      <span>${completed}/${total} (${pct}%)</span>
-    </div>
-    <div class="progress-bar">
-      <div class="progress-fill" style="width:${pct}%; background:${pct === 100 ? 'var(--vif-gold)' : 'var(--vif-green)'}"></div>
-    </div>
-  `;
-
-  const categories = [...new Set(goals.map(g => g.category))];
-  document.getElementById('goalList').innerHTML = categories.map(cat => `
-    <div class="goal-category">
-      <h4>${cat}</h4>
-      ${goals.filter(g => g.category === cat).map(g => `
-        <div class="goal-item">
-          <input type="checkbox" ${appData.learningGoals[g.id] ? 'checked' : ''} onchange="toggleGoal('${g.id}')">
-          <span>${g.icon} ${g.title}</span>
-        </div>
-      `).join('')}
-    </div>
-  `).join('');
-}
-
-// ============================================
-// TEMPLATES
-// ============================================
-let selectedWeek = 1;
-
-function renderTemplates() {
-  // Week tabs
-  document.getElementById('weekTabs').innerHTML = VIF_TEMPLATES.map(t => `
-    <button class="week-tab ${selectedWeek === t.week ? 'active' : ''}" onclick="selectWeek(${t.week})">Uke ${t.week}</button>
-  `).join('');
-
-  const t = VIF_TEMPLATES.find(t => t.week === selectedWeek);
-  document.getElementById('templateList').innerHTML = `
-    <div class="card template-card" onclick="useTemplate(${selectedWeek - 1})">
-      <div class="flex-between">
-        <h4>${t.title}</h4>
-        <span class="duration">${t.duration}</span>
-      </div>
-      <div class="description">${t.description}</div>
-      <div class="mt-10"><span class="tag tag-blue">🎒 ${t.equipment}</span></div>
-      <pre style="font-size:0.78em; opacity:0.85; margin-top:12px; white-space:pre-wrap; font-family:inherit; line-height:1.5;">${t.plan}</pre>
-      <button class="btn btn-primary mt-10" onclick="event.stopPropagation(); useTemplate(${selectedWeek - 1})">📋 Bruk dette opplegget</button>
-    </div>
-  `;
-}
-
-function selectWeek(w) {
-  selectedWeek = w;
-  renderTemplates();
-}
-
-function useTemplate(idx) {
-  openModal('sessionModal');
-  setTimeout(() => {
-    const t = VIF_TEMPLATES[idx];
-    document.getElementById('sessionTitle').value = t.title;
-    document.getElementById('sessionPlan').value = t.plan;
-    document.getElementById('sessionEquipment').value = t.equipment;
-  }, 100);
-}
-
-// ============================================
-// DASHBOARD
-// ============================================
-function renderDashboard() {
-  // Stats
-  const goalsDone = Object.values(appData.learningGoals).filter(v => v).length;
-  document.getElementById('dashStats').innerHTML = `
-    <div class="stat-card"><div class="number">${appData.players.length}</div><div class="label">Spillere</div></div>
-    <div class="stat-card"><div class="number">${appData.sessions.length}</div><div class="label">Treninger</div></div>
-    <div class="stat-card"><div class="number">${appData.matches.length}</div><div class="label">Kamper</div></div>
-    <div class="stat-card"><div class="number">${goalsDone}/12</div><div class="label">Læringsmål</div></div>
-  `;
-
-  // Suggestion
-  renderSuggestion();
-
-  // Latest trophy
-  if (appData.trophies.length > 0) {
-    const t = appData.trophies[0];
-    document.getElementById('dashTrophy').innerHTML = `
-      <div class="card trophy-card">
-        <div class="trophy-emoji">${t.category || '🏆'}</div>
-        <div class="trophy-player">${t.player}</div>
-        <div class="trophy-reason">"${t.reason}"</div>
-        <small style="opacity:0.5;">${formatDate(t.date)}</small>
-      </div>
-    `;
-  } else {
-    document.getElementById('dashTrophy').innerHTML = '<div class="card text-center" style="opacity:0.5;">Ingen pokal delt ut ennå</div>';
-  }
-
-  // Next session
-  const upcoming = appData.sessions.filter(s => s.date >= new Date().toISOString().split('T')[0]).sort((a,b) => a.date.localeCompare(b.date));
-  if (upcoming.length > 0) {
-    const s = upcoming[0];
-    document.getElementById('dashNextSession').innerHTML = `
-      <div class="card">
-        <h4>${s.title}</h4>
-        <small>📅 ${formatDate(s.date)}</small>
-        ${s.equipment ? `<div class="mt-10"><span class="tag tag-blue">🎒 ${s.equipment}</span></div>` : ''}
-      </div>
-    `;
-  } else {
-    document.getElementById('dashNextSession').innerHTML = '<div class="card text-center" style="opacity:0.5;">Ingen kommende treninger</div>';
-  }
-}
-
-function renderSuggestion() {
-  const uncompleted = VIF_LEARNING_GOALS.filter(g => !appData.learningGoals[g.id]);
-  const box = document.getElementById('dashSuggestion');
-  
-  if (uncompleted.length > 0 && appData.sessions.length >= 1) {
-    const suggestion = uncompleted[Math.floor(Math.random() * uncompleted.length)];
-    const template = VIF_TEMPLATES.find(t => t.title.toLowerCase().includes(suggestion.category.toLowerCase()));
-    
-    document.getElementById('suggestionText').textContent = 
-      `Dere har ikke fullført "${suggestion.title}" ennå. ${template ? `Prøv "${template.title}"-opplegget!` : 'Fokuser på dette i neste økt!'}`;
-    box.style.display = 'block';
-  } else if (appData.sessions.length === 0) {
-    document.getElementById('suggestionText').textContent = 'Start med Uke 1: Ballkontroll fra VIF-oppleggene! 📚';
-    box.style.display = 'block';
-  } else {
-    box.style.display = 'none';
-  }
-}
-
-// ============================================
-// HELPERS
-// ============================================
-function formatDate(dateStr) {
-  if (!dateStr) return '';
-  const [y, m, d] = dateStr.split('-');
-  const months = ['jan', 'feb', 'mar', 'apr', 'mai', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'des'];
-  return `${parseInt(d)}. ${months[parseInt(m) - 1]} ${y}`;
-}
-
-// Network status
-window.addEventListener('online', () => updateSyncStatus(true));
-window.addEventListener('offline', () => updateSyncStatus(false));
-
-// Initial render
-renderTemplates();
+// Render initial template
+renderTemplateWeek();
 </script>
 </body>
 </html>

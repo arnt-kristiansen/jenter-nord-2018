@@ -2,2450 +2,1178 @@
 <html lang="no">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>J2018 Nord - Trenerapp</title>
-
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nord Jenter 2018</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #0a1628;
             color: #e2e8f0;
             min-height: 100vh;
-            overflow-x: hidden;
         }
-
-        /* ===== AUTH SCREENS ===== */
         .auth-container {
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
-            background: linear-gradient(135deg, #0a1628 0%, #1a2940 50%, #0a1628 100%);
+            background: linear-gradient(135deg, #0a1628 0%, #1a2a4a 100%);
         }
-
-        .auth-card {
-            background: rgba(30, 41, 59, 0.95);
-            border: 1px solid rgba(99, 179, 237, 0.2);
+        .auth-box {
+            background: #111d35;
             border-radius: 20px;
             padding: 40px 30px;
             width: 100%;
             max-width: 400px;
-            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.05);
         }
-
-        .auth-logo {
-            font-size: 48px;
-            margin-bottom: 10px;
-        }
-
-        .auth-title {
-            font-size: 24px;
-            font-weight: 700;
-            color: #63b3ed;
-            margin-bottom: 5px;
-        }
-
-        .auth-subtitle {
-            color: #94a3b8;
-            font-size: 14px;
-            margin-bottom: 30px;
-        }
-
-        .auth-input {
+        .auth-logo { text-align: center; margin-bottom: 30px; }
+        .auth-logo .icon { font-size: 48px; margin-bottom: 10px; }
+        .auth-logo h1 { font-size: 24px; color: #fff; margin-bottom: 5px; }
+        .auth-logo p { color: #64748b; font-size: 14px; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; margin-bottom: 6px; font-size: 14px; color: #94a3b8; }
+        .form-group input {
             width: 100%;
-            padding: 14px 16px;
-            background: rgba(15, 23, 42, 0.8);
-            border: 1px solid rgba(99, 179, 237, 0.3);
-            border-radius: 12px;
-            color: #e2e8f0;
+            padding: 12px 16px;
+            background: #0a1628;
+            border: 1px solid #1e3a5f;
+            border-radius: 10px;
+            color: #fff;
             font-size: 16px;
-            margin-bottom: 12px;
             outline: none;
             transition: border-color 0.3s;
         }
-
-        .auth-input:focus {
-            border-color: #63b3ed;
-        }
-
-        .auth-input::placeholder {
-            color: #64748b;
-        }
-
-        .auth-btn {
+        .form-group input:focus { border-color: #3b82f6; }
+        .btn-primary {
             width: 100%;
             padding: 14px;
             background: linear-gradient(135deg, #3b82f6, #2563eb);
-            color: white;
+            color: #fff;
             border: none;
-            border-radius: 12px;
+            border-radius: 10px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            margin-top: 8px;
+            margin-top: 10px;
             transition: transform 0.2s, box-shadow 0.2s;
         }
-
-        .auth-btn:active {
-            transform: scale(0.98);
-        }
-
-        .auth-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .auth-link {
-            color: #63b3ed;
-            cursor: pointer;
-            font-size: 14px;
-            margin-top: 16px;
-            display: inline-block;
-        }
-
-        .auth-link:hover {
-            text-decoration: underline;
-        }
-
-        .auth-error {
-            background: rgba(239, 68, 68, 0.15);
-            border: 1px solid rgba(239, 68, 68, 0.3);
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(59,130,246,0.4); }
+        .auth-footer { text-align: center; margin-top: 20px; font-size: 14px; color: #64748b; }
+        .auth-footer a { color: #3b82f6; text-decoration: none; cursor: pointer; }
+        .auth-footer a:hover { text-decoration: underline; }
+        .error-msg {
+            background: rgba(239,68,68,0.15);
+            border: 1px solid rgba(239,68,68,0.3);
             color: #fca5a5;
-            padding: 10px 14px;
-            border-radius: 8px;
+            padding: 12px;
+            border-radius: 10px;
             font-size: 13px;
-            margin-bottom: 12px;
-            display: none;
-        }
-
-        .auth-success {
-            background: rgba(34, 197, 94, 0.15);
-            border: 1px solid rgba(34, 197, 94, 0.3);
-            color: #86efac;
-            padding: 10px 14px;
-            border-radius: 8px;
-            font-size: 13px;
-            margin-bottom: 12px;
-            display: none;
-        }
-
-        .auth-divider {
-            display: flex;
-            align-items: center;
-            margin: 20px 0;
-            color: #64748b;
-            font-size: 13px;
-        }
-
-        .auth-divider::before,
-        .auth-divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: rgba(99, 179, 237, 0.2);
-        }
-
-        .auth-divider span {
-            padding: 0 12px;
-        }
-
-        .auth-name-input {
-            display: none;
-        }
-
-        /* ===== UNAUTHORIZED SCREEN ===== */
-        .unauthorized-container {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .unauthorized-card {
-            background: rgba(30, 41, 59, 0.95);
-            border: 1px solid rgba(251, 191, 36, 0.3);
-            border-radius: 20px;
-            padding: 40px 30px;
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-        }
-
-        .unauthorized-icon {
-            font-size: 64px;
             margin-bottom: 16px;
+            display: none;
+            word-break: break-word;
+        }
+        .success-msg {
+            background: rgba(34,197,94,0.15);
+            border: 1px solid rgba(34,197,94,0.3);
+            color: #86efac;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-bottom: 16px;
+            display: none;
         }
 
-        .unauthorized-title {
-            font-size: 20px;
-            color: #fbbf24;
-            margin-bottom: 12px;
-        }
-
-        .unauthorized-text {
-            color: #94a3b8;
-            font-size: 14px;
-            line-height: 1.6;
-            margin-bottom: 24px;
-        }
-
-        .unauthorized-email {
-            color: #63b3ed;
-            font-weight: 600;
-        }
-
-        /* ===== HEADER ===== */
-        .header {
-            background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
-            padding: 16px 20px;
+        /* App styles */
+        .app-container { display: none; min-height: 100vh; }
+        .top-bar {
+            background: #111d35;
+            padding: 12px 20px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid #63b3ed;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
             position: sticky;
             top: 0;
             z-index: 100;
         }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .team-logo {
-            font-size: 28px;
-        }
-
-        .header-info h1 {
-            font-size: 18px;
-            font-weight: 700;
-            color: #e2e8f0;
-        }
-
-        .header-info p {
-            font-size: 11px;
-            color: #93c5fd;
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .user-badge {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(99, 179, 237, 0.15);
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 11px;
-            color: #93c5fd;
-        }
-
-        .logout-btn {
-            background: rgba(239, 68, 68, 0.2);
-            border: 1px solid rgba(239, 68, 68, 0.3);
+        .top-bar-left { display: flex; align-items: center; gap: 10px; }
+        .top-bar-left .icon { font-size: 24px; }
+        .top-bar-left h2 { font-size: 16px; color: #fff; }
+        .top-bar-right { display: flex; align-items: center; gap: 12px; }
+        .user-name { font-size: 12px; color: #94a3b8; }
+        .btn-logout {
+            padding: 6px 14px;
+            background: rgba(239,68,68,0.15);
             color: #fca5a5;
-            padding: 6px 12px;
+            border: 1px solid rgba(239,68,68,0.3);
             border-radius: 8px;
             font-size: 12px;
             cursor: pointer;
         }
+        .btn-logout:hover { background: rgba(239,68,68,0.25); }
 
-        .connection-status {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #ef4444;
-            transition: background 0.3s;
-        }
+        .main-content { padding: 20px; padding-bottom: 80px; max-width: 600px; margin: 0 auto; }
 
-        .connection-status.connected {
-            background: #22c55e;
-            box-shadow: 0 0 6px rgba(34, 197, 94, 0.5);
-        }
-
-        /* ===== NAVIGATION ===== */
-        .nav-bar {
-            display: flex;
-            background: #111d32;
-            border-bottom: 1px solid rgba(99, 179, 237, 0.1);
-            overflow-x: auto;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-        }
-
-        .nav-bar::-webkit-scrollbar {
-            display: none;
-        }
-
-        .nav-item {
-            flex: 1;
-            min-width: 70px;
-            padding: 10px 8px;
-            text-align: center;
-            color: #64748b;
-            font-size: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            transition: all 0.3s;
-            white-space: nowrap;
-        }
-
-        .nav-item.active {
-            color: #63b3ed;
-            border-bottom-color: #63b3ed;
-            background: rgba(99, 179, 237, 0.05);
-        }
-
-        .nav-item .nav-icon {
-            font-size: 18px;
-            display: block;
-            margin-bottom: 3px;
-        }
-
-        /* ===== MAIN CONTENT ===== */
-        .main-content {
-            padding: 16px;
-            padding-bottom: 80px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .page { display: none; }
-        .page.active { display: block; }
-
-        /* ===== CARDS ===== */
-        .card {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(30, 41, 59, 0.7));
-            border: 1px solid rgba(99, 179, 237, 0.15);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 16px;
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-
-        .card-title {
-            font-size: 16px;
-            font-weight: 700;
-            color: #e2e8f0;
-        }
-
-        .card-badge {
-            background: rgba(99, 179, 237, 0.2);
-            color: #63b3ed;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        /* ===== SECTION HEADERS ===== */
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-
-        .section-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: #e2e8f0;
-        }
-
-        /* ===== BUTTONS ===== */
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn:active { transform: scale(0.95); }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            color: white;
-        }
-
-        .btn-success {
-            background: linear-gradient(135deg, #22c55e, #16a34a);
-            color: white;
-        }
-
-        .btn-danger {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-            color: white;
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 1px solid rgba(99, 179, 237, 0.3);
-            color: #63b3ed;
-        }
-
-        .btn-sm {
-            padding: 6px 12px;
-            font-size: 12px;
-            border-radius: 8px;
-        }
-
-        .btn-full {
-            width: 100%;
-        }
-
-        /* ===== DASHBOARD ===== */
+        /* Dashboard */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: 1fr 1fr;
             gap: 12px;
+            margin-bottom: 24px;
+        }
+        .stat-card {
+            background: #111d35;
+            border-radius: 14px;
+            padding: 16px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .stat-card .stat-icon { font-size: 24px; margin-bottom: 8px; }
+        .stat-card .stat-value { font-size: 28px; font-weight: 700; color: #fff; }
+        .stat-card .stat-label { font-size: 12px; color: #64748b; margin-top: 2px; }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
             margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .stat-card {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(30, 41, 59, 0.7));
-            border: 1px solid rgba(99, 179, 237, 0.15);
-            border-radius: 12px;
-            padding: 16px;
+        /* Trophy */
+        .trophy-card {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid rgba(255,215,0,0.2);
+            margin-bottom: 24px;
             text-align: center;
         }
+        .trophy-card .trophy-icon { font-size: 48px; margin-bottom: 8px; }
+        .trophy-card .trophy-name { font-size: 20px; font-weight: 700; color: #ffd700; }
+        .trophy-card .trophy-reason { font-size: 14px; color: #94a3b8; margin-top: 4px; }
+        .trophy-card .trophy-empty { color: #64748b; font-style: italic; }
 
-        .stat-icon { font-size: 24px; margin-bottom: 6px; }
-        .stat-value { font-size: 28px; font-weight: 800; color: #63b3ed; }
-        .stat-label { font-size: 11px; color: #94a3b8; margin-top: 2px; }
-
-        .next-event {
-            background: linear-gradient(135deg, rgba(99, 179, 237, 0.15), rgba(59, 130, 246, 0.1));
-            border: 1px solid rgba(99, 179, 237, 0.3);
-            border-radius: 12px;
+        /* Cards */
+        .card {
+            background: #111d35;
+            border-radius: 14px;
             padding: 16px;
-            margin-bottom: 16px;
+            border: 1px solid rgba(255,255,255,0.05);
+            margin-bottom: 12px;
         }
+        .card h3 { font-size: 16px; color: #fff; margin-bottom: 4px; }
+        .card p { font-size: 13px; color: #94a3b8; }
 
-        .next-event-label {
-            font-size: 11px;
-            color: #93c5fd;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 6px;
-        }
-
-        .next-event-title {
-            font-size: 16px;
-            font-weight: 700;
-            color: #e2e8f0;
-        }
-
-        .next-event-time {
-            font-size: 13px;
-            color: #93c5fd;
-            margin-top: 4px;
-        }
-
-        /* ===== PLAYERS ===== */
-        .player-list { display: flex; flex-direction: column; gap: 8px; }
-
+        /* Player list */
         .player-item {
             display: flex;
+            align-items: center;
             justify-content: space-between;
-            align-items: center;
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(99, 179, 237, 0.1);
-            border-radius: 12px;
-            padding: 12px 16px;
-            cursor: pointer;
-            transition: all 0.2s;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
         }
-
-        .player-item:active {
-            transform: scale(0.98);
-        }
-
-        .player-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .player-number {
-            width: 36px;
-            height: 36px;
+        .player-item:last-child { border-bottom: none; }
+        .player-info { display: flex; align-items: center; gap: 10px; }
+        .player-avatar {
+            width: 36px; height: 36px;
             background: linear-gradient(135deg, #3b82f6, #2563eb);
-            border-radius: 10px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; font-weight: 600;
+        }
+        .player-name { font-size: 14px; color: #fff; }
+        .player-pos { font-size: 11px; color: #64748b; }
+
+        /* Match */
+        .match-score {
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
-            font-weight: 800;
-            color: white;
+            gap: 16px;
+            padding: 16px;
+        }
+        .match-team { text-align: center; flex: 1; }
+        .match-team-name { font-size: 14px; color: #fff; font-weight: 600; }
+        .match-vs { font-size: 24px; font-weight: 700; color: #3b82f6; }
+
+        /* Training */
+        .training-week {
+            background: #111d35;
+            border-radius: 14px;
+            padding: 16px;
+            border: 1px solid rgba(255,255,255,0.05);
+            margin-bottom: 12px;
+        }
+        .training-week h3 { font-size: 15px; color: #fff; margin-bottom: 8px; }
+        .training-drill { padding: 6px 0; font-size: 13px; color: #94a3b8; }
+        .attendance-btn {
+            margin-top: 8px;
+            padding: 8px 16px;
+            background: rgba(34,197,94,0.15);
+            color: #86efac;
+            border: 1px solid rgba(34,197,94,0.3);
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
         }
 
-        .player-name { font-size: 14px; font-weight: 600; color: #e2e8f0; }
-        .player-pos { font-size: 11px; color: #94a3b8; }
-
-        .player-stats-mini {
-            display: flex;
-            gap: 12px;
-            text-align: center;
+        /* Action buttons */
+        .action-buttons { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+        .btn-action {
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: transform 0.2s;
         }
+        .btn-action:hover { transform: translateY(-1px); }
+        .btn-add { background: rgba(34,197,94,0.15); color: #86efac; border: 1px solid rgba(34,197,94,0.3); }
+        .btn-edit { background: rgba(59,130,246,0.15); color: #93c5fd; border: 1px solid rgba(59,130,246,0.3); }
+        .btn-danger { background: rgba(239,68,68,0.15); color: #fca5a5; border: 1px solid rgba(239,68,68,0.3); }
 
-        .player-stats-mini .mini-stat {
-            font-size: 14px;
-            font-weight: 700;
-            color: #63b3ed;
-        }
-
-        .player-stats-mini .mini-label {
-            font-size: 9px;
-            color: #64748b;
-            display: block;
-        }
-
-        /* ===== MODAL ===== */
+        /* Modal */
         .modal-overlay {
             display: none;
             position: fixed;
-            inset: 0;
+            top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0,0,0,0.7);
-            z-index: 1000;
+            z-index: 200;
             align-items: center;
             justify-content: center;
             padding: 20px;
         }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
+        .modal-overlay.active { display: flex; }
         .modal {
-            background: #1e293b;
-            border: 1px solid rgba(99, 179, 237, 0.2);
-            border-radius: 20px;
+            background: #111d35;
+            border-radius: 16px;
             padding: 24px;
             width: 100%;
-            max-width: 500px;
-            max-height: 85vh;
+            max-width: 420px;
+            max-height: 80vh;
             overflow-y: auto;
+            border: 1px solid rgba(255,255,255,0.1);
         }
+        .modal h3 { font-size: 18px; color: #fff; margin-bottom: 16px; }
+        .modal .form-group { margin-bottom: 12px; }
+        .modal-buttons { display: flex; gap: 8px; margin-top: 16px; }
+        .modal-buttons button { flex: 1; padding: 12px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; }
+        .modal-buttons .btn-save { background: #3b82f6; color: #fff; }
+        .modal-buttons .btn-cancel { background: rgba(255,255,255,0.1); color: #94a3b8; }
 
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .modal-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: #e2e8f0;
-        }
-
-        .modal-close {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: rgba(239, 68, 68, 0.2);
-            border: none;
-            color: #fca5a5;
-            font-size: 18px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .form-group {
-            margin-bottom: 14px;
-        }
-
-        .form-label {
-            display: block;
-            font-size: 12px;
-            font-weight: 600;
-            color: #94a3b8;
-            margin-bottom: 6px;
-        }
-
-        .form-input, .form-select, .form-textarea {
+        select {
             width: 100%;
-            padding: 10px 14px;
-            background: rgba(15, 23, 42, 0.8);
-            border: 1px solid rgba(99, 179, 237, 0.2);
+            padding: 12px 16px;
+            background: #0a1628;
+            border: 1px solid #1e3a5f;
             border-radius: 10px;
-            color: #e2e8f0;
-            font-size: 14px;
+            color: #fff;
+            font-size: 16px;
             outline: none;
         }
 
-        .form-input:focus, .form-select:focus, .form-textarea:focus {
-            border-color: #63b3ed;
-        }
-
-        .form-textarea {
-            resize: vertical;
-            min-height: 80px;
-            font-family: inherit;
-        }
-
-        .form-select {
-            appearance: auto;
-        }
-
-        /* ===== TRAINING ===== */
-        .week-nav {
+        /* Bottom nav */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #111d35;
+            border-top: 1px solid rgba(255,255,255,0.05);
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: rgba(15, 23, 42, 0.6);
-            border-radius: 12px;
-            padding: 10px 16px;
-            margin-bottom: 16px;
+            z-index: 100;
+            padding-bottom: env(safe-area-inset-bottom);
         }
-
-        .week-nav-btn {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: rgba(99, 179, 237, 0.2);
-            border: none;
-            color: #63b3ed;
-            font-size: 18px;
-            cursor: pointer;
-        }
-
-        .week-display {
-            text-align: center;
-        }
-
-        .week-number {
-            font-size: 18px;
-            font-weight: 700;
-            color: #e2e8f0;
-        }
-
-        .week-dates {
-            font-size: 11px;
-            color: #94a3b8;
-        }
-
-        .training-session {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(99, 179, 237, 0.1);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 12px;
-        }
-
-        .session-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .session-day {
-            font-size: 14px;
-            font-weight: 700;
-            color: #63b3ed;
-        }
-
-        .session-time {
-            font-size: 12px;
-            color: #94a3b8;
-        }
-
-        .session-focus {
-            font-size: 13px;
-            color: #e2e8f0;
-            margin-bottom: 8px;
-        }
-
-        .session-drills {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-
-        .drill-tag {
-            background: rgba(99, 179, 237, 0.15);
-            color: #93c5fd;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 11px;
-        }
-
-        .attendance-section {
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px solid rgba(99, 179, 237, 0.1);
-        }
-
-        .attendance-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 8px;
-        }
-
-        .att-chip {
-            padding: 4px 10px;
-            border-radius: 8px;
-            font-size: 11px;
-            cursor: pointer;
-            border: 1px solid rgba(99, 179, 237, 0.2);
-            background: rgba(15, 23, 42, 0.6);
-            color: #94a3b8;
-            transition: all 0.2s;
-        }
-
-        .att-chip.present {
-            background: rgba(34, 197, 94, 0.2);
-            border-color: rgba(34, 197, 94, 0.4);
-            color: #86efac;
-        }
-
-        .att-chip.absent {
-            background: rgba(239, 68, 68, 0.2);
-            border-color: rgba(239, 68, 68, 0.4);
-            color: #fca5a5;
-        }
-
-        /* ===== MATCHES ===== */
-        .match-card {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(99, 179, 237, 0.15);
-            border-radius: 14px;
-            padding: 16px;
-            margin-bottom: 12px;
-        }
-
-        .match-teams {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .match-team {
-            text-align: center;
+        .nav-item {
             flex: 1;
-        }
-
-        .match-team-name {
-            font-size: 14px;
-            font-weight: 700;
-            color: #e2e8f0;
-        }
-
-        .match-vs {
-            font-size: 12px;
-            color: #64748b;
-            padding: 0 10px;
-        }
-
-        .match-score {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-
-        .score-input {
-            width: 50px;
-            height: 50px;
+            padding: 8px 0;
             text-align: center;
-            font-size: 24px;
-            font-weight: 800;
-            background: rgba(15, 23, 42, 0.8);
-            border: 2px solid rgba(99, 179, 237, 0.3);
-            border-radius: 12px;
-            color: #63b3ed;
-            outline: none;
-        }
-
-        .score-separator {
-            font-size: 24px;
+            cursor: pointer;
+            transition: color 0.3s;
             color: #64748b;
+            text-decoration: none;
         }
+        .nav-item.active { color: #3b82f6; }
+        .nav-item .nav-icon { font-size: 20px; display: block; }
+        .nav-item .nav-label { font-size: 10px; margin-top: 2px; display: block; }
 
-        .match-details {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            font-size: 12px;
-            color: #94a3b8;
-        }
-
-        .match-detail-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        /* ===== AWARDS ===== */
-        .trophy-section {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .trophy-icon {
-            font-size: 64px;
-            margin-bottom: 8px;
-        }
-
-        .trophy-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: #fbbf24;
-        }
-
-        .trophy-subtitle {
-            font-size: 13px;
-            color: #94a3b8;
-        }
-
-        .award-card {
-            background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(245, 158, 11, 0.05));
-            border: 1px solid rgba(251, 191, 36, 0.2);
-            border-radius: 14px;
-            padding: 16px;
-            margin-bottom: 12px;
-        }
-
-        .award-week {
-            font-size: 12px;
-            color: #fbbf24;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .award-player {
-            font-size: 16px;
-            font-weight: 700;
-            color: #e2e8f0;
-        }
-
-        .award-reason {
-            font-size: 13px;
-            color: #94a3b8;
-            margin-top: 4px;
-        }
-
-        /* ===== SETTINGS ===== */
-        .settings-section {
-            margin-bottom: 24px;
-        }
-
-        .settings-section-title {
-            font-size: 16px;
-            font-weight: 700;
-            color: #63b3ed;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
+        /* Coach settings */
         .coach-item {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(99, 179, 237, 0.1);
+            justify-content: space-between;
+            padding: 12px;
+            background: rgba(255,255,255,0.03);
             border-radius: 10px;
-            padding: 12px 16px;
             margin-bottom: 8px;
         }
+        .coach-item .coach-email { font-size: 14px; color: #fff; }
+        .coach-item .coach-role { font-size: 12px; color: #64748b; }
+        .badge {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .badge-admin { background: rgba(255,215,0,0.15); color: #ffd700; }
+        .badge-coach { background: rgba(59,130,246,0.15); color: #93c5fd; }
+        .badge-pending { background: rgba(251,191,36,0.15); color: #fbbf24; }
 
-        .coach-info {
+        /* Unauthorized */
+        .unauthorized-container {
+            display: none;
+            min-height: 100vh;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #0a1628 0%, #1a2a4a 100%);
+        }
+        .unauthorized-box {
+            text-align: center;
+            max-width: 400px;
+        }
+        .unauthorized-box .icon { font-size: 64px; margin-bottom: 16px; }
+        .unauthorized-box h2 { font-size: 22px; color: #fff; margin-bottom: 8px; }
+        .unauthorized-box p { color: #94a3b8; font-size: 14px; line-height: 1.6; margin-bottom: 20px; }
+
+        /* Attendance checkboxes */
+        .attendance-list { margin-top: 8px; }
+        .attendance-item {
             display: flex;
             align-items: center;
             gap: 10px;
+            padding: 6px 0;
+        }
+        .attendance-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #3b82f6;
         }
 
-        .coach-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
+        /* Score input */
+        .score-input {
+            width: 60px;
+            padding: 8px;
+            text-align: center;
+            background: #0a1628;
+            border: 1px solid #1e3a5f;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 20px;
+            font-weight: 700;
         }
 
-        .coach-name {
-            font-size: 14px;
-            font-weight: 600;
-            color: #e2e8f0;
-        }
-
-        .coach-role {
-            font-size: 11px;
-            color: #94a3b8;
-        }
-
-        .invite-form {
-            display: flex;
-            gap: 8px;
-            margin-top: 12px;
-        }
-
-        .invite-form .form-input {
-            flex: 1;
-        }
-
-        /* ===== TOAST ===== */
-        .toast-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .toast {
-            padding: 12px 20px;
-            border-radius: 10px;
-            font-size: 13px;
-            font-weight: 600;
-            color: white;
-            animation: slideIn 0.3s ease;
-            max-width: 320px;
-        }
-
-        .toast.success { background: linear-gradient(135deg, #22c55e, #16a34a); }
-        .toast.error { background: linear-gradient(135deg, #ef4444, #dc2626); }
-        .toast.info { background: linear-gradient(135deg, #3b82f6, #2563eb); }
-
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        /* ===== LOADING ===== */
-        .loading-screen {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid rgba(99, 179, 237, 0.2);
-            border-top-color: #63b3ed;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 380px) {
-            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-            .stat-card { padding: 12px; }
-            .stat-value { font-size: 22px; }
-            .main-content { padding: 12px; }
-        }
+        .loading { text-align: center; padding: 40px; color: #64748b; }
     </style>
 </head>
 <body>
-    <!-- Toast container -->
-    <div class="toast-container" id="toastContainer"></div>
 
-    <!-- Loading Screen -->
-    <div id="loadingScreen" class="loading-screen">
-        <div class="spinner"></div>
-        <p style="color: #94a3b8; font-size: 14px;">Laster J2018 Nord...</p>
-    </div>
+<!-- AUTH: Login -->
+<div class="auth-container" id="authContainer">
+    <div class="auth-box">
+        <div class="auth-logo">
+            <div class="icon">⚽</div>
+            <h1>Nord Jenter 2018</h1>
+            <p>Fotballklubb Nord — Karmøy</p>
+        </div>
+        <div class="error-msg" id="authError"></div>
+        <div class="success-msg" id="authSuccess"></div>
 
-    <!-- Auth Screen -->
-    <div id="authScreen" style="display: none;">
-        <!-- Login -->
-        <div id="loginScreen" class="auth-container">
-            <div class="auth-card">
-                <div class="auth-logo">⚽</div>
-                <div class="auth-title">J2018 Nord</div>
-                <div class="auth-subtitle">Logg inn for å fortsette</div>
-                <div class="auth-error" id="loginError"></div>
-                <input type="email" class="auth-input" id="loginEmail" placeholder="E-postadresse" autocomplete="email">
-                <input type="password" class="auth-input" id="loginPassword" placeholder="Passord" autocomplete="current-password">
-                <button class="auth-btn" id="loginBtn" onclick="handleLogin()">Logg inn</button>
-                <div class="auth-divider"><span>eller</span></div>
-                <span class="auth-link" onclick="showRegisterScreen()">Opprett ny konto</span>
-                <br>
-                <span class="auth-link" onclick="showResetScreen()" style="font-size: 12px; color: #94a3b8;">Glemt passord?</span>
+        <!-- Login Form -->
+        <div id="loginForm">
+            <div class="form-group">
+                <label>E-post</label>
+                <input type="email" id="loginEmail" placeholder="din@epost.no">
+            </div>
+            <div class="form-group">
+                <label>Passord</label>
+                <input type="password" id="loginPassword" placeholder="Ditt passord">
+            </div>
+            <button class="btn-primary" id="loginBtn" onclick="handleLogin()">Logg inn</button>
+            <div class="auth-footer">
+                <a onclick="showForgotPassword()">Glemt passord?</a><br><br>
+                <a onclick="showRegister()">Opprett konto</a>
             </div>
         </div>
 
-        <!-- Register -->
-        <div id="registerScreen" class="auth-container" style="display: none;">
-            <div class="auth-card">
-                <div class="auth-logo">⚽</div>
-                <div class="auth-title">Opprett konto</div>
-                <div class="auth-subtitle">Registrer deg som trener</div>
-                <div class="auth-error" id="registerError"></div>
-                <input type="text" class="auth-input" id="registerName" placeholder="Fullt navn" autocomplete="name">
-                <input type="email" class="auth-input" id="registerEmail" placeholder="E-postadresse" autocomplete="email">
-                <input type="password" class="auth-input" id="registerPassword" placeholder="Passord (min. 6 tegn)" autocomplete="new-password">
-                <button class="auth-btn" id="registerBtn" onclick="handleRegister()">Opprett konto</button>
-                <div class="auth-divider"><span>eller</span></div>
-                <span class="auth-link" onclick="showLoginScreen()">Allerede har konto? Logg inn</span>
+        <!-- Register Form -->
+        <div id="registerForm" style="display:none;">
+            <div class="form-group">
+                <label>Fullt navn</label>
+                <input type="text" id="regName" placeholder="Ditt navn">
+            </div>
+            <div class="form-group">
+                <label>E-post</label>
+                <input type="email" id="regEmail" placeholder="din@epost.no">
+            </div>
+            <div class="form-group">
+                <label>Passord (minst 6 tegn)</label>
+                <input type="password" id="regPassword" placeholder="Velg passord">
+            </div>
+            <button class="btn-primary" onclick="handleRegister()">Opprett konto</button>
+            <div class="auth-footer">
+                <a onclick="showLogin()">Har allerede konto? Logg inn</a>
             </div>
         </div>
 
-        <!-- Reset Password -->
-        <div id="resetScreen" class="auth-container" style="display: none;">
-            <div class="auth-card">
-                <div class="auth-logo">🔑</div>
-                <div class="auth-title">Tilbakestill passord</div>
-                <div class="auth-subtitle">Vi sender en lenke til din e-post</div>
-                <div class="auth-error" id="resetError"></div>
-                <div class="auth-success" id="resetSuccess"></div>
-                <input type="email" class="auth-input" id="resetEmail" placeholder="E-postadresse" autocomplete="email">
-                <button class="auth-btn" onclick="handleResetPassword()">Send tilbakestillingslenke</button>
-                <div class="auth-divider"><span></span></div>
-                <span class="auth-link" onclick="showLoginScreen()">Tilbake til innlogging</span>
+        <!-- Forgot Password Form -->
+        <div id="forgotForm" style="display:none;">
+            <div class="form-group">
+                <label>E-post</label>
+                <input type="email" id="forgotEmail" placeholder="din@epost.no">
+            </div>
+            <button class="btn-primary" onclick="handleForgotPassword()">Send tilbakestillingslenke</button>
+            <div class="auth-footer">
+                <a onclick="showLogin()">Tilbake til innlogging</a>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Unauthorized Screen -->
-    <div id="unauthorizedScreen" style="display: none;">
-        <div class="unauthorized-container">
-            <div class="unauthorized-card">
-                <div class="unauthorized-icon">⏳</div>
-                <div class="unauthorized-title">Venter på godkjenning</div>
-                <div class="unauthorized-text">
-                    Din konto (<span class="unauthorized-email" id="unauthorizedEmail"></span>) er registrert, men har ikke fått tilgang ennå.
-                    <br><br>
-                    Kontakt hovedtreneren for å få tilgang til appen.
-                </div>
-                <button class="btn btn-outline btn-full" onclick="handleLogout()">Logg ut</button>
-            </div>
+<!-- UNAUTHORIZED -->
+<div class="unauthorized-container" id="unauthorizedContainer">
+    <div class="unauthorized-box">
+        <div class="icon">⏳</div>
+        <h2>Venter på godkjenning</h2>
+        <p>Din konto er opprettet, men en administrator må godkjenne tilgangen din før du kan bruke appen.</p>
+        <p>Kontakt hovedtreneren for å få tilgang.</p>
+        <button class="btn-primary" onclick="handleLogout()" style="max-width:200px;margin:0 auto;">Logg ut</button>
+    </div>
+</div>
+
+<!-- MAIN APP -->
+<div class="app-container" id="appContainer">
+    <div class="top-bar">
+        <div class="top-bar-left">
+            <span class="icon">⚽</span>
+            <h2>Nord J2018</h2>
+        </div>
+        <div class="top-bar-right">
+            <span class="user-name" id="userName"></span>
+            <button class="btn-logout" onclick="handleLogout()">Logg ut</button>
         </div>
     </div>
 
-    <!-- Main App -->
-    <div id="appScreen" style="display: none;">
-        <header class="header">
-            <div class="header-left">
-                <div class="team-logo">⚽</div>
-                <div class="header-info">
-                    <h1>J2018 Nord</h1>
-                    <p id="headerUserName">Trener</p>
-                </div>
-            </div>
-            <div class="header-right">
-                <div class="user-badge" id="userBadge">
-                    <span>👤</span>
-                    <span id="userRoleBadge">Trener</span>
-                </div>
-                <div class="connection-status" id="connStatus" title="Tilkoblingsstatus"></div>
-                <button class="logout-btn" onclick="handleLogout()">Logg ut</button>
-            </div>
-        </header>
-
-        <nav class="nav-bar">
-            <div class="nav-item active" onclick="showPage('dashboard', this)">
-                <span class="nav-icon">📊</span>
-                Oversikt
-            </div>
-            <div class="nav-item" onclick="showPage('players', this)">
-                <span class="nav-icon">👥</span>
-                Spillere
-            </div>
-            <div class="nav-item" onclick="showPage('training', this)">
-                <span class="nav-icon">🏃</span>
-                Trening
-            </div>
-            <div class="nav-item" onclick="showPage('matches', this)">
-                <span class="nav-icon">⚽</span>
-                Kamper
-            </div>
-            <div class="nav-item" onclick="showPage('awards', this)">
-                <span class="nav-icon">🏆</span>
-                Ukens
-            </div>
-            <div class="nav-item" onclick="showPage('settings', this)">
-                <span class="nav-icon">⚙️</span>
-                Innst.
-            </div>
-        </nav>
-
-        <main class="main-content">
-            <!-- DASHBOARD -->
-            <div id="page-dashboard" class="page active">
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon">👥</div>
-                        <div class="stat-value" id="totalPlayers">0</div>
-                        <div class="stat-label">Spillere</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">⚽</div>
-                        <div class="stat-value" id="totalMatches">0</div>
-                        <div class="stat-label">Kamper</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">🏆</div>
-                        <div class="stat-value" id="totalWins">0</div>
-                        <div class="stat-label">Seiere</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">🎯</div>
-                        <div class="stat-value" id="totalGoals">0</div>
-                        <div class="stat-label">Mål</div>
-                    </div>
-                </div>
-
-                <div class="next-event" id="nextEvent">
-                    <div class="next-event-label">📅 Neste hendelse</div>
-                    <div class="next-event-title" id="nextEventTitle">Ingen planlagte hendelser</div>
-                    <div class="next-event-time" id="nextEventTime"></div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <span class="card-title">📈 Siste aktivitet</span>
-                    </div>
-                    <div id="recentActivity" style="font-size: 13px; color: #94a3b8;">
-                        Laster aktiviteter...
-                    </div>
-                </div>
-            </div>
-
-            <!-- PLAYERS -->
-            <div id="page-players" class="page">
-                <div class="section-header">
-                    <h2 class="section-title">👥 Spillere</h2>
-                    <button class="btn btn-primary btn-sm" onclick="openAddPlayerModal()">+ Legg til</button>
-                </div>
-                <div id="playerList" class="player-list">
-                    <p style="color: #94a3b8; text-align: center; padding: 20px;">Laster spillere...</p>
-                </div>
-            </div>
-
-            <!-- TRAINING -->
-            <div id="page-training" class="page">
-                <div class="section-header">
-                    <h2 class="section-title">🏃 Treningsplan</h2>
-                </div>
-
-                <div class="week-nav">
-                    <button class="week-nav-btn" onclick="changeWeek(-1)">◀</button>
-                    <div class="week-display">
-                        <div class="week-number" id="weekNumber">Uke --</div>
-                        <div class="week-dates" id="weekDates"></div>
-                    </div>
-                    <button class="week-nav-btn" onclick="changeWeek(1)">▶</button>
-                </div>
-
-                <div id="trainingSessions">
-                    <p style="color: #94a3b8; text-align: center; padding: 20px;">Laster treningsplan...</p>
-                </div>
-            </div>
-
-            <!-- MATCHES -->
-            <div id="page-matches" class="page">
-                <div class="section-header">
-                    <h2 class="section-title">⚽ Kamper</h2>
-                    <button class="btn btn-primary btn-sm" onclick="openAddMatchModal()">+ Ny kamp</button>
-                </div>
-                <div id="matchList">
-                    <p style="color: #94a3b8; text-align: center; padding: 20px;">Laster kamper...</p>
-                </div>
-            </div>
-
-            <!-- AWARDS -->
-            <div id="page-awards" class="page">
-                <div class="trophy-section">
-                    <div class="trophy-icon">🏆</div>
-                    <div class="trophy-title">Ukens Spiller</div>
-                    <div class="trophy-subtitle">Hedre spillere for god innsats</div>
-                </div>
-
-                <button class="btn btn-success btn-full" onclick="openAwardModal()" style="margin-bottom: 16px;">
-                    🌟 Gi ukens utmerkelse
-                </button>
-
-                <div id="awardsList">
-                    <p style="color: #94a3b8; text-align: center; padding: 20px;">Laster utmerkelser...</p>
-                </div>
-            </div>
-
-            <!-- SETTINGS -->
-            <div id="page-settings" class="page">
-                <div class="section-header">
-                    <h2 class="section-title">⚙️ Innstillinger</h2>
-                </div>
-
-                <div class="settings-section" id="coachManagement">
-                    <div class="settings-section-title">👥 Trenere</div>
-                    <div id="coachList">
-                        <p style="color: #94a3b8;">Laster trenere...</p>
-                    </div>
-
-                    <div id="inviteSection" style="display: none;">
-                        <div class="settings-section-title" style="margin-top: 20px;">📨 Inviter trener</div>
-                        <div class="invite-form">
-                            <input type="email" class="form-input" id="inviteEmail" placeholder="E-postadresse">
-                            <button class="btn btn-primary btn-sm" onclick="inviteCoach()">Inviter</button>
-                        </div>
-                        <div id="pendingInvites" style="margin-top: 12px;"></div>
-                    </div>
-                </div>
-
-                <div class="settings-section">
-                    <div class="settings-section-title">ℹ️ Om appen</div>
-                    <div class="card" style="font-size: 13px; color: #94a3b8;">
-                        <p><strong style="color: #e2e8f0;">J2018 Nord - Trenerapp</strong></p>
-                        <p style="margin-top: 8px;">Versjon 2.0 med innlogging</p>
-                        <p style="margin-top: 4px;">Sanntids-synkronisering via Firebase</p>
-                        <p style="margin-top: 4px;">Alle trenere ser oppdateringer live</p>
-                    </div>
-                </div>
-            </div>
-        </main>
+    <div class="main-content" id="mainContent">
+        <!-- Content loads here -->
     </div>
 
-    <!-- MODALS -->
-    <div class="modal-overlay" id="playerModal">
-        <div class="modal">
-            <div class="modal-header">
-                <h3 class="modal-title" id="playerModalTitle">Legg til spiller</h3>
-                <button class="modal-close" onclick="closeModal('playerModal')">✕</button>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Navn</label>
-                <input type="text" class="form-input" id="playerNameInput" placeholder="Fullt navn">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Drakt-nummer</label>
-                <input type="number" class="form-input" id="playerNumberInput" placeholder="Nummer" min="1" max="99">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Posisjon</label>
-                <select class="form-select" id="playerPosInput">
-                    <option value="Keeper">Keeper</option>
-                    <option value="Forsvar">Forsvar</option>
-                    <option value="Midtbane">Midtbane</option>
-                    <option value="Angrep">Angrep</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Fødselsdato</label>
-                <input type="date" class="form-input" id="playerBirthInput">
-            </div>
-            <input type="hidden" id="editPlayerId">
-            <button class="btn btn-success btn-full" onclick="savePlayer()">💾 Lagre spiller</button>
-        </div>
+    <div class="bottom-nav">
+        <a class="nav-item active" onclick="navigate('dashboard')" id="nav-dashboard">
+            <span class="nav-icon">📊</span>
+            <span class="nav-label">Oversikt</span>
+        </a>
+        <a class="nav-item" onclick="navigate('players')" id="nav-players">
+            <span class="nav-icon">👥</span>
+            <span class="nav-label">Spillere</span>
+        </a>
+        <a class="nav-item" onclick="navigate('training')" id="nav-training">
+            <span class="nav-icon">🏋️</span>
+            <span class="nav-label">Trening</span>
+        </a>
+        <a class="nav-item" onclick="navigate('matches')" id="nav-matches">
+            <span class="nav-icon">🏟️</span>
+            <span class="nav-label">Kamper</span>
+        </a>
+        <a class="nav-item" onclick="navigate('settings')" id="nav-settings">
+            <span class="nav-icon">⚙️</span>
+            <span class="nav-label">Innst.</span>
+        </a>
     </div>
+</div>
 
-    <div class="modal-overlay" id="matchModal">
-        <div class="modal">
-            <div class="modal-header">
-                <h3 class="modal-title">Ny kamp</h3>
-                <button class="modal-close" onclick="closeModal('matchModal')">✕</button>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Motstander</label>
-                <input type="text" class="form-input" id="matchOpponent" placeholder="Motstanderlag">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Dato</label>
-                <input type="date" class="form-input" id="matchDate">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Tidspunkt</label>
-                <input type="time" class="form-input" id="matchTime" value="18:00">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Sted</label>
-                <input type="text" class="form-input" id="matchLocation" placeholder="Kampsted">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Type</label>
-                <select class="form-select" id="matchType">
-                    <option value="Treningskamp">Treningskamp</option>
-                    <option value="Seriespill">Seriespill</option>
-                    <option value="Cup">Cup</option>
-                    <option value="Turnering">Turnering</option>
-                </select>
-            </div>
-            <input type="hidden" id="editMatchId">
-            <button class="btn btn-success btn-full" onclick="saveMatch()">💾 Lagre kamp</button>
-        </div>
-    </div>
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modalContent"></div>
+</div>
 
-    <div class="modal-overlay" id="awardModal">
-        <div class="modal">
-            <div class="modal-header">
-                <h3 class="modal-title">🏆 Ukens Spiller</h3>
-                <button class="modal-close" onclick="closeModal('awardModal')">✕</button>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Velg spiller</label>
-                <select class="form-select" id="awardPlayer">
-                    <option value="">Velg spiller...</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Begrunnelse</label>
-                <textarea class="form-textarea" id="awardReason" placeholder="Hvorfor fortjener denne spilleren utmerkelsen?"></textarea>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Kategori</label>
-                <select class="form-select" id="awardCategory">
-                    <option value="⭐ Ukens spiller">⭐ Ukens spiller</option>
-                    <option value="🎯 Beste innsats">🎯 Beste innsats</option>
-                    <option value="🧤 Beste keeper">🧤 Beste keeper</option>
-                    <option value="⚡ Mest fremgang">⚡ Mest fremgang</option>
-                    <option value="🤝 Beste lagspiller">🤝 Beste lagspiller</option>
-                    <option value="💪 Fighterprisen">💪 Fighterprisen</option>
-                </select>
-            </div>
-            <button class="btn btn-success btn-full" onclick="saveAward()">🏆 Gi utmerkelse</button>
-        </div>
-    </div>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-    <div class="modal-overlay" id="playerDetailModal">
-        <div class="modal">
-            <div class="modal-header">
-                <h3 class="modal-title" id="detailPlayerName">Spiller</h3>
-                <button class="modal-close" onclick="closeModal('playerDetailModal')">✕</button>
-            </div>
-            <div id="playerDetailContent"></div>
-        </div>
-    </div>
+<script>
+// Firebase config
+var firebaseConfig = {
+    apiKey: "AIzaSyCUI8ojxbVcD_R1Vt-wKxU0iE2XCHhqODk",
+    authDomain: "j2018-nord.firebaseapp.com",
+    databaseURL: "https://j2018-nord-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "j2018-nord",
+    storageBucket: "j2018-nord.firebasestorage.app",
+    messagingSenderId: "778742708923",
+    appId: "1:778742708923:web:998b3acbd86afea695079e"
+};
 
-    <script>
-        // ============================================
-        // FIREBASE CONFIG - OPPDATERT API-NØKKEL
-        // ============================================
-        var firebaseConfig = {
-            apiKey: "AIzaSyCUI8ojxbVcD_R1Vt-wKxU0iE2XCHhqODk",
-            authDomain: "j2018-nord.firebaseapp.com",
-            databaseURL: "https://j2018-nord-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "j2018-nord",
-            storageBucket: "j2018-nord.firebasestorage.app",
-            messagingSenderId: "778742708923",
-            appId: "1:778742708923:web:998b3acbd86afea695079e"
-        };
+firebase.initializeApp(firebaseConfig);
+var auth = firebase.auth();
+var db = firebase.database();
+var currentUser = null;
+var currentUserData = null;
+var currentPage = 'dashboard';
+var isAdmin = false;
 
-        firebase.initializeApp(firebaseConfig);
-        var auth = firebase.auth();
-        var db = firebase.database();
-        var BASE = 'teams/j2018/';
+// Show/hide auth forms
+function showLogin() {
+    document.getElementById('loginForm').style.display = 'block';
+    document.getElementById('registerForm').style.display = 'none';
+    document.getElementById('forgotForm').style.display = 'none';
+    hideMessages();
+}
 
-        // ============================================
-        // APP STATE
-        // ============================================
-        var currentUser = null;
-        var currentCoach = null;
-        var isAdmin = false;
-        var playersData = {};
-        var matchesData = {};
-        var awardsData = {};
-        var coachesData = {};
-        var currentWeekOffset = 0;
+function showRegister() {
+    document.getElementById('loginForm').style.display = 'none';
+    document.getElementById('registerForm').style.display = 'block';
+    document.getElementById('forgotForm').style.display = 'none';
+    hideMessages();
+}
 
-        // ============================================
-        // AUTH STATE LISTENER
-        // ============================================
-        auth.onAuthStateChanged(function(user) {
-            if (user) {
-                currentUser = user;
-                checkAuthorization(user);
-            } else {
-                currentUser = null;
-                currentCoach = null;
-                isAdmin = false;
-                showScreen('auth');
-            }
+function showForgotPassword() {
+    document.getElementById('loginForm').style.display = 'none';
+    document.getElementById('registerForm').style.display = 'none';
+    document.getElementById('forgotForm').style.display = 'block';
+    hideMessages();
+}
+
+function hideMessages() {
+    document.getElementById('authError').style.display = 'none';
+    document.getElementById('authSuccess').style.display = 'none';
+}
+
+function showError(msg) {
+    var el = document.getElementById('authError');
+    el.textContent = msg;
+    el.style.display = 'block';
+    document.getElementById('authSuccess').style.display = 'none';
+}
+
+function showSuccess(msg) {
+    var el = document.getElementById('authSuccess');
+    el.textContent = msg;
+    el.style.display = 'block';
+    document.getElementById('authError').style.display = 'none';
+}
+
+// AUTH HANDLERS
+function handleLogin() {
+    var email = document.getElementById('loginEmail').value.trim();
+    var password = document.getElementById('loginPassword').value;
+    hideMessages();
+
+    if (!email || !password) {
+        showError('Fyll inn e-post og passord');
+        return;
+    }
+
+    auth.signInWithEmailAndPassword(email, password)
+        .then(function(result) {
+            console.log('Login OK');
+        })
+        .catch(function(error) {
+            console.error('Login error:', error);
+            showError('Innlogging feilet: ' + error.code + ' — ' + error.message);
         });
+}
 
-        // ============================================
-        // AUTHORIZATION CHECK
-        // ============================================
-        function checkAuthorization(user) {
-            var coachRef = db.ref(BASE + 'coaches/' + user.uid);
-            coachRef.once('value').then(function(snapshot) {
-                if (snapshot.exists()) {
-                    var coach = snapshot.val();
-                    if (coach.status === 'active') {
-                        currentCoach = coach;
-                        isAdmin = coach.role === 'admin';
-                        showApp();
-                    } else {
-                        document.getElementById('unauthorizedEmail').textContent = user.email;
-                        showScreen('unauthorized');
-                    }
-                } else {
-                    // Check if first user (becomes admin)
-                    db.ref(BASE + 'coaches').once('value').then(function(coachesSnap) {
-                        var isFirstUser = !coachesSnap.exists() || Object.keys(coachesSnap.val() || {}).length === 0;
+function handleRegister() {
+    var name = document.getElementById('regName').value.trim();
+    var email = document.getElementById('regEmail').value.trim();
+    var password = document.getElementById('regPassword').value;
+    hideMessages();
 
-                        if (isFirstUser) {
-                            // First user becomes admin
-                            var newCoach = {
-                                name: user.displayName || user.email.split('@')[0],
-                                email: user.email,
-                                role: 'admin',
-                                status: 'active',
-                                joinedAt: new Date().toISOString()
-                            };
-                            coachRef.set(newCoach).then(function() {
-                                currentCoach = newCoach;
-                                isAdmin = true;
-                                showToast('Velkommen! Du er registrert som hovedtrener (admin).', 'success');
-                                showApp();
-                            });
-                        } else {
-                            // Check if invited
-                            checkInvitation(user, coachRef);
-                        }
-                    });
-                }
-            }).catch(function(error) {
-                console.error('Auth check error:', error);
-                showToast('Feil ved autentisering: ' + error.message, 'error');
-            });
-        }
+    if (!name || !email || !password) {
+        showError('Fyll inn alle feltene');
+        return;
+    }
+    if (password.length < 6) {
+        showError('Passordet må være minst 6 tegn');
+        return;
+    }
 
-        function checkInvitation(user, coachRef) {
-            db.ref(BASE + 'invitations').orderByChild('email').equalTo(user.email).once('value').then(function(invSnap) {
-                if (invSnap.exists()) {
-                    // User was invited
-                    var inviteKey = Object.keys(invSnap.val())[0];
-                    var newCoach = {
-                        name: user.displayName || user.email.split('@')[0],
-                        email: user.email,
-                        role: 'coach',
-                        status: 'active',
-                        joinedAt: new Date().toISOString()
+    // Check if first user
+    db.ref('teams/j2018/coaches').once('value')
+        .then(function(snapshot) {
+            var isFirstUser = !snapshot.exists();
+            return auth.createUserWithEmailAndPassword(email, password)
+                .then(function(result) {
+                    var userData = {
+                        name: name,
+                        email: email,
+                        role: isFirstUser ? 'admin' : 'pending',
+                        createdAt: firebase.database.ServerValue.TIMESTAMP
                     };
-                    var updates = {};
-                    updates[BASE + 'coaches/' + user.uid] = newCoach;
-                    updates[BASE + 'invitations/' + inviteKey] = null;
-                    db.ref().update(updates).then(function() {
-                        currentCoach = newCoach;
-                        isAdmin = false;
-                        showToast('Velkommen! Du er nå registrert som trener.', 'success');
-                        showApp();
-                    });
-                } else {
-                    // Not invited - register as pending
-                    var pendingCoach = {
-                        name: user.displayName || user.email.split('@')[0],
-                        email: user.email,
-                        role: 'coach',
-                        status: 'pending',
-                        joinedAt: new Date().toISOString()
-                    };
-                    coachRef.set(pendingCoach).then(function() {
-                        document.getElementById('unauthorizedEmail').textContent = user.email;
-                        showScreen('unauthorized');
-                    });
-                }
-            });
-        }
+                    return db.ref('teams/j2018/coaches/' + result.user.uid).set(userData);
+                });
+        })
+        .catch(function(error) {
+            console.error('Register error:', error);
+            showError('Registrering feilet: ' + error.code + ' — ' + error.message);
+        });
+}
 
-        // ============================================
-        // SCREEN MANAGEMENT
-        // ============================================
-        function showScreen(screen) {
-            document.getElementById('loadingScreen').style.display = 'none';
-            document.getElementById('authScreen').style.display = 'none';
-            document.getElementById('unauthorizedScreen').style.display = 'none';
-            document.getElementById('appScreen').style.display = 'none';
+function handleForgotPassword() {
+    var email = document.getElementById('forgotEmail').value.trim();
+    hideMessages();
 
-            if (screen === 'loading') {
-                document.getElementById('loadingScreen').style.display = 'flex';
-            } else if (screen === 'auth') {
-                document.getElementById('authScreen').style.display = 'block';
-                document.getElementById('loginScreen').style.display = 'flex';
-                document.getElementById('registerScreen').style.display = 'none';
-                document.getElementById('resetScreen').style.display = 'none';
-            } else if (screen === 'unauthorized') {
-                document.getElementById('unauthorizedScreen').style.display = 'block';
-            } else if (screen === 'app') {
-                document.getElementById('appScreen').style.display = 'block';
-            }
-        }
+    if (!email) {
+        showError('Fyll inn e-postadressen din');
+        return;
+    }
 
-        function showLoginScreen() {
-            document.getElementById('loginScreen').style.display = 'flex';
-            document.getElementById('registerScreen').style.display = 'none';
-            document.getElementById('resetScreen').style.display = 'none';
-            clearAuthErrors();
-        }
+    auth.sendPasswordResetEmail(email)
+        .then(function() {
+            showSuccess('Tilbakestillingslenke er sendt til ' + email);
+        })
+        .catch(function(error) {
+            console.error('Reset error:', error);
+            showError('Feil: ' + error.code + ' — ' + error.message);
+        });
+}
 
-        function showRegisterScreen() {
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('registerScreen').style.display = 'flex';
-            document.getElementById('resetScreen').style.display = 'none';
-            clearAuthErrors();
-        }
+function handleLogout() {
+    auth.signOut();
+}
 
-        function showResetScreen() {
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('registerScreen').style.display = 'none';
-            document.getElementById('resetScreen').style.display = 'flex';
-            clearAuthErrors();
-        }
-
-        function clearAuthErrors() {
-            var errors = document.querySelectorAll('.auth-error, .auth-success');
-            for (var i = 0; i < errors.length; i++) {
-                errors[i].style.display = 'none';
-            }
-        }
-
-        // ============================================
-        // AUTH HANDLERS
-        // ============================================
-        function handleLogin() {
-            var email = document.getElementById('loginEmail').value.trim();
-            var password = document.getElementById('loginPassword').value;
-            var errorEl = document.getElementById('loginError');
-            var btn = document.getElementById('loginBtn');
-
-            if (!email || !password) {
-                errorEl.textContent = 'Fyll inn e-post og passord';
-                errorEl.style.display = 'block';
+// AUTH STATE
+auth.onAuthStateChanged(function(user) {
+    if (user) {
+        currentUser = user;
+        db.ref('teams/j2018/coaches/' + user.uid).on('value', function(snapshot) {
+            currentUserData = snapshot.val();
+            if (!currentUserData) {
+                showUnauthorized();
                 return;
             }
-
-            btn.disabled = true;
-            btn.textContent = 'Logger inn...';
-            errorEl.style.display = 'none';
-
-            auth.signInWithEmailAndPassword(email, password)
-                .then(function() {
-                    btn.disabled = false;
-                    btn.textContent = 'Logg inn';
-                })
-                .catch(function(error) {
-                    btn.disabled = false;
-                    btn.textContent = 'Logg inn';
-                    var msg = 'Innlogging feilet.';
-                    if (error.code === 'auth/user-not-found') msg = 'Ingen bruker funnet med denne e-posten.';
-                    if (error.code === 'auth/wrong-password') msg = 'Feil passord.';
-                    if (error.code === 'auth/invalid-email') msg = 'Ugyldig e-postadresse.';
-                    if (error.code === 'auth/invalid-credential') msg = 'Feil e-post eller passord.';
-                    errorEl.textContent = msg;
-                    errorEl.style.display = 'block';
-                });
-        }
-
-        function handleRegister() {
-            var name = document.getElementById('registerName').value.trim();
-            var email = document.getElementById('registerEmail').value.trim();
-            var password = document.getElementById('registerPassword').value;
-            var errorEl = document.getElementById('registerError');
-            var btn = document.getElementById('registerBtn');
-
-            if (!name || !email || !password) {
-                errorEl.textContent = 'Fyll inn alle feltene';
-                errorEl.style.display = 'block';
+            if (currentUserData.role === 'pending') {
+                showUnauthorized();
                 return;
             }
-
-            if (password.length < 6) {
-                errorEl.textContent = 'Passord må være minst 6 tegn';
-                errorEl.style.display = 'block';
-                return;
-            }
-
-            btn.disabled = true;
-            btn.textContent = 'Oppretter konto...';
-            errorEl.style.display = 'none';
-
-            auth.createUserWithEmailAndPassword(email, password)
-                .then(function(cred) {
-                    return cred.user.updateProfile({ displayName: name });
-                })
-                .then(function() {
-                    btn.disabled = false;
-                    btn.textContent = 'Opprett konto';
-                })
-                .catch(function(error) {
-                    btn.disabled = false;
-                    btn.textContent = 'Opprett konto';
-                    var msg = 'Registrering feilet.';
-                    if (error.code === 'auth/email-already-in-use') msg = 'Denne e-posten er allerede registrert.';
-                    if (error.code === 'auth/weak-password') msg = 'Passordet er for svakt (min. 6 tegn).';
-                    if (error.code === 'auth/invalid-email') msg = 'Ugyldig e-postadresse.';
-                    errorEl.textContent = msg;
-                    errorEl.style.display = 'block';
-                });
-        }
-
-        function handleResetPassword() {
-            var email = document.getElementById('resetEmail').value.trim();
-            var errorEl = document.getElementById('resetError');
-            var successEl = document.getElementById('resetSuccess');
-
-            if (!email) {
-                errorEl.textContent = 'Fyll inn e-postadresse';
-                errorEl.style.display = 'block';
-                successEl.style.display = 'none';
-                return;
-            }
-
-            auth.sendPasswordResetEmail(email)
-                .then(function() {
-                    successEl.textContent = 'Tilbakestillingslenke sendt til ' + email;
-                    successEl.style.display = 'block';
-                    errorEl.style.display = 'none';
-                })
-                .catch(function(error) {
-                    var msg = 'Kunne ikke sende tilbakestillingslenke.';
-                    if (error.code === 'auth/user-not-found') msg = 'Ingen bruker funnet med denne e-posten.';
-                    errorEl.textContent = msg;
-                    errorEl.style.display = 'block';
-                    successEl.style.display = 'none';
-                });
-        }
-
-        function handleLogout() {
-            auth.signOut().then(function() {
-                showToast('Du er logget ut', 'info');
-            });
-        }
-
-        // ============================================
-        // MAIN APP INIT
-        // ============================================
-        function showApp() {
-            showScreen('app');
-
-            // Update header
-            var displayName = (currentCoach && currentCoach.name) || (currentUser && currentUser.displayName) || 'Trener';
-            document.getElementById('headerUserName').textContent = displayName;
-            document.getElementById('userRoleBadge').textContent = isAdmin ? '👑 Admin' : '🏃 Trener';
-
-            // Show invite section for admins
-            var inviteSection = document.getElementById('inviteSection');
-            if (inviteSection) {
-                inviteSection.style.display = isAdmin ? 'block' : 'none';
-            }
-
-            // Setup listeners
-            setupRealtimeListeners();
-            setupConnectionMonitor();
-            initTrainingPlan();
-        }
-
-        // ============================================
-        // REALTIME LISTENERS
-        // ============================================
-        function setupRealtimeListeners() {
-            // Players
-            db.ref(BASE + 'players').on('value', function(snap) {
-                playersData = snap.val() || {};
-                renderPlayers();
-                updateDashboard();
-                updateAwardPlayerSelect();
-            });
-
-            // Matches
-            db.ref(BASE + 'matches').on('value', function(snap) {
-                matchesData = snap.val() || {};
-                renderMatches();
-                updateDashboard();
-            });
-
-            // Awards
-            db.ref(BASE + 'awards').on('value', function(snap) {
-                awardsData = snap.val() || {};
-                renderAwards();
-            });
-
-            // Coaches
-            db.ref(BASE + 'coaches').on('value', function(snap) {
-                coachesData = snap.val() || {};
-                renderCoaches();
-            });
-
-            // Training attendance
-            db.ref(BASE + 'attendance').on('value', function(snap) {
-                renderTrainingSessions();
-            });
-
-            // Invitations (for admin)
-            if (isAdmin) {
-                db.ref(BASE + 'invitations').on('value', function(snap) {
-                    renderPendingInvites(snap.val() || {});
-                });
-            }
-        }
-
-        function setupConnectionMonitor() {
-            db.ref('.info/connected').on('value', function(snap) {
-                var el = document.getElementById('connStatus');
-                if (snap.val() === true) {
-                    el.classList.add('connected');
-                    el.title = 'Tilkoblet';
-                } else {
-                    el.classList.remove('connected');
-                    el.title = 'Frakoblet';
-                }
-            });
-        }
-
-        // ============================================
-        // NAVIGATION
-        // ============================================
-        function showPage(pageId, navItem) {
-            var pages = document.querySelectorAll('.page');
-            for (var i = 0; i < pages.length; i++) {
-                pages[i].classList.remove('active');
-            }
-            document.getElementById('page-' + pageId).classList.add('active');
-
-            var navItems = document.querySelectorAll('.nav-item');
-            for (var j = 0; j < navItems.length; j++) {
-                navItems[j].classList.remove('active');
-            }
-            if (navItem) navItem.classList.add('active');
-        }
-
-        // ============================================
-        // PLAYERS
-        // ============================================
-        function renderPlayers() {
-            var container = document.getElementById('playerList');
-            var keys = Object.keys(playersData);
-
-            if (keys.length === 0) {
-                container.innerHTML = '<p style="color: #94a3b8; text-align: center; padding: 20px;">Ingen spillere lagt til ennå. Klikk "+ Legg til" for å starte!</p>';
-                return;
-            }
-
-            keys.sort(function(a, b) {
-                return (playersData[a].number || 99) - (playersData[b].number || 99);
-            });
-
-            var html = '';
-            for (var i = 0; i < keys.length; i++) {
-                var key = keys[i];
-                var p = playersData[key];
-                html += '<div class="player-item" onclick="openPlayerDetail(\'' + key + '\')">';
-                html += '<div class="player-info">';
-                html += '<div class="player-number">' + (p.number || '?') + '</div>';
-                html += '<div><div class="player-name">' + (p.name || 'Ukjent') + '</div>';
-                html += '<div class="player-pos">' + (p.position || 'Ikke satt') + '</div></div>';
-                html += '</div>';
-                html += '<div class="player-stats-mini">';
-                html += '<div><span class="mini-stat">' + (p.goals || 0) + '</span><span class="mini-label">Mål</span></div>';
-                html += '<div><span class="mini-stat">' + (p.assists || 0) + '</span><span class="mini-label">Ass.</span></div>';
-                html += '</div></div>';
-            }
-            container.innerHTML = html;
-        }
-
-        function openAddPlayerModal() {
-            document.getElementById('playerModalTitle').textContent = 'Legg til spiller';
-            document.getElementById('playerNameInput').value = '';
-            document.getElementById('playerNumberInput').value = '';
-            document.getElementById('playerPosInput').value = 'Midtbane';
-            document.getElementById('playerBirthInput').value = '';
-            document.getElementById('editPlayerId').value = '';
-            openModal('playerModal');
-        }
-
-        function openPlayerDetail(key) {
-            var p = playersData[key];
-            if (!p) return;
-
-            document.getElementById('detailPlayerName').textContent = p.name;
-
-            var html = '<div style="text-align: center; margin-bottom: 20px;">';
-            html += '<div class="player-number" style="width: 60px; height: 60px; font-size: 24px; margin: 0 auto 10px;">' + (p.number || '?') + '</div>';
-            html += '<div style="color: #93c5fd; font-size: 14px;">' + (p.position || '') + '</div>';
-            if (p.birthDate) html += '<div style="color: #64748b; font-size: 12px; margin-top: 4px;">Født: ' + p.birthDate + '</div>';
-            html += '</div>';
-
-            html += '<div class="stats-grid">';
-            html += '<div class="stat-card"><div class="stat-value">' + (p.goals || 0) + '</div><div class="stat-label">Mål</div></div>';
-            html += '<div class="stat-card"><div class="stat-value">' + (p.assists || 0) + '</div><div class="stat-label">Assists</div></div>';
-            html += '<div class="stat-card"><div class="stat-value">' + (p.matches || 0) + '</div><div class="stat-label">Kamper</div></div>';
-            html += '<div class="stat-card"><div class="stat-value">' + (p.attendance || 0) + '%</div><div class="stat-label">Oppmøte</div></div>';
-            html += '</div>';
-
-            html += '<div style="display: flex; gap: 8px; margin-top: 16px;">';
-            html += '<button class="btn btn-primary btn-sm" style="flex:1;" onclick="editPlayer(\'' + key + '\')">✏️ Rediger</button>';
-            html += '<button class="btn btn-danger btn-sm" style="flex:1;" onclick="deletePlayer(\'' + key + '\')">🗑️ Slett</button>';
-            html += '</div>';
-
-            document.getElementById('playerDetailContent').innerHTML = html;
-            openModal('playerDetailModal');
-        }
-
-        function editPlayer(key) {
-            var p = playersData[key];
-            if (!p) return;
-            closeModal('playerDetailModal');
-
-            document.getElementById('playerModalTitle').textContent = 'Rediger spiller';
-            document.getElementById('playerNameInput').value = p.name || '';
-            document.getElementById('playerNumberInput').value = p.number || '';
-            document.getElementById('playerPosInput').value = p.position || 'Midtbane';
-            document.getElementById('playerBirthInput').value = p.birthDate || '';
-            document.getElementById('editPlayerId').value = key;
-
-            openModal('playerModal');
-        }
-
-        function deletePlayer(key) {
-            if (confirm('Slette denne spilleren?')) {
-                db.ref(BASE + 'players/' + key).remove().then(function() {
-                    showToast('Spiller slettet', 'info');
-                    closeModal('playerDetailModal');
-                });
-            }
-        }
-
-        function savePlayer() {
-            var name = document.getElementById('playerNameInput').value.trim();
-            var number = document.getElementById('playerNumberInput').value;
-            var position = document.getElementById('playerPosInput').value;
-            var birthDate = document.getElementById('playerBirthInput').value;
-            var editId = document.getElementById('editPlayerId').value;
-
-            if (!name) {
-                showToast('Fyll inn spillerens navn', 'error');
-                return;
-            }
-
-            var playerData = {
-                name: name,
-                number: parseInt(number) || 0,
-                position: position,
-                birthDate: birthDate,
-                updatedAt: new Date().toISOString()
-            };
-
-            if (editId) {
-                db.ref(BASE + 'players/' + editId).update(playerData).then(function() {
-                    showToast(name + ' oppdatert!', 'success');
-                    closeModal('playerModal');
-                });
-            } else {
-                playerData.goals = 0;
-                playerData.assists = 0;
-                playerData.matches = 0;
-                playerData.attendance = 0;
-                playerData.createdAt = new Date().toISOString();
-                db.ref(BASE + 'players').push(playerData).then(function() {
-                    showToast(name + ' lagt til!', 'success');
-                    closeModal('playerModal');
-                });
-            }
-        }
-
-        // ============================================
-        // MATCHES
-        // ============================================
-        function renderMatches() {
-            var container = document.getElementById('matchList');
-            var keys = Object.keys(matchesData);
-
-            if (keys.length === 0) {
-                container.innerHTML = '<p style="color: #94a3b8; text-align: center; padding: 20px;">Ingen kamper lagt til ennå.</p>';
-                return;
-            }
-
-            keys.sort(function(a, b) {
-                return (matchesData[b].date || '').localeCompare(matchesData[a].date || '');
-            });
-
-            var html = '';
-            for (var i = 0; i < keys.length; i++) {
-                var key = keys[i];
-                var m = matchesData[key];
-                var scoreHome = (m.scoreHome !== undefined && m.scoreHome !== null) ? m.scoreHome : '';
-                var scoreAway = (m.scoreAway !== undefined && m.scoreAway !== null) ? m.scoreAway : '';
-
-                html += '<div class="match-card">';
-                html += '<div class="match-teams">';
-                html += '<div class="match-team"><div class="match-team-name">J2018 Nord</div></div>';
-                html += '<div class="match-vs">vs</div>';
-                html += '<div class="match-team"><div class="match-team-name">' + (m.opponent || '?') + '</div></div>';
-                html += '</div>';
-
-                html += '<div class="match-score">';
-                html += '<input type="number" class="score-input" value="' + scoreHome + '" min="0" onchange="updateScore(\'' + key + '\', \'home\', this.value)">';
-                html += '<span class="score-separator">-</span>';
-                html += '<input type="number" class="score-input" value="' + scoreAway + '" min="0" onchange="updateScore(\'' + key + '\', \'away\', this.value)">';
-                html += '</div>';
-
-                html += '<div class="match-details">';
-                html += '<div class="match-detail-item">📅 ' + (m.date || 'Ikke satt') + '</div>';
-                html += '<div class="match-detail-item">⏰ ' + (m.time || '') + '</div>';
-                html += '<div class="match-detail-item">📍 ' + (m.location || '') + '</div>';
-                html += '<div class="match-detail-item">🏷️ ' + (m.type || '') + '</div>';
-                html += '</div>';
-
-                html += '<div style="display: flex; gap: 8px; margin-top: 12px;">';
-                html += '<button class="btn btn-outline btn-sm" onclick="editMatch(\'' + key + '\')">✏️ Rediger</button>';
-                html += '<button class="btn btn-danger btn-sm" onclick="deleteMatch(\'' + key + '\')">🗑️ Slett</button>';
-                html += '</div>';
-
-                html += '</div>';
-            }
-            container.innerHTML = html;
-        }
-
-        function openAddMatchModal() {
-            document.getElementById('matchOpponent').value = '';
-            document.getElementById('matchDate').value = '';
-            document.getElementById('matchTime').value = '18:00';
-            document.getElementById('matchLocation').value = '';
-            document.getElementById('matchType').value = 'Treningskamp';
-            document.getElementById('editMatchId').value = '';
-            openModal('matchModal');
-        }
-
-        function editMatch(key) {
-            var m = matchesData[key];
-            if (!m) return;
-            document.getElementById('matchOpponent').value = m.opponent || '';
-            document.getElementById('matchDate').value = m.date || '';
-            document.getElementById('matchTime').value = m.time || '18:00';
-            document.getElementById('matchLocation').value = m.location || '';
-            document.getElementById('matchType').value = m.type || 'Treningskamp';
-            document.getElementById('editMatchId').value = key;
-            openModal('matchModal');
-        }
-
-        function deleteMatch(key) {
-            if (confirm('Slette denne kampen?')) {
-                db.ref(BASE + 'matches/' + key).remove().then(function() {
-                    showToast('Kamp slettet', 'info');
-                });
-            }
-        }
-
-        function saveMatch() {
-            var opponent = document.getElementById('matchOpponent').value.trim();
-            if (!opponent) {
-                showToast('Fyll inn motstander', 'error');
-                return;
-            }
-
-            var matchData = {
-                opponent: opponent,
-                date: document.getElementById('matchDate').value,
-                time: document.getElementById('matchTime').value,
-                location: document.getElementById('matchLocation').value.trim(),
-                type: document.getElementById('matchType').value,
-                updatedAt: new Date().toISOString()
-            };
-
-            var editId = document.getElementById('editMatchId').value;
-            if (editId) {
-                db.ref(BASE + 'matches/' + editId).update(matchData).then(function() {
-                    showToast('Kamp oppdatert!', 'success');
-                    closeModal('matchModal');
-                });
-            } else {
-                matchData.scoreHome = null;
-                matchData.scoreAway = null;
-                matchData.createdAt = new Date().toISOString();
-                db.ref(BASE + 'matches').push(matchData).then(function() {
-                    showToast('Kamp lagt til!', 'success');
-                    closeModal('matchModal');
-                });
-            }
-        }
-
-        function updateScore(key, side, value) {
-            var field = side === 'home' ? 'scoreHome' : 'scoreAway';
-            var update = {};
-            update[field] = value !== '' ? parseInt(value) : null;
-            db.ref(BASE + 'matches/' + key).update(update);
-        }
-
-        // ============================================
-        // TRAINING
-        // ============================================
-        var trainingTemplates = [
-            {
-                day: 'Tirsdag',
-                time: '17:00 - 18:30',
-                focus: 'Teknisk trening & pasningsspill',
-                drills: ['Oppvarming med ball', 'Pasningsøvelser', 'Kontroll & mottak', 'Smålagsspill']
-            },
-            {
-                day: 'Torsdag',
-                time: '17:00 - 18:30',
-                focus: 'Taktisk trening & kampforberedelse',
-                drills: ['Oppvarming', 'Posisjonsspill', 'Angrepsspill', 'Forsvarsspill', 'Avslutning']
-            }
-        ];
-
-        function getWeekNumber(d) {
-            d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-            d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
-            var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-            return Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
-        }
-
-        function getWeekDates(offset) {
-            var now = new Date();
-            now.setDate(now.getDate() + (offset * 7));
-            var day = now.getDay();
-            var diff = now.getDate() - day + (day === 0 ? -6 : 1);
-            var monday = new Date(now.setDate(diff));
-            var sunday = new Date(monday);
-            sunday.setDate(monday.getDate() + 6);
-
-            var format = function(d) {
-                return d.getDate() + '.' + (d.getMonth() + 1);
-            };
-
-            return {
-                weekNum: getWeekNumber(monday),
-                start: format(monday),
-                end: format(sunday),
-                monday: new Date(monday)
-            };
-        }
-
-        function initTrainingPlan() {
-            renderTrainingSessions();
-        }
-
-        function changeWeek(dir) {
-            currentWeekOffset += dir;
-            renderTrainingSessions();
-        }
-
-        function renderTrainingSessions() {
-            var weekInfo = getWeekDates(currentWeekOffset);
-            document.getElementById('weekNumber').textContent = 'Uke ' + weekInfo.weekNum;
-            document.getElementById('weekDates').textContent = weekInfo.start + ' - ' + weekInfo.end;
-
-            var container = document.getElementById('trainingSessions');
-            var html = '';
-
-            for (var i = 0; i < trainingTemplates.length; i++) {
-                var session = trainingTemplates[i];
-                var sessionKey = 'week' + weekInfo.weekNum + '_' + session.day.toLowerCase();
-
-                html += '<div class="training-session">';
-                html += '<div class="session-header">';
-                html += '<span class="session-day">' + session.day + '</span>';
-                html += '<span class="session-time">' + session.time + '</span>';
-                html += '</div>';
-                html += '<div class="session-focus">' + session.focus + '</div>';
-                html += '<div class="session-drills">';
-                for (var j = 0; j < session.drills.length; j++) {
-                    html += '<span class="drill-tag">' + session.drills[j] + '</span>';
-                }
-                html += '</div>';
-
-                // Attendance
-                html += '<div class="attendance-section">';
-                html += '<div style="font-size: 12px; color: #94a3b8; font-weight: 600;">Oppmøte:</div>';
-                html += '<div class="attendance-grid" id="att_' + sessionKey + '">';
-
-                var playerKeys = Object.keys(playersData);
-                playerKeys.sort(function(a, b) {
-                    return (playersData[a].number || 99) - (playersData[b].number || 99);
-                });
-
-                for (var k = 0; k < playerKeys.length; k++) {
-                    var pk = playerKeys[k];
-                    var player = playersData[pk];
-                    html += '<span class="att-chip" id="att_' + sessionKey + '_' + pk + '" ';
-                    html += 'onclick="toggleAttendance(\'' + sessionKey + '\', \'' + pk + '\')">';
-                    html += (player.number || '?') + ' ' + (player.name ? player.name.split(' ')[0] : '');
-                    html += '</span>';
-                }
-
-                html += '</div></div>';
-                html += '</div>';
-            }
-
-            container.innerHTML = html;
-
-            // Load attendance data
-            db.ref(BASE + 'attendance').once('value').then(function(snap) {
-                var attData = snap.val() || {};
-                var playerKeys2 = Object.keys(playersData);
-
-                for (var i2 = 0; i2 < trainingTemplates.length; i2++) {
-                    var sess = trainingTemplates[i2];
-                    var sKey = 'week' + weekInfo.weekNum + '_' + sess.day.toLowerCase();
-                    var sessionAtt = (attData[sKey]) || {};
-
-                    for (var k2 = 0; k2 < playerKeys2.length; k2++) {
-                        var pk2 = playerKeys2[k2];
-                        var chip = document.getElementById('att_' + sKey + '_' + pk2);
-                        if (chip && sessionAtt[pk2]) {
-                            chip.classList.add(sessionAtt[pk2]);
-                        }
-                    }
-                }
-            });
-        }
-
-        function toggleAttendance(sessionKey, playerKey) {
-            var chip = document.getElementById('att_' + sessionKey + '_' + playerKey);
-            if (!chip) return;
-
-            var current = '';
-            if (chip.classList.contains('present')) current = 'present';
-            if (chip.classList.contains('absent')) current = 'absent';
-
-            chip.classList.remove('present', 'absent');
-
-            var next = '';
-            if (current === '') next = 'present';
-            else if (current === 'present') next = 'absent';
-            else next = '';
-
-            if (next) {
-                chip.classList.add(next);
-                db.ref(BASE + 'attendance/' + sessionKey + '/' + playerKey).set(next);
-            } else {
-                db.ref(BASE + 'attendance/' + sessionKey + '/' + playerKey).remove();
-            }
-        }
-
-        // ============================================
-        // AWARDS
-        // ============================================
-        function renderAwards() {
-            var container = document.getElementById('awardsList');
-            var keys = Object.keys(awardsData);
-
-            if (keys.length === 0) {
-                container.innerHTML = '<p style="color: #94a3b8; text-align: center; padding: 20px;">Ingen utmerkelser gitt ennå.</p>';
-                return;
-            }
-
-            keys.sort(function(a, b) {
-                return (awardsData[b].date || '').localeCompare(awardsData[a].date || '');
-            });
-
-            var html = '';
-            for (var i = 0; i < keys.length; i++) {
-                var aw = awardsData[keys[i]];
-                html += '<div class="award-card">';
-                html += '<div class="award-week">' + (aw.category || '⭐ Ukens spiller') + '</div>';
-                html += '<div class="award-player">' + (aw.playerName || 'Ukjent') + '</div>';
-                html += '<div class="award-reason">' + (aw.reason || '') + '</div>';
-                html += '<div style="font-size: 11px; color: #64748b; margin-top: 8px;">' + (aw.date || '') + '</div>';
-                html += '</div>';
-            }
-            container.innerHTML = html;
-        }
-
-        function updateAwardPlayerSelect() {
-            var select = document.getElementById('awardPlayer');
-            var html = '<option value="">Velg spiller...</option>';
-            var keys = Object.keys(playersData);
-            keys.sort(function(a, b) {
-                return (playersData[a].name || '').localeCompare(playersData[b].name || '');
-            });
-            for (var i = 0; i < keys.length; i++) {
-                html += '<option value="' + keys[i] + '">' + (playersData[keys[i]].name || 'Ukjent') + '</option>';
-            }
-            select.innerHTML = html;
-        }
-
-        function openAwardModal() {
-            document.getElementById('awardReason').value = '';
-            document.getElementById('awardCategory').value = '⭐ Ukens spiller';
-            openModal('awardModal');
-        }
-
-        function saveAward() {
-            var playerKey = document.getElementById('awardPlayer').value;
-            var reason = document.getElementById('awardReason').value.trim();
-            var category = document.getElementById('awardCategory').value;
-
-            if (!playerKey) {
-                showToast('Velg en spiller', 'error');
-                return;
-            }
-
-            var player = playersData[playerKey];
-            var award = {
-                playerKey: playerKey,
-                playerName: player ? player.name : 'Ukjent',
-                reason: reason,
-                category: category,
-                date: new Date().toLocaleDateString('no-NO'),
-                givenBy: currentCoach ? currentCoach.name : 'Trener',
-                createdAt: new Date().toISOString()
-            };
-
-            db.ref(BASE + 'awards').push(award).then(function() {
-                showToast('Utmerkelse gitt til ' + (player ? player.name : 'spilleren') + '! 🏆', 'success');
-                closeModal('awardModal');
-            });
-        }
-
-        // ============================================
-        // COACHES & SETTINGS
-        // ============================================
-        function renderCoaches() {
-            var container = document.getElementById('coachList');
-            var keys = Object.keys(coachesData);
-            var html = '';
-
-            for (var i = 0; i < keys.length; i++) {
-                var c = coachesData[keys[i]];
-                if (c.status !== 'active') continue;
-
-                var avatar = c.role === 'admin' ? '👑' : '🏃';
-                html += '<div class="coach-item">';
-                html += '<div class="coach-info">';
-                html += '<div class="coach-avatar" style="background: rgba(99,179,237,0.2);">' + avatar + '</div>';
-                html += '<div>';
-                html += '<div class="coach-name">' + (c.name || 'Ukjent') + '</div>';
-                html += '<div class="coach-role">' + (c.role === 'admin' ? 'Hovedtrener (Admin)' : 'Trener') + '</div>';
-                html += '</div></div>';
-
-                if (isAdmin && keys[i] !== currentUser.uid && c.role !== 'admin') {
-                    html += '<button class="btn btn-danger btn-sm" onclick="removeCoach(\'' + keys[i] + '\')">Fjern</button>';
-                }
-                html += '</div>';
-            }
-
-            // Show pending coaches
-            for (var j = 0; j < keys.length; j++) {
-                var cp = coachesData[keys[j]];
-                if (cp.status !== 'pending') continue;
-
-                html += '<div class="coach-item" style="border-color: rgba(251, 191, 36, 0.3);">';
-                html += '<div class="coach-info">';
-                html += '<div class="coach-avatar" style="background: rgba(251,191,36,0.2);">⏳</div>';
-                html += '<div>';
-                html += '<div class="coach-name">' + (cp.name || cp.email || 'Ukjent') + '</div>';
-                html += '<div class="coach-role" style="color: #fbbf24;">Venter på godkjenning</div>';
-                html += '</div></div>';
-
-                if (isAdmin) {
-                    html += '<div style="display:flex; gap: 6px;">';
-                    html += '<button class="btn btn-success btn-sm" onclick="approveCoach(\'' + keys[j] + '\')">✓</button>';
-                    html += '<button class="btn btn-danger btn-sm" onclick="removeCoach(\'' + keys[j] + '\')">✕</button>';
-                    html += '</div>';
-                }
-                html += '</div>';
-            }
-
-            if (!html) {
-                html = '<p style="color: #94a3b8;">Ingen trenere registrert.</p>';
-            }
-            container.innerHTML = html;
-        }
-
-        function approveCoach(uid) {
-            db.ref(BASE + 'coaches/' + uid).update({
-                status: 'active'
-            }).then(function() {
-                showToast('Trener godkjent! ✅', 'success');
-            });
-        }
-
-        function removeCoach(uid) {
-            if (confirm('Fjerne denne treneren?')) {
-                db.ref(BASE + 'coaches/' + uid).remove().then(function() {
-                    showToast('Trener fjernet', 'info');
-                });
-            }
-        }
-
-        function inviteCoach() {
-            var email = document.getElementById('inviteEmail').value.trim().toLowerCase();
-            if (!email || email.indexOf('@') === -1) {
-                showToast('Fyll inn en gyldig e-postadresse', 'error');
-                return;
-            }
-
-            db.ref(BASE + 'invitations').push({
-                email: email,
-                invitedBy: currentCoach ? currentCoach.name : 'Admin',
-                invitedAt: new Date().toISOString()
-            }).then(function() {
-                document.getElementById('inviteEmail').value = '';
-                showToast('Invitasjon sendt til ' + email, 'success');
-            });
-        }
-
-        function renderPendingInvites(invites) {
-            var container = document.getElementById('pendingInvites');
-            if (!container) return;
-
-            var keys = Object.keys(invites);
-            if (keys.length === 0) {
-                container.innerHTML = '';
-                return;
-            }
-
-            var html = '<div style="font-size: 12px; color: #94a3b8; margin-bottom: 8px; font-weight: 600;">Ventende invitasjoner:</div>';
-            for (var i = 0; i < keys.length; i++) {
-                var inv = invites[keys[i]];
-                html += '<div class="coach-item" style="padding: 8px 12px;">';
-                html += '<span style="font-size: 13px; color: #93c5fd;">📨 ' + inv.email + '</span>';
-                html += '<button class="btn btn-danger btn-sm" style="padding: 3px 8px; font-size: 11px;" onclick="cancelInvite(\'' + keys[i] + '\')">✕</button>';
-                html += '</div>';
-            }
-            container.innerHTML = html;
-        }
-
-        function cancelInvite(key) {
-            db.ref(BASE + 'invitations/' + key).remove().then(function() {
-                showToast('Invitasjon kansellert', 'info');
-            });
-        }
-
-        // ============================================
-        // DASHBOARD
-        // ============================================
-        function updateDashboard() {
-            var playerKeys = Object.keys(playersData);
-            var matchKeys = Object.keys(matchesData);
-
-            document.getElementById('totalPlayers').textContent = playerKeys.length;
-            document.getElementById('totalMatches').textContent = matchKeys.length;
-
+            isAdmin = currentUserData.role === 'admin';
+            showApp();
+        });
+    } else {
+        currentUser = null;
+        currentUserData = null;
+        showAuth();
+    }
+});
+
+function showAuth() {
+    document.getElementById('authContainer').style.display = 'flex';
+    document.getElementById('appContainer').style.display = 'none';
+    document.getElementById('unauthorizedContainer').style.display = 'none';
+}
+
+function showApp() {
+    document.getElementById('authContainer').style.display = 'none';
+    document.getElementById('appContainer').style.display = 'block';
+    document.getElementById('unauthorizedContainer').style.display = 'none';
+    document.getElementById('userName').textContent = currentUserData.name || '';
+    navigate(currentPage);
+}
+
+function showUnauthorized() {
+    document.getElementById('authContainer').style.display = 'none';
+    document.getElementById('appContainer').style.display = 'none';
+    document.getElementById('unauthorizedContainer').style.display = 'flex';
+}
+
+// NAVIGATION
+function navigate(page) {
+    currentPage = page;
+    var navItems = document.querySelectorAll('.nav-item');
+    for (var i = 0; i < navItems.length; i++) {
+        navItems[i].classList.remove('active');
+    }
+    var activeNav = document.getElementById('nav-' + page);
+    if (activeNav) activeNav.classList.add('active');
+
+    if (page === 'dashboard') loadDashboard();
+    else if (page === 'players') loadPlayers();
+    else if (page === 'training') loadTraining();
+    else if (page === 'matches') loadMatches();
+    else if (page === 'settings') loadSettings();
+}
+
+// DASHBOARD
+function loadDashboard() {
+    var content = document.getElementById('mainContent');
+    content.innerHTML = '<div class="loading">Laster...</div>';
+
+    var playersPromise = db.ref('teams/j2018/players').once('value');
+    var matchesPromise = db.ref('teams/j2018/matches').once('value');
+    var trophyPromise = db.ref('teams/j2018/trophy').once('value');
+
+    Promise.all([playersPromise, matchesPromise, trophyPromise])
+        .then(function(results) {
+            var playersSnap = results[0];
+            var matchesSnap = results[1];
+            var trophySnap = results[2];
+
+            var playerCount = playersSnap.exists() ? Object.keys(playersSnap.val()).length : 0;
+            var matches = matchesSnap.val() || {};
+            var matchCount = Object.keys(matches).length;
             var wins = 0;
-            var totalGoals = 0;
+            var goals = 0;
 
+            var matchKeys = Object.keys(matches);
             for (var i = 0; i < matchKeys.length; i++) {
-                var m = matchesData[matchKeys[i]];
-                if (m.scoreHome !== null && m.scoreHome !== undefined && m.scoreAway !== null && m.scoreAway !== undefined) {
-                    if (parseInt(m.scoreHome) > parseInt(m.scoreAway)) wins++;
-                    totalGoals += parseInt(m.scoreHome) || 0;
-                }
+                var m = matches[matchKeys[i]];
+                var ours = parseInt(m.goalsFor) || 0;
+                var theirs = parseInt(m.goalsAgainst) || 0;
+                goals += ours;
+                if (ours > theirs) wins++;
             }
 
-            document.getElementById('totalWins').textContent = wins;
-            document.getElementById('totalGoals').textContent = totalGoals;
-
-            // Next event
-            var now = new Date();
-            var upcoming = [];
-            for (var j = 0; j < matchKeys.length; j++) {
-                var match = matchesData[matchKeys[j]];
-                if (match.date) {
-                    var mDate = new Date(match.date);
-                    if (mDate >= now) {
-                        upcoming.push(match);
-                    }
-                }
+            var trophy = trophySnap.val();
+            var trophyHtml = '';
+            if (trophy && trophy.name) {
+                trophyHtml = '<div class="trophy-card">' +
+                    '<div class="trophy-icon">🏆</div>' +
+                    '<div class="trophy-name">' + trophy.name + '</div>' +
+                    '<div class="trophy-reason">' + (trophy.reason || '') + '</div>' +
+                    '</div>';
+            } else {
+                trophyHtml = '<div class="trophy-card">' +
+                    '<div class="trophy-icon">🏆</div>' +
+                    '<div class="trophy-empty">Ingen ukens spiller valgt ennå</div>' +
+                    '</div>';
             }
 
-            if (upcoming.length > 0) {
-                upcoming.sort(function(a, b) {
-                    return new Date(a.date) - new Date(b.date);
-                });
-                var next = upcoming[0];
-                document.getElementById('nextEventTitle').textContent = 'vs ' + next.opponent;
-                document.getElementById('nextEventTime').textContent = '📅 ' + next.date + (next.time ? ' kl. ' + next.time : '') + (next.location ? ' 📍 ' + next.location : '');
-            }
+            content.innerHTML =
+                '<div class="section-title">📊 Oversikt</div>' +
+                '<div class="stats-grid">' +
+                    '<div class="stat-card"><div class="stat-icon">👥</div><div class="stat-value">' + playerCount + '</div><div class="stat-label">Spillere</div></div>' +
+                    '<div class="stat-card"><div class="stat-icon">🏟️</div><div class="stat-value">' + matchCount + '</div><div class="stat-label">Kamper</div></div>' +
+                    '<div class="stat-card"><div class="stat-icon">🏆</div><div class="stat-value">' + wins + '</div><div class="stat-label">Seiere</div></div>' +
+                    '<div class="stat-card"><div class="stat-icon">⚽</div><div class="stat-value">' + goals + '</div><div class="stat-label">Mål</div></div>' +
+                '</div>' +
+                '<div class="section-title">🏆 Ukens Spiller</div>' +
+                trophyHtml +
+                (isAdmin ? '<button class="btn-action btn-edit" onclick="showTrophyModal()">Velg ukens spiller</button>' : '');
+        });
+}
 
-            // Recent activity
-            var activities = [];
-            for (var k = 0; k < matchKeys.length; k++) {
-                var ma = matchesData[matchKeys[k]];
-                activities.push({
-                    text: '⚽ Kamp: J2018 Nord vs ' + ma.opponent,
-                    date: ma.createdAt || ma.date || ''
-                });
-            }
+// PLAYERS
+function loadPlayers() {
+    var content = document.getElementById('mainContent');
+    content.innerHTML = '<div class="loading">Laster...</div>';
 
-            var actHtml = '';
-            activities.sort(function(a, b) { return (b.date || '').localeCompare(a.date || ''); });
-            var showCount = Math.min(activities.length, 5);
-            for (var l = 0; l < showCount; l++) {
-                actHtml += '<div style="padding: 6px 0; border-bottom: 1px solid rgba(99,179,237,0.1);">' + activities[l].text + '</div>';
-            }
-            if (!actHtml) actHtml = '<div style="color: #64748b;">Ingen aktiviteter ennå.</div>';
-            document.getElementById('recentActivity').innerHTML = actHtml;
+    db.ref('teams/j2018/players').on('value', function(snapshot) {
+        var players = snapshot.val() || {};
+        var keys = Object.keys(players);
+
+        var html = '<div class="section-title">👥 Spillere (' + keys.length + ')</div>';
+
+        if (isAdmin) {
+            html += '<div class="action-buttons"><button class="btn-action btn-add" onclick="showAddPlayerModal()">+ Legg til spiller</button></div>';
         }
 
-        // ============================================
-        // MODALS
-        // ============================================
-        function openModal(id) {
-            document.getElementById(id).classList.add('active');
+        html += '<div class="card">';
+        if (keys.length === 0) {
+            html += '<p style="text-align:center;padding:20px;">Ingen spillere lagt til ennå</p>';
+        }
+        for (var i = 0; i < keys.length; i++) {
+            var p = players[keys[i]];
+            var initials = (p.name || '?').substring(0, 2).toUpperCase();
+            html += '<div class="player-item">' +
+                '<div class="player-info">' +
+                    '<div class="player-avatar">' + initials + '</div>' +
+                    '<div><div class="player-name">' + (p.name || '') + '</div>' +
+                    '<div class="player-pos">' + (p.position || '') + '</div></div>' +
+                '</div>' +
+                (isAdmin ? '<button class="btn-action btn-danger" onclick="deletePlayer(\'' + keys[i] + '\')" style="padding:4px 10px;font-size:11px;">Slett</button>' : '') +
+            '</div>';
+        }
+        html += '</div>';
+        content.innerHTML = html;
+    });
+}
+
+function showAddPlayerModal() {
+    var modal = document.getElementById('modalContent');
+    modal.innerHTML =
+        '<h3>Legg til spiller</h3>' +
+        '<div class="form-group"><label>Navn</label><input type="text" id="playerName" placeholder="Spillerens navn"></div>' +
+        '<div class="form-group"><label>Posisjon</label>' +
+            '<select id="playerPosition">' +
+                '<option value="Keeper">Keeper</option>' +
+                '<option value="Forsvar">Forsvar</option>' +
+                '<option value="Midtbane">Midtbane</option>' +
+                '<option value="Angrep">Angrep</option>' +
+            '</select></div>' +
+        '<div class="modal-buttons">' +
+            '<button class="btn-cancel" onclick="closeModal()">Avbryt</button>' +
+            '<button class="btn-save" onclick="addPlayer()">Legg til</button>' +
+        '</div>';
+    document.getElementById('modalOverlay').classList.add('active');
+}
+
+function addPlayer() {
+    var name = document.getElementById('playerName').value.trim();
+    var position = document.getElementById('playerPosition').value;
+    if (!name) return;
+    db.ref('teams/j2018/players').push({ name: name, position: position });
+    closeModal();
+}
+
+function deletePlayer(key) {
+    if (confirm('Slette denne spilleren?')) {
+        db.ref('teams/j2018/players/' + key).remove();
+    }
+}
+
+// TRAINING
+function loadTraining() {
+    var content = document.getElementById('mainContent');
+    content.innerHTML = '<div class="loading">Laster...</div>';
+
+    db.ref('teams/j2018/training').on('value', function(snapshot) {
+        var weeks = snapshot.val() || {};
+        var keys = Object.keys(weeks);
+
+        var html = '<div class="section-title">🏋️ Treningsplan</div>';
+        if (isAdmin) {
+            html += '<div class="action-buttons"><button class="btn-action btn-add" onclick="showAddTrainingModal()">+ Ny treningsuke</button></div>';
         }
 
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('active');
+        if (keys.length === 0) {
+            html += '<div class="card"><p style="text-align:center;padding:20px;">Ingen treningsuker lagt til ennå</p></div>';
         }
 
-        // Close modals on overlay click
-        document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('modal-overlay')) {
-                e.target.classList.remove('active');
+        keys.sort().reverse();
+        for (var i = 0; i < keys.length; i++) {
+            var w = weeks[keys[i]];
+            html += '<div class="training-week">' +
+                '<h3>📅 ' + (w.title || 'Uke') + '</h3>' +
+                '<div class="training-drill">🎯 ' + (w.focus || 'Ingen fokus satt') + '</div>' +
+                '<div class="training-drill">📝 ' + (w.notes || '') + '</div>' +
+                '<button class="attendance-btn" onclick="showAttendanceModal(\'' + keys[i] + '\')">📋 Oppmøte</button>' +
+                (isAdmin ? ' <button class="btn-action btn-danger" onclick="deleteTraining(\'' + keys[i] + '\')" style="padding:4px 10px;font-size:11px;margin-top:8px;">Slett</button>' : '') +
+            '</div>';
+        }
+        content.innerHTML = html;
+    });
+}
+
+function showAddTrainingModal() {
+    var modal = document.getElementById('modalContent');
+    modal.innerHTML =
+        '<h3>Ny treningsuke</h3>' +
+        '<div class="form-group"><label>Tittel (f.eks. Uke 3)</label><input type="text" id="trainingTitle" placeholder="Uke 3 - Januar"></div>' +
+        '<div class="form-group"><label>Fokusområde</label><input type="text" id="trainingFocus" placeholder="Pasning og mottak"></div>' +
+        '<div class="form-group"><label>Notater</label><input type="text" id="trainingNotes" placeholder="Husk drikke!"></div>' +
+        '<div class="modal-buttons">' +
+            '<button class="btn-cancel" onclick="closeModal()">Avbryt</button>' +
+            '<button class="btn-save" onclick="addTraining()">Lagre</button>' +
+        '</div>';
+    document.getElementById('modalOverlay').classList.add('active');
+}
+
+function addTraining() {
+    var title = document.getElementById('trainingTitle').value.trim();
+    var focus = document.getElementById('trainingFocus').value.trim();
+    var notes = document.getElementById('trainingNotes').value.trim();
+    if (!title) return;
+    db.ref('teams/j2018/training').push({
+        title: title,
+        focus: focus,
+        notes: notes,
+        createdAt: firebase.database.ServerValue.TIMESTAMP
+    });
+    closeModal();
+}
+
+function deleteTraining(key) {
+    if (confirm('Slette denne treningsuken?')) {
+        db.ref('teams/j2018/training/' + key).remove();
+    }
+}
+
+function showAttendanceModal(weekKey) {
+    db.ref('teams/j2018/players').once('value', function(snapshot) {
+        var players = snapshot.val() || {};
+        var keys = Object.keys(players);
+
+        db.ref('teams/j2018/training/' + weekKey + '/attendance').once('value', function(attSnap) {
+            var attendance = attSnap.val() || {};
+
+            var modal = document.getElementById('modalContent');
+            var html = '<h3>📋 Oppmøte</h3><div class="attendance-list">';
+            for (var i = 0; i < keys.length; i++) {
+                var checked = attendance[keys[i]] ? 'checked' : '';
+                html += '<div class="attendance-item">' +
+                    '<input type="checkbox" id="att_' + keys[i] + '" ' + checked + '>' +
+                    '<label for="att_' + keys[i] + '">' + players[keys[i]].name + '</label>' +
+                '</div>';
             }
+            html += '</div>' +
+                '<div class="modal-buttons">' +
+                    '<button class="btn-cancel" onclick="closeModal()">Lukk</button>' +
+                    '<button class="btn-save" onclick="saveAttendance(\'' + weekKey + '\')">Lagre</button>' +
+                '</div>';
+            modal.innerHTML = html;
+            document.getElementById('modalOverlay').classList.add('active');
+        });
+    });
+}
+
+function saveAttendance(weekKey) {
+    db.ref('teams/j2018/players').once('value', function(snapshot) {
+        var players = snapshot.val() || {};
+        var keys = Object.keys(players);
+        var attendance = {};
+        for (var i = 0; i < keys.length; i++) {
+            var cb = document.getElementById('att_' + keys[i]);
+            if (cb && cb.checked) attendance[keys[i]] = true;
+        }
+        db.ref('teams/j2018/training/' + weekKey + '/attendance').set(attendance);
+        closeModal();
+    });
+}
+
+// MATCHES
+function loadMatches() {
+    var content = document.getElementById('mainContent');
+    content.innerHTML = '<div class="loading">Laster...</div>';
+
+    db.ref('teams/j2018/matches').on('value', function(snapshot) {
+        var matches = snapshot.val() || {};
+        var keys = Object.keys(matches);
+
+        var html = '<div class="section-title">🏟️ Kamper</div>';
+        if (isAdmin) {
+            html += '<div class="action-buttons"><button class="btn-action btn-add" onclick="showAddMatchModal()">+ Ny kamp</button></div>';
+        }
+
+        if (keys.length === 0) {
+            html += '<div class="card"><p style="text-align:center;padding:20px;">Ingen kamper lagt til ennå</p></div>';
+        }
+
+        keys.sort(function(a, b) {
+            var da = matches[a].date || '';
+            var db2 = matches[b].date || '';
+            return db2.localeCompare(da);
         });
 
-        // ============================================
-        // TOAST
-        // ============================================
-        function showToast(message, type) {
-            var container = document.getElementById('toastContainer');
-            var toast = document.createElement('div');
-            toast.className = 'toast ' + (type || 'info');
-            toast.textContent = message;
-            container.appendChild(toast);
+        for (var i = 0; i < keys.length; i++) {
+            var m = matches[keys[i]];
+            var goalsFor = m.goalsFor !== undefined ? m.goalsFor : '-';
+            var goalsAgainst = m.goalsAgainst !== undefined ? m.goalsAgainst : '-';
 
-            setTimeout(function() {
-                toast.style.opacity = '0';
-                toast.style.transition = 'opacity 0.3s';
-                setTimeout(function() {
-                    if (toast.parentNode) toast.parentNode.removeChild(toast);
-                }, 300);
-            }, 3000);
+            html += '<div class="card">' +
+                '<div style="text-align:center;font-size:12px;color:#64748b;margin-bottom:8px;">' + (m.date || '') + '</div>' +
+                '<div class="match-score">' +
+                    '<div class="match-team"><div class="match-team-name">Nord J2018</div></div>' +
+                    '<div class="match-vs">' + goalsFor + ' - ' + goalsAgainst + '</div>' +
+                    '<div class="match-team"><div class="match-team-name">' + (m.opponent || '?') + '</div></div>' +
+                '</div>' +
+                (isAdmin ? '<div style="text-align:center;margin-top:8px;">' +
+                    '<button class="btn-action btn-edit" onclick="showEditMatchModal(\'' + keys[i] + '\')" style="padding:4px 10px;font-size:11px;">Rediger</button> ' +
+                    '<button class="btn-action btn-danger" onclick="deleteMatch(\'' + keys[i] + '\')" style="padding:4px 10px;font-size:11px;">Slett</button>' +
+                '</div>' : '') +
+            '</div>';
         }
-    </script>
+        content.innerHTML = html;
+    });
+}
+
+function showAddMatchModal() {
+    var modal = document.getElementById('modalContent');
+    modal.innerHTML =
+        '<h3>Ny kamp</h3>' +
+        '<div class="form-group"><label>Motstander</label><input type="text" id="matchOpponent" placeholder="Lagsnavn"></div>' +
+        '<div class="form-group"><label>Dato</label><input type="date" id="matchDate"></div>' +
+        '<div class="form-group"><label>Mål for oss</label><input type="number" id="matchGoalsFor" min="0" value="0"></div>' +
+        '<div class="form-group"><label>Mål imot</label><input type="number" id="matchGoalsAgainst" min="0" value="0"></div>' +
+        '<div class="modal-buttons">' +
+            '<button class="btn-cancel" onclick="closeModal()">Avbryt</button>' +
+            '<button class="btn-save" onclick="addMatch()">Lagre</button>' +
+        '</div>';
+    document.getElementById('modalOverlay').classList.add('active');
+}
+
+function addMatch() {
+    var opponent = document.getElementById('matchOpponent').value.trim();
+    var date = document.getElementById('matchDate').value;
+    var goalsFor = document.getElementById('matchGoalsFor').value;
+    var goalsAgainst = document.getElementById('matchGoalsAgainst').value;
+    if (!opponent) return;
+    db.ref('teams/j2018/matches').push({
+        opponent: opponent,
+        date: date,
+        goalsFor: parseInt(goalsFor) || 0,
+        goalsAgainst: parseInt(goalsAgainst) || 0,
+        createdAt: firebase.database.ServerValue.TIMESTAMP
+    });
+    closeModal();
+}
+
+function showEditMatchModal(key) {
+    db.ref('teams/j2018/matches/' + key).once('value', function(snapshot) {
+        var m = snapshot.val();
+        var modal = document.getElementById('modalContent');
+        modal.innerHTML =
+            '<h3>Rediger kamp</h3>' +
+            '<div class="form-group"><label>Motstander</label><input type="text" id="matchOpponent" value="' + (m.opponent || '') + '"></div>' +
+            '<div class="form-group"><label>Dato</label><input type="date" id="matchDate" value="' + (m.date || '') + '"></div>' +
+            '<div class="form-group"><label>Mål for oss</label><input type="number" id="matchGoalsFor" min="0" value="' + (m.goalsFor || 0) + '"></div>' +
+            '<div class="form-group"><label>Mål imot</label><input type="number" id="matchGoalsAgainst" min="0" value="' + (m.goalsAgainst || 0) + '"></div>' +
+            '<div class="modal-buttons">' +
+                '<button class="btn-cancel" onclick="closeModal()">Avbryt</button>' +
+                '<button class="btn-save" onclick="updateMatch(\'' + key + '\')">Oppdater</button>' +
+            '</div>';
+        document.getElementById('modalOverlay').classList.add('active');
+    });
+}
+
+function updateMatch(key) {
+    var opponent = document.getElementById('matchOpponent').value.trim();
+    var date = document.getElementById('matchDate').value;
+    var goalsFor = document.getElementById('matchGoalsFor').value;
+    var goalsAgainst = document.getElementById('matchGoalsAgainst').value;
+    db.ref('teams/j2018/matches/' + key).update({
+        opponent: opponent,
+        date: date,
+        goalsFor: parseInt(goalsFor) || 0,
+        goalsAgainst: parseInt(goalsAgainst) || 0
+    });
+    closeModal();
+}
+
+function deleteMatch(key) {
+    if (confirm('Slette denne kampen?')) {
+        db.ref('teams/j2018/matches/' + key).remove();
+    }
+}
+
+// TROPHY
+function showTrophyModal() {
+    db.ref('teams/j2018/players').once('value', function(snapshot) {
+        var players = snapshot.val() || {};
+        var keys = Object.keys(players);
+        var options = '<option value="">Velg spiller</option>';
+        for (var i = 0; i < keys.length; i++) {
+            options += '<option value="' + players[keys[i]].name + '">' + players[keys[i]].name + '</option>';
+        }
+        var modal = document.getElementById('modalContent');
+        modal.innerHTML =
+            '<h3>🏆 Ukens Spiller</h3>' +
+            '<div class="form-group"><label>Spiller</label><select id="trophyPlayer">' + options + '</select></div>' +
+            '<div class="form-group"><label>Begrunnelse</label><input type="text" id="trophyReason" placeholder="Fantastisk innsats!"></div>' +
+            '<div class="modal-buttons">' +
+                '<button class="btn-cancel" onclick="closeModal()">Avbryt</button>' +
+                '<button class="btn-save" onclick="saveTrophy()">Lagre</button>' +
+            '</div>';
+        document.getElementById('modalOverlay').classList.add('active');
+    });
+}
+
+function saveTrophy() {
+    var name = document.getElementById('trophyPlayer').value;
+    var reason = document.getElementById('trophyReason').value.trim();
+    if (!name) return;
+    db.ref('teams/j2018/trophy').set({
+        name: name,
+        reason: reason,
+        updatedAt: firebase.database.ServerValue.TIMESTAMP
+    });
+    closeModal();
+    loadDashboard();
+}
+
+// SETTINGS
+function loadSettings() {
+    var content = document.getElementById('mainContent');
+    content.innerHTML = '<div class="loading">Laster...</div>';
+
+    db.ref('teams/j2018/coaches').on('value', function(snapshot) {
+        var coaches = snapshot.val() || {};
+        var keys = Object.keys(coaches);
+
+        var html = '<div class="section-title">⚙️ Innstillinger</div>';
+
+        // Active coaches
+        html += '<div class="card"><h3>Aktive trenere</h3>';
+        for (var i = 0; i < keys.length; i++) {
+            var c = coaches[keys[i]];
+            if (c.role === 'admin' || c.role === 'coach') {
+                var badge = c.role === 'admin' ? '<span class="badge badge-admin">Admin</span>' : '<span class="badge badge-coach">Trener</span>';
+                html += '<div class="coach-item">' +
+                    '<div><div class="coach-email">' + (c.name || c.email) + '</div><div class="coach-role">' + (c.email || '') + '</div></div>' +
+                    badge +
+                '</div>';
+            }
+        }
+        html += '</div>';
+
+        // Pending
+        if (isAdmin) {
+            var hasPending = false;
+            var pendingHtml = '<div class="card"><h3>⏳ Ventende forespørsler</h3>';
+            for (var j = 0; j < keys.length; j++) {
+                var pc = coaches[keys[j]];
+                if (pc.role === 'pending') {
+                    hasPending = true;
+                    pendingHtml += '<div class="coach-item">' +
+                        '<div><div class="coach-email">' + (pc.name || pc.email) + '</div><div class="coach-role">' + (pc.email || '') + '</div></div>' +
+                        '<div>' +
+                            '<button class="btn-action btn-add" onclick="approveCoach(\'' + keys[j] + '\')" style="padding:4px 10px;font-size:11px;">Godkjenn</button> ' +
+                            '<button class="btn-action btn-danger" onclick="rejectCoach(\'' + keys[j] + '\')" style="padding:4px 10px;font-size:11px;">Avvis</button>' +
+                        '</div>' +
+                    '</div>';
+                }
+            }
+            pendingHtml += '</div>';
+            if (hasPending) html += pendingHtml;
+
+            // Invite
+            html += '<div class="card"><h3>📧 Inviter trener</h3>' +
+                '<div class="form-group"><input type="email" id="inviteEmail" placeholder="trener@epost.no"></div>' +
+                '<button class="btn-action btn-add" onclick="inviteCoach()">Send invitasjon</button>' +
+            '</div>';
+        }
+
+        content.innerHTML = html;
+    });
+}
+
+function approveCoach(uid) {
+    db.ref('teams/j2018/coaches/' + uid + '/role').set('coach');
+}
+
+function rejectCoach(uid) {
+    if (confirm('Avvise denne brukeren?')) {
+        db.ref('teams/j2018/coaches/' + uid).remove();
+    }
+}
+
+function inviteCoach() {
+    var email = document.getElementById('inviteEmail').value.trim();
+    if (!email) return;
+    db.ref('teams/j2018/invitations').push({
+        email: email,
+        invitedBy: currentUser.uid,
+        createdAt: firebase.database.ServerValue.TIMESTAMP
+    });
+    document.getElementById('inviteEmail').value = '';
+    alert('Invitasjon registrert for ' + email);
+}
+
+// MODAL
+function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('active');
+}
+
+document.getElementById('modalOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+});
+</script>
+
 </body>
 </html>

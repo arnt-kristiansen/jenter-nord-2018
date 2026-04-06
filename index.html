@@ -27,11 +27,154 @@ body {
   background: var(--light-bg);
   color: var(--dark);
   min-height: 100vh;
+}
+
+body.app-mode {
   padding-top: 120px;
   padding-bottom: 20px;
 }
 
-/* CONNECTION STATUS */
+/* ====== LOGIN SCREEN ====== */
+.login-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px;
+  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, var(--primary-light) 100%);
+}
+
+.login-logo {
+  text-align: center;
+  color: var(--white);
+  margin-bottom: 32px;
+}
+
+.login-logo .logo-icon { font-size: 64px; }
+.login-logo h1 { font-size: 28px; font-weight: 800; margin-top: 8px; }
+.login-logo p { font-size: 14px; opacity: 0.8; margin-top: 4px; }
+
+.login-box {
+  background: var(--white);
+  border-radius: 20px;
+  padding: 28px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+.login-box h2 {
+  text-align: center;
+  color: var(--primary);
+  margin-bottom: 20px;
+  font-size: 20px;
+}
+
+.login-box input {
+  width: 100%;
+  padding: 14px;
+  border: 2px solid #E5E7EB;
+  border-radius: 12px;
+  font-size: 15px;
+  margin-bottom: 12px;
+  transition: border-color 0.2s;
+}
+
+.login-box input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.login-box label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gray);
+  margin-bottom: 4px;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--white);
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  margin-top: 8px;
+  transition: all 0.2s;
+}
+
+.login-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(0,59,126,0.4); }
+.login-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+.login-toggle {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 14px;
+  color: var(--gray);
+}
+
+.login-toggle a {
+  color: var(--primary);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.login-toggle a:hover { text-decoration: underline; }
+
+.login-error {
+  background: #FEE2E2;
+  color: var(--danger);
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  margin-bottom: 12px;
+  display: none;
+}
+
+.login-error.show { display: block; }
+
+.forgot-link {
+  text-align: center;
+  margin-top: 12px;
+}
+
+.forgot-link a {
+  color: var(--gray);
+  font-size: 13px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.forgot-link a:hover { color: var(--primary); }
+
+/* ====== UNAUTHORIZED SCREEN ====== */
+.unauthorized-screen {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px;
+  background: var(--light-bg);
+  text-align: center;
+}
+
+.unauthorized-screen .unauth-icon { font-size: 72px; margin-bottom: 16px; }
+.unauthorized-screen h2 { color: var(--primary); font-size: 22px; margin-bottom: 12px; }
+.unauthorized-screen p { color: var(--gray); font-size: 15px; max-width: 350px; line-height: 1.5; margin-bottom: 8px; }
+
+.unauthorized-screen .btn {
+  margin-top: 20px;
+  padding: 12px 32px;
+}
+
+/* ====== CONNECTION STATUS ====== */
 .connection-status {
   position: fixed;
   top: 0;
@@ -45,24 +188,12 @@ body {
   transition: all 0.3s;
 }
 
-.connection-status.connecting {
-  background: var(--warning);
-  color: #000;
-}
+.connection-status.connecting { background: var(--warning); color: #000; }
+.connection-status.connected { background: var(--success); color: var(--white); transform: translateY(-100%); transition-delay: 2s; }
+.connection-status.error { background: var(--danger); color: var(--white); }
+.connection-status.hidden { display: none; }
 
-.connection-status.connected {
-  background: var(--success);
-  color: var(--white);
-  transform: translateY(-100%);
-  transition-delay: 2s;
-}
-
-.connection-status.error {
-  background: var(--danger);
-  color: var(--white);
-}
-
-/* TOP NAVIGATION */
+/* ====== TOP NAVIGATION ====== */
 .top-header {
   position: fixed;
   top: 0;
@@ -71,30 +202,48 @@ body {
   z-index: 1000;
   background: linear-gradient(135deg, var(--primary-dark), var(--primary));
   box-shadow: 0 2px 15px rgba(0,59,126,0.3);
+  display: none;
 }
 
 .header-title {
-  text-align: center;
-  padding: 10px 16px 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px 4px;
   color: var(--white);
 }
 
-.header-title h1 {
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
+.header-title .title-left h1 { font-size: 17px; font-weight: 700; letter-spacing: 0.5px; }
+.header-title .title-left span { font-size: 11px; opacity: 0.8; }
+
+.header-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.8);
 }
 
-.header-title span {
+.header-user .user-name { max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.logout-btn {
+  background: rgba(255,255,255,0.2);
+  border: none;
+  color: var(--white);
+  padding: 4px 10px;
+  border-radius: 6px;
   font-size: 11px;
-  opacity: 0.8;
+  font-weight: 600;
+  cursor: pointer;
 }
+
+.logout-btn:hover { background: rgba(255,255,255,0.3); }
 
 .top-nav {
   display: flex;
   justify-content: space-around;
-  padding: 6px 8px 8px;
-  gap: 4px;
+  padding: 4px 4px 8px;
+  gap: 2px;
 }
 
 .top-nav button {
@@ -102,12 +251,12 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
-  padding: 6px 2px;
+  gap: 1px;
+  padding: 5px 2px;
   border: none;
   background: transparent;
   color: rgba(255,255,255,0.6);
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 500;
   border-radius: 8px;
   cursor: pointer;
@@ -119,15 +268,13 @@ body {
   color: var(--white);
 }
 
-.top-nav button .nav-icon {
-  font-size: 20px;
-}
+.top-nav button .nav-icon { font-size: 18px; }
 
-/* PAGES */
+/* ====== PAGES ====== */
 .page { display: none; padding: 16px; max-width: 600px; margin: 0 auto; }
 .page.active { display: block; }
 
-/* CARDS */
+/* ====== CARDS ====== */
 .card {
   background: var(--white);
   border-radius: 16px;
@@ -144,12 +291,9 @@ body {
   margin-bottom: 16px;
 }
 
-.card-header h2 {
-  font-size: 18px;
-  color: var(--primary);
-}
+.card-header h2 { font-size: 18px; color: var(--primary); }
 
-/* BUTTONS */
+/* ====== BUTTONS ====== */
 .btn {
   padding: 10px 20px;
   border: none;
@@ -160,23 +304,16 @@ body {
   transition: all 0.2s;
 }
 
-.btn-primary {
-  background: linear-gradient(135deg, var(--primary), var(--primary-light));
-  color: var(--white);
-}
-
+.btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: var(--white); }
 .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,59,126,0.3); }
-
 .btn-success { background: var(--success); color: var(--white); }
 .btn-danger { background: var(--danger); color: var(--white); }
 .btn-warning { background: var(--warning); color: var(--white); }
-
 .btn-sm { padding: 6px 12px; font-size: 12px; }
-
 .btn-full { width: 100%; padding: 14px; font-size: 16px; }
 
-/* INPUTS */
-input, select, textarea {
+/* ====== INPUTS ====== */
+.app-input, .page input, .page select, .page textarea, .modal input, .modal select, .modal textarea {
   width: 100%;
   padding: 12px;
   border: 2px solid #E5E7EB;
@@ -187,12 +324,13 @@ input, select, textarea {
   font-family: inherit;
 }
 
-input:focus, select:focus, textarea:focus {
+.page input:focus, .page select:focus, .page textarea:focus,
+.modal input:focus, .modal select:focus, .modal textarea:focus {
   outline: none;
   border-color: var(--primary);
 }
 
-label {
+.page label, .modal label {
   display: block;
   font-size: 13px;
   font-weight: 600;
@@ -200,7 +338,7 @@ label {
   margin-bottom: 4px;
 }
 
-/* STAT GRID */
+/* ====== STAT GRID ====== */
 .stat-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -216,23 +354,11 @@ label {
   text-align: center;
 }
 
-.stat-card .stat-number {
-  font-size: 32px;
-  font-weight: 800;
-}
+.stat-card .stat-number { font-size: 32px; font-weight: 800; }
+.stat-card .stat-label { font-size: 11px; opacity: 0.85; margin-top: 4px; }
+.stat-card.gold { background: linear-gradient(135deg, var(--accent), #FFB800); color: var(--primary-dark); }
 
-.stat-card .stat-label {
-  font-size: 11px;
-  opacity: 0.85;
-  margin-top: 4px;
-}
-
-.stat-card.gold {
-  background: linear-gradient(135deg, var(--accent), #FFB800);
-  color: var(--primary-dark);
-}
-
-/* PLAYER LIST */
+/* ====== PLAYER LIST ====== */
 .player-item {
   display: flex;
   justify-content: space-between;
@@ -260,10 +386,9 @@ label {
 
 .player-name { font-weight: 600; font-size: 15px; }
 .player-pos { font-size: 12px; color: var(--gray); }
-
 .player-actions { display: flex; gap: 6px; }
 
-/* TRAINING BLOCKS */
+/* ====== TRAINING BLOCKS ====== */
 .training-block {
   background: var(--light-bg);
   border-radius: 12px;
@@ -277,12 +402,7 @@ label {
 .training-block.block-game { border-left-color: var(--warning); }
 .training-block.block-cooldown { border-left-color: var(--gray); }
 
-.block-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-}
+.block-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
 
 .block-type {
   font-size: 11px;
@@ -300,47 +420,24 @@ label {
 .block-type.cooldown { background: var(--gray); }
 
 .block-duration { font-size: 12px; color: var(--gray); font-weight: 600; }
-
 .block-title { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
 .block-desc { font-size: 13px; color: var(--gray); line-height: 1.4; }
 
-/* MATCH */
-.match-score {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-  padding: 20px;
-  margin-bottom: 16px;
-}
-
+/* ====== MATCH ====== */
+.match-score { display: flex; align-items: center; justify-content: center; gap: 20px; padding: 20px; margin-bottom: 16px; }
 .match-team { text-align: center; }
 .match-team-name { font-weight: 700; font-size: 16px; margin-bottom: 8px; }
-
-.score-display {
-  font-size: 48px;
-  font-weight: 800;
-  color: var(--primary);
-  min-width: 60px;
-  text-align: center;
-}
+.score-display { font-size: 48px; font-weight: 800; color: var(--primary); min-width: 60px; text-align: center; }
 
 .score-btn {
-  width: 36px;
-  height: 36px;
-  border: none;
-  border-radius: 50%;
-  font-size: 18px;
-  font-weight: 700;
-  cursor: pointer;
-  color: var(--white);
-  margin: 4px;
+  width: 36px; height: 36px; border: none; border-radius: 50%;
+  font-size: 18px; font-weight: 700; cursor: pointer; color: var(--white); margin: 4px;
 }
 
 .score-btn.plus { background: var(--success); }
 .score-btn.minus { background: var(--danger); }
 
-/* TROPHY */
+/* ====== TROPHY ====== */
 .trophy-card {
   background: linear-gradient(135deg, #FFD700, #FFB800);
   border-radius: 16px;
@@ -355,23 +452,57 @@ label {
 .trophy-player { font-size: 24px; font-weight: 700; margin: 8px 0; }
 .trophy-reason { font-size: 14px; opacity: 0.8; }
 
-/* GOAL LIST */
+/* ====== GOALS ====== */
 .goal-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 12px;
-  background: var(--light-bg);
-  border-radius: 10px;
-  margin-bottom: 8px;
-  cursor: pointer;
+  display: flex; align-items: flex-start; gap: 12px; padding: 12px;
+  background: var(--light-bg); border-radius: 10px; margin-bottom: 8px; cursor: pointer;
 }
 
 .goal-check { font-size: 20px; user-select: none; }
 .goal-text { font-size: 14px; line-height: 1.4; }
 .goal-text.completed { text-decoration: line-through; opacity: 0.5; }
 
-/* MODAL */
+/* ====== COACH ITEM ====== */
+.coach-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: var(--light-bg);
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+
+.coach-info { display: flex; align-items: center; gap: 12px; }
+
+.coach-avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  display: flex; align-items: center; justify-content: center;
+  color: var(--white); font-weight: 700; font-size: 16px;
+}
+
+.coach-name { font-weight: 600; font-size: 15px; }
+.coach-email { font-size: 12px; color: var(--gray); }
+
+.role-badge {
+  font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+
+.role-badge.admin { background: var(--accent); color: var(--primary-dark); }
+.role-badge.coach { background: var(--primary); color: var(--white); }
+
+.invite-item {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 12px; background: #FFF8E1; border-radius: 10px; margin-bottom: 8px;
+  border: 1px dashed var(--warning);
+}
+
+.invite-email { font-size: 14px; color: var(--dark); }
+.invite-status { font-size: 12px; color: var(--warning); font-weight: 600; }
+
+/* ====== MODAL ====== */
 .modal-overlay {
   display: none;
   position: fixed;
@@ -396,146 +527,65 @@ label {
 }
 
 .modal h2 { margin-bottom: 16px; color: var(--primary); }
-
 .modal-actions { display: flex; gap: 10px; margin-top: 16px; }
 .modal-actions .btn { flex: 1; }
 
-/* ATTENDANCE */
+/* ====== ATTENDANCE ====== */
 .attendance-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 12px;
-  background: var(--light-bg);
-  border-radius: 10px;
-  margin-bottom: 6px;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 12px; background: var(--light-bg); border-radius: 10px; margin-bottom: 6px;
 }
 
 .att-toggle {
-  width: 50px;
-  height: 28px;
-  border-radius: 14px;
-  border: none;
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--white);
-  transition: all 0.2s;
+  width: 50px; height: 28px; border-radius: 14px; border: none; cursor: pointer;
+  font-size: 12px; font-weight: 700; color: var(--white); transition: all 0.2s;
 }
 
 .att-toggle.present { background: var(--success); }
 .att-toggle.absent { background: var(--danger); }
 
-/* SESSION LIST */
+/* ====== SESSION LIST ====== */
 .session-item {
-  background: var(--light-bg);
-  border-radius: 12px;
-  padding: 14px;
-  margin-bottom: 10px;
-  cursor: pointer;
-  transition: all 0.2s;
+  background: var(--light-bg); border-radius: 12px; padding: 14px;
+  margin-bottom: 10px; cursor: pointer; transition: all 0.2s;
 }
 
 .session-item:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-
 .session-date { font-weight: 700; color: var(--primary); font-size: 14px; }
 .session-info { font-size: 12px; color: var(--gray); margin-top: 4px; }
 
-/* HISTORY ITEM */
-.history-item {
-  background: var(--light-bg);
-  border-radius: 12px;
-  padding: 14px;
-  margin-bottom: 10px;
-}
-
+.history-item { background: var(--light-bg); border-radius: 12px; padding: 14px; margin-bottom: 10px; }
 .history-date { font-size: 12px; color: var(--gray); }
 .history-result { font-size: 18px; font-weight: 800; color: var(--primary); }
 
-/* EMPTY STATE */
-.empty-state {
-  text-align: center;
-  padding: 40px 20px;
-  color: var(--gray);
-}
-
+.empty-state { text-align: center; padding: 40px 20px; color: var(--gray); }
 .empty-state .empty-icon { font-size: 48px; margin-bottom: 12px; }
 .empty-state p { font-size: 14px; }
 
-/* ADD BLOCK BUTTON */
 .add-block-btn {
-  width: 100%;
-  padding: 14px;
-  border: 2px dashed var(--primary);
-  border-radius: 12px;
-  background: transparent;
-  color: var(--primary);
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  margin-bottom: 10px;
-  transition: all 0.2s;
+  width: 100%; padding: 14px; border: 2px dashed var(--primary); border-radius: 12px;
+  background: transparent; color: var(--primary); font-size: 14px; font-weight: 600;
+  cursor: pointer; margin-bottom: 10px; transition: all 0.2s;
 }
 
 .add-block-btn:hover { background: rgba(0,59,126,0.05); }
+.remove-block-btn { background: none; border: none; color: var(--danger); font-size: 18px; cursor: pointer; padding: 2px 6px; }
 
-.remove-block-btn {
-  background: none;
-  border: none;
-  color: var(--danger);
-  font-size: 18px;
-  cursor: pointer;
-  padding: 2px 6px;
-}
-
-/* WEEK SELECTOR */
-.week-selector {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  margin-bottom: 16px;
-}
+.week-selector { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 16px; }
 
 .week-selector button {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 2px solid var(--primary);
-  background: var(--white);
-  color: var(--primary);
-  font-size: 18px;
-  font-weight: 700;
-  cursor: pointer;
+  width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--primary);
+  background: var(--white); color: var(--primary); font-size: 18px; font-weight: 700; cursor: pointer;
 }
 
-.week-selector button:hover {
-  background: var(--primary);
-  color: var(--white);
-}
+.week-selector button:hover { background: var(--primary); color: var(--white); }
+.week-selector span { font-size: 16px; font-weight: 700; color: var(--primary); }
 
-.week-selector span {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--primary);
-}
-
-/* TOAST NOTIFICATION */
 .toast {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%) translateY(100px);
-  background: var(--dark);
-  color: var(--white);
-  padding: 12px 24px;
-  border-radius: 12px;
-  font-size: 14px;
-  font-weight: 600;
-  z-index: 3000;
-  transition: transform 0.3s;
-  max-width: 90%;
-  text-align: center;
+  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px);
+  background: var(--dark); color: var(--white); padding: 12px 24px; border-radius: 12px;
+  font-size: 14px; font-weight: 600; z-index: 3000; transition: transform 0.3s;
+  max-width: 90%; text-align: center;
 }
 
 .toast.show { transform: translateX(-50%) translateY(0); }
@@ -543,21 +593,82 @@ label {
 .toast.success { background: var(--success); }
 
 @media (max-width: 380px) {
-  .top-nav button { font-size: 9px; }
-  .top-nav button .nav-icon { font-size: 18px; }
+  .top-nav button { font-size: 8px; }
+  .top-nav button .nav-icon { font-size: 16px; }
 }
 </style>
 </head>
 <body>
 
-<!-- CONNECTION STATUS -->
-<div class="connection-status connecting" id="connection-status">⏳ Kobler til database...</div>
+<!-- ====== LOGIN SCREEN ====== -->
+<div id="login-screen" class="login-screen">
+  <div class="login-logo">
+    <div class="logo-icon">⚽</div>
+    <h1>Nord Jenter 2018</h1>
+    <p>Fotballklubb Nord — Karmøy</p>
+  </div>
+  <div class="login-box">
+    <!-- LOGIN FORM -->
+    <div id="login-form">
+      <h2>🔐 Logg inn</h2>
+      <div class="login-error" id="login-error"></div>
+      <label>E-post</label>
+      <input type="email" id="login-email" placeholder="din@epost.no">
+      <label>Passord</label>
+      <input type="password" id="login-password" placeholder="Ditt passord">
+      <button class="login-btn" id="login-btn" onclick="doLogin()">Logg inn</button>
+      <div class="forgot-link">
+        <a onclick="doResetPassword()">Glemt passord?</a>
+      </div>
+      <div class="login-toggle">
+        Ny bruker? <a onclick="showRegisterForm()">Opprett konto</a>
+      </div>
+    </div>
 
-<!-- TOP NAVIGATION -->
-<div class="top-header">
+    <!-- REGISTER FORM -->
+    <div id="register-form" style="display:none;">
+      <h2>📝 Opprett konto</h2>
+      <div class="login-error" id="register-error"></div>
+      <label>Ditt navn</label>
+      <input type="text" id="register-name" placeholder="Fornavn Etternavn">
+      <label>E-post</label>
+      <input type="email" id="register-email" placeholder="din@epost.no">
+      <label>Passord</label>
+      <input type="password" id="register-password" placeholder="Minst 6 tegn">
+      <label>Bekreft passord</label>
+      <input type="password" id="register-password2" placeholder="Skriv passord på nytt">
+      <button class="login-btn" id="register-btn" onclick="doRegister()">Opprett konto</button>
+      <div class="login-toggle">
+        Har du konto? <a onclick="showLoginForm()">Logg inn</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== UNAUTHORIZED SCREEN ====== -->
+<div id="unauthorized-screen" class="unauthorized-screen">
+  <div class="unauth-icon">🔒</div>
+  <h2>Venter på godkjenning</h2>
+  <p>Du er registrert, men hovedtrener må gi deg tilgang først.</p>
+  <p id="unauth-email" style="font-weight:600;color:var(--primary);"></p>
+  <p style="font-size:13px;margin-top:16px;">Kontakt hovedtrener og be om å bli lagt til som trener i appen.</p>
+  <button class="btn btn-danger" onclick="doLogout()" style="margin-top:20px;">Logg ut</button>
+</div>
+
+<!-- ====== CONNECTION STATUS ====== -->
+<div class="connection-status hidden" id="connection-status"></div>
+
+<!-- ====== TOP NAVIGATION ====== -->
+<div class="top-header" id="top-header">
   <div class="header-title">
-    <h1>⚽ Nord Jenter 2018</h1>
-    <span>Fotballklubb Nord — Karmøy</span>
+    <div class="title-left">
+      <h1>⚽ Nord Jenter 2018</h1>
+      <span>Fotballklubb Nord — Karmøy</span>
+    </div>
+    <div class="header-user">
+      <span class="user-name" id="header-user-name"></span>
+      <button class="logout-btn" onclick="doLogout()">Logg ut</button>
+    </div>
   </div>
   <nav class="top-nav">
     <button class="active" onclick="showPage('dashboard', this)">
@@ -578,13 +689,16 @@ label {
     <button onclick="showPage('goals', this)">
       <span class="nav-icon">🎯</span>Mål
     </button>
+    <button onclick="showPage('settings', this)">
+      <span class="nav-icon">⚙️</span>Innst.
+    </button>
   </nav>
 </div>
 
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<!-- DASHBOARD -->
+<!-- ====== DASHBOARD ====== -->
 <div id="page-dashboard" class="page active">
   <div class="stat-grid">
     <div class="stat-card">
@@ -604,47 +718,36 @@ label {
       <div class="stat-label">Trofeer delt ut</div>
     </div>
   </div>
-
   <div class="card">
     <div class="card-header"><h2>📅 Neste trening</h2></div>
-    <div id="next-training">
-      <div class="empty-state"><p>Ingen kommende treninger planlagt</p></div>
-    </div>
+    <div id="next-training"><div class="empty-state"><p>Ingen kommende treninger</p></div></div>
   </div>
-
   <div class="card">
     <div class="card-header"><h2>📋 Siste aktivitet</h2></div>
-    <div id="recent-activity">
-      <div class="empty-state"><p>Ingen aktivitet ennå</p></div>
-    </div>
+    <div id="recent-activity"><div class="empty-state"><p>Ingen aktivitet ennå</p></div></div>
   </div>
 </div>
 
-<!-- PLAYERS PAGE -->
+<!-- ====== PLAYERS ====== -->
 <div id="page-players" class="page">
   <div class="card">
     <div class="card-header">
       <h2>👥 Spillere</h2>
       <button class="btn btn-primary btn-sm" onclick="openAddPlayer()">+ Legg til</button>
     </div>
-    <div id="player-list">
-      <div class="empty-state"><div class="empty-icon">👥</div><p>Ingen spillere lagt til ennå</p></div>
-    </div>
+    <div id="player-list"><div class="empty-state"><div class="empty-icon">👥</div><p>Ingen spillere lagt til</p></div></div>
   </div>
 </div>
 
-<!-- TRAINING PAGE -->
+<!-- ====== TRAINING ====== -->
 <div id="page-training" class="page">
   <div class="card">
     <div class="card-header">
       <h2>⚽ Treninger</h2>
       <button class="btn btn-primary btn-sm" onclick="openAddTraining()">+ Ny trening</button>
     </div>
-    <div id="training-list">
-      <div class="empty-state"><div class="empty-icon">⚽</div><p>Ingen treninger planlagt</p></div>
-    </div>
+    <div id="training-list"><div class="empty-state"><div class="empty-icon">⚽</div><p>Ingen treninger planlagt</p></div></div>
   </div>
-
   <div class="card">
     <div class="card-header"><h2>📚 Treningsmaler</h2></div>
     <div class="week-selector">
@@ -656,20 +759,18 @@ label {
   </div>
 </div>
 
-<!-- MATCHES PAGE -->
+<!-- ====== MATCHES ====== -->
 <div id="page-matches" class="page">
   <div class="card">
     <div class="card-header">
       <h2>🏟️ Kamper</h2>
       <button class="btn btn-primary btn-sm" onclick="openAddMatch()">+ Ny kamp</button>
     </div>
-    <div id="match-list">
-      <div class="empty-state"><div class="empty-icon">🏟️</div><p>Ingen kamper registrert</p></div>
-    </div>
+    <div id="match-list"><div class="empty-state"><div class="empty-icon">🏟️</div><p>Ingen kamper registrert</p></div></div>
   </div>
 </div>
 
-<!-- TROPHY PAGE -->
+<!-- ====== TROPHY ====== -->
 <div id="page-trophy" class="page">
   <div class="card">
     <div class="card-header">
@@ -684,7 +785,7 @@ label {
   </div>
 </div>
 
-<!-- GOALS PAGE -->
+<!-- ====== GOALS ====== -->
 <div id="page-goals" class="page">
   <div class="card">
     <div class="card-header"><h2>🎯 Læringsmål (6-7 år)</h2></div>
@@ -692,31 +793,53 @@ label {
   </div>
 </div>
 
-<!-- MODALS -->
+<!-- ====== SETTINGS ====== -->
+<div id="page-settings" class="page">
+  <div class="card">
+    <div class="card-header"><h2>👤 Min profil</h2></div>
+    <div id="profile-info"></div>
+  </div>
 
-<!-- Add Player Modal -->
+  <div class="card" id="coach-management" style="display:none;">
+    <div class="card-header">
+      <h2>👥 Trenere</h2>
+      <button class="btn btn-primary btn-sm" onclick="openInviteCoach()">+ Inviter</button>
+    </div>
+    <div id="coach-list"></div>
+    <div id="invite-list" style="margin-top:16px;"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><h2>ℹ️ Om appen</h2></div>
+    <p style="font-size:13px;color:var(--gray);line-height:1.6;">
+      Nord Jenter 2018 — Treningsapp for Fotballklubb Nord, Karmøy.<br>
+      Data synkroniseres automatisk mellom alle trenere.
+    </p>
+  </div>
+</div>
+
+<!-- ====== MODALS ====== -->
+
+<!-- Add Player -->
 <div class="modal-overlay" id="modal-player">
   <div class="modal">
     <h2>👤 Legg til spiller</h2>
     <label>Navn</label>
     <input type="text" id="player-name" placeholder="Fullt navn">
     <label>Posisjon</label>
-    <select id="player-position">
-      <option value="Spiller">Spiller</option>
-      <option value="Keeper">Keeper</option>
-    </select>
+    <select id="player-position"><option value="Spiller">Spiller</option><option value="Keeper">Keeper</option></select>
     <label>Fødselsdato</label>
     <input type="date" id="player-dob">
     <label>Foresatt kontakt</label>
     <input type="text" id="player-parent" placeholder="Telefon/e-post">
     <div class="modal-actions">
       <button class="btn btn-danger" onclick="closeModal('modal-player')">Avbryt</button>
-      <button class="btn btn-primary" id="btn-save-player" onclick="savePlayer()">Lagre</button>
+      <button class="btn btn-primary" onclick="savePlayer()">Lagre</button>
     </div>
   </div>
 </div>
 
-<!-- Add Training Modal -->
+<!-- Add Training -->
 <div class="modal-overlay" id="modal-training">
   <div class="modal">
     <h2>⚽ Ny trening</h2>
@@ -728,9 +851,9 @@ label {
     <input type="text" id="training-location" placeholder="F.eks. Nordheim kunstgress">
     <label>Tema</label>
     <input type="text" id="training-theme" placeholder="F.eks. Ballkontroll">
-    <h3 style="margin:16px 0 10px; color:var(--primary);">📋 Aktivitetsblokker</h3>
+    <h3 style="margin:16px 0 10px;color:var(--primary);">📋 Aktivitetsblokker</h3>
     <div id="training-blocks"></div>
-    <button class="add-block-btn" onclick="addTrainingBlock()">+ Legg til aktivitetsblokk</button>
+    <button class="add-block-btn" onclick="addTrainingBlock()">+ Legg til blokk</button>
     <div class="modal-actions">
       <button class="btn btn-danger" onclick="closeModal('modal-training')">Avbryt</button>
       <button class="btn btn-primary" onclick="saveTraining()">Lagre</button>
@@ -738,12 +861,12 @@ label {
   </div>
 </div>
 
-<!-- View Training Modal -->
+<!-- View Training -->
 <div class="modal-overlay" id="modal-view-training">
   <div class="modal">
     <h2>⚽ Treningsdetaljer</h2>
     <div id="view-training-content"></div>
-    <h3 style="margin:16px 0 10px; color:var(--primary);">✅ Oppmøte</h3>
+    <h3 style="margin:16px 0 10px;color:var(--primary);">✅ Oppmøte</h3>
     <div id="attendance-list"></div>
     <div class="modal-actions">
       <button class="btn btn-danger" onclick="deleteTraining()">🗑️ Slett</button>
@@ -753,7 +876,7 @@ label {
   </div>
 </div>
 
-<!-- Edit Training Modal -->
+<!-- Edit Training -->
 <div class="modal-overlay" id="modal-edit-training">
   <div class="modal">
     <h2>✏️ Rediger trening</h2>
@@ -765,9 +888,9 @@ label {
     <input type="text" id="edit-training-location">
     <label>Tema</label>
     <input type="text" id="edit-training-theme">
-    <h3 style="margin:16px 0 10px; color:var(--primary);">📋 Aktivitetsblokker</h3>
+    <h3 style="margin:16px 0 10px;color:var(--primary);">📋 Aktivitetsblokker</h3>
     <div id="edit-training-blocks"></div>
-    <button class="add-block-btn" onclick="addEditTrainingBlock()">+ Legg til aktivitetsblokk</button>
+    <button class="add-block-btn" onclick="addEditTrainingBlock()">+ Legg til blokk</button>
     <div class="modal-actions">
       <button class="btn btn-danger" onclick="closeModal('modal-edit-training')">Avbryt</button>
       <button class="btn btn-primary" onclick="updateTraining()">Oppdater</button>
@@ -775,7 +898,7 @@ label {
   </div>
 </div>
 
-<!-- Add Match Modal -->
+<!-- Add Match -->
 <div class="modal-overlay" id="modal-match">
   <div class="modal">
     <h2>🏟️ Ny kamp</h2>
@@ -798,7 +921,7 @@ label {
   </div>
 </div>
 
-<!-- View Match Modal -->
+<!-- View Match -->
 <div class="modal-overlay" id="modal-view-match">
   <div class="modal">
     <h2>🏟️ Kampdetaljer</h2>
@@ -811,7 +934,7 @@ label {
   </div>
 </div>
 
-<!-- Trophy Modal -->
+<!-- Trophy -->
 <div class="modal-overlay" id="modal-trophy">
   <div class="modal">
     <h2>🏆 Ukens spiller</h2>
@@ -828,7 +951,7 @@ label {
   </div>
 </div>
 
-<!-- Use Template Modal -->
+<!-- Use Template -->
 <div class="modal-overlay" id="modal-use-template">
   <div class="modal">
     <h2>📋 Bruk treningsmal</h2>
@@ -846,14 +969,32 @@ label {
   </div>
 </div>
 
+<!-- Invite Coach -->
+<div class="modal-overlay" id="modal-invite">
+  <div class="modal">
+    <h2>📧 Inviter trener</h2>
+    <p style="font-size:13px;color:var(--gray);margin-bottom:16px;">
+      Skriv inn e-postadressen til treneren du vil gi tilgang. De må registrere seg med denne e-posten.
+    </p>
+    <label>E-postadresse</label>
+    <input type="email" id="invite-email" placeholder="trener@epost.no">
+    <label>Navn (valgfritt)</label>
+    <input type="text" id="invite-name" placeholder="Trenerens navn">
+    <div class="modal-actions">
+      <button class="btn btn-danger" onclick="closeModal('modal-invite')">Avbryt</button>
+      <button class="btn btn-primary" onclick="saveInvite()">Send invitasjon</button>
+    </div>
+  </div>
+</div>
+
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
 <script>
-// ============ FIREBASE CONFIG ============
-const firebaseConfig = {
+// ==================== FIREBASE CONFIG ====================
+var firebaseConfig = {
   apiKey: "AIzaSyBQjnKOAPpBsMVcp_oPBGLOjEMBbUGsdjY",
   authDomain: "j2018-nord.firebaseapp.com",
   projectId: "j2018-nord",
@@ -863,139 +1004,377 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-const auth = firebase.auth();
+var db = firebase.firestore();
+var auth = firebase.auth();
 
-// Enable offline persistence
 db.enablePersistence({ synchronizeTabs: true }).catch(function(err) {
-  console.log('Persistence error:', err.code);
+  console.log('Persistence:', err.code);
 });
 
-const TEAM_PATH = 'teams/j2018';
+var TEAM_PATH = 'teams/j2018';
 
-// ============ STATE ============
-let players = [];
-let trainings = [];
-let matches = [];
-let trophies = [];
-let goals = [];
-let currentWeek = 1;
-let currentTrainingId = null;
-let currentMatchId = null;
-let selectedTemplate = null;
-let blockCounter = 0;
-let editBlockCounter = 0;
-let isConnected = false;
+// ==================== STATE ====================
+var players = [];
+var trainings = [];
+var matches = [];
+var trophies = [];
+var goals = [];
+var coaches = [];
+var invites = [];
+var currentUser = null;
+var currentCoach = null;
+var currentWeek = 1;
+var currentTrainingId = null;
+var currentMatchId = null;
+var selectedTemplate = null;
+var blockCounter = 0;
+var editBlockCounter = 0;
 
-// ============ TOAST NOTIFICATIONS ============
-function showToast(message, type) {
-  var toast = document.getElementById('toast');
-  toast.textContent = message;
-  toast.className = 'toast ' + (type || '') + ' show';
-  setTimeout(function() {
-    toast.classList.remove('show');
-  }, 3000);
+// ==================== TOAST ====================
+function showToast(msg, type) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + (type || '') + ' show';
+  setTimeout(function() { t.classList.remove('show'); }, 3000);
 }
 
-// ============ CONNECTION STATUS ============
-function setStatus(status, text) {
-  var el = document.getElementById('connection-status');
-  el.className = 'connection-status ' + status;
-  el.textContent = text;
+// ==================== AUTH STATE LISTENER ====================
+auth.onAuthStateChanged(function(user) {
+  console.log('Auth state:', user ? user.email : 'none');
+  if (!user) {
+    showLoginScreen();
+  } else {
+    currentUser = user;
+    checkAuthorization(user);
+  }
+});
+
+// ==================== SCREEN MANAGEMENT ====================
+function showLoginScreen() {
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('unauthorized-screen').style.display = 'none';
+  document.getElementById('top-header').style.display = 'none';
+  document.getElementById('connection-status').className = 'connection-status hidden';
+  document.body.classList.remove('app-mode');
+  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
 }
 
-// ============ AUTH & INIT ============
-setStatus('connecting', '⏳ Kobler til database...');
+function showUnauthorizedScreen(email) {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('unauthorized-screen').style.display = 'flex';
+  document.getElementById('top-header').style.display = 'none';
+  document.getElementById('unauth-email').textContent = email;
+  document.body.classList.remove('app-mode');
+}
 
-auth.signInAnonymously()
-  .then(function(result) {
-    console.log('✅ Authenticated:', result.user.uid);
-    setStatus('connected', '✅ Tilkoblet!');
-    isConnected = true;
-    initListeners();
-  })
-  .catch(function(err) {
-    console.error('❌ Auth error:', err);
-    setStatus('error', '❌ Feil: ' + err.message);
-    showToast('Tilkoblingsfeil: ' + err.message, 'error');
-  });
+function showMainApp() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('unauthorized-screen').style.display = 'none';
+  document.getElementById('top-header').style.display = 'block';
+  document.getElementById('connection-status').className = 'connection-status connected';
+  document.getElementById('connection-status').textContent = '✅ Innlogget!';
+  document.body.classList.add('app-mode');
+  document.getElementById('page-dashboard').classList.add('active');
+  document.getElementById('header-user-name').textContent = currentCoach ? currentCoach.name : (currentUser.email || '');
 
-// ============ REAL-TIME LISTENERS ============
-function initListeners() {
-  // Players
-  db.collection(TEAM_PATH + '/players').orderBy('name')
-    .onSnapshot(function(snap) {
-      players = [];
+  // Show coach management for admins
+  if (currentCoach && currentCoach.role === 'admin') {
+    document.getElementById('coach-management').style.display = 'block';
+  } else {
+    document.getElementById('coach-management').style.display = 'none';
+  }
+
+  initDataListeners();
+}
+
+// ==================== AUTHORIZATION CHECK ====================
+function checkAuthorization(user) {
+  console.log('Checking auth for:', user.email, user.uid);
+
+  // First check if coaches collection exists
+  db.collection(TEAM_PATH + '/coaches').get()
+    .then(function(snap) {
+      if (snap.empty) {
+        // No coaches exist — first user becomes admin!
+        console.log('No coaches found. Creating admin:', user.email);
+        return db.collection(TEAM_PATH + '/coaches').doc(user.uid).set({
+          email: user.email,
+          name: user.displayName || user.email.split('@')[0],
+          role: 'admin',
+          uid: user.uid,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(function() {
+          currentCoach = { email: user.email, name: user.email.split('@')[0], role: 'admin', uid: user.uid };
+          showToast('✅ Du er registrert som hovedtrener!', 'success');
+          showMainApp();
+        });
+      }
+
+      // Coaches exist — check if current user is one
+      var coachDoc = null;
       snap.forEach(function(doc) {
-        players.push({ id: doc.id, ...doc.data() });
+        if (doc.id === user.uid) {
+          coachDoc = doc.data();
+          coachDoc.id = doc.id;
+        }
       });
-      renderPlayers();
-      updateStats();
-      console.log('📥 Players loaded:', players.length);
-    }, function(err) {
-      console.error('Players error:', err);
-      showToast('Feil ved lasting av spillere: ' + err.message, 'error');
+
+      if (coachDoc) {
+        // User is authorized!
+        currentCoach = coachDoc;
+        console.log('Authorized as:', coachDoc.role);
+        showMainApp();
+        return;
+      }
+
+      // Not in coaches — check invites
+      return db.collection(TEAM_PATH + '/invites')
+        .where('email', '==', user.email.toLowerCase())
+        .get()
+        .then(function(inviteSnap) {
+          if (!inviteSnap.empty) {
+            // Found invite — auto-approve!
+            console.log('Found invite, approving...');
+            var inviteDoc = inviteSnap.docs[0];
+            var inviteData = inviteDoc.data();
+
+            return db.collection(TEAM_PATH + '/coaches').doc(user.uid).set({
+              email: user.email,
+              name: inviteData.name || user.email.split('@')[0],
+              role: 'coach',
+              uid: user.uid,
+              createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(function() {
+              // Delete the invite
+              return inviteDoc.ref.delete();
+            }).then(function() {
+              currentCoach = { email: user.email, name: inviteData.name || user.email.split('@')[0], role: 'coach', uid: user.uid };
+              showToast('✅ Velkommen! Du har fått tilgang.', 'success');
+              showMainApp();
+            });
+          } else {
+            // Not invited — show unauthorized
+            console.log('Not authorized');
+            showUnauthorizedScreen(user.email);
+          }
+        });
+    })
+    .catch(function(err) {
+      console.error('Auth check error:', err);
+      showToast('Feil ved autorisasjonssjekk: ' + err.message, 'error');
     });
+}
+
+// ==================== LOGIN / REGISTER ====================
+function showLoginForm() {
+  document.getElementById('login-form').style.display = 'block';
+  document.getElementById('register-form').style.display = 'none';
+}
+
+function showRegisterForm() {
+  document.getElementById('login-form').style.display = 'none';
+  document.getElementById('register-form').style.display = 'block';
+}
+
+function showLoginError(msg) {
+  var el = document.getElementById('login-error');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+
+function showRegisterError(msg) {
+  var el = document.getElementById('register-error');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+
+function clearErrors() {
+  document.getElementById('login-error').classList.remove('show');
+  document.getElementById('register-error').classList.remove('show');
+}
+
+function doLogin() {
+  clearErrors();
+  var email = document.getElementById('login-email').value.trim();
+  var password = document.getElementById('login-password').value;
+
+  if (!email || !password) { showLoginError('Fyll inn e-post og passord'); return; }
+
+  document.getElementById('login-btn').disabled = true;
+  document.getElementById('login-btn').textContent = 'Logger inn...';
+
+  auth.signInWithEmailAndPassword(email, password)
+    .then(function() {
+      console.log('Login success');
+      // onAuthStateChanged will handle the rest
+    })
+    .catch(function(err) {
+      console.error('Login error:', err);
+      var msg = 'Innlogging feilet';
+      if (err.code === 'auth/user-not-found') msg = 'Ingen bruker funnet med denne e-posten';
+      if (err.code === 'auth/wrong-password') msg = 'Feil passord';
+      if (err.code === 'auth/invalid-email') msg = 'Ugyldig e-postadresse';
+      if (err.code === 'auth/invalid-credential') msg = 'Feil e-post eller passord';
+      if (err.code === 'auth/too-many-requests') msg = 'For mange forsøk. Prøv igjen senere.';
+      showLoginError(msg);
+    })
+    .finally(function() {
+      document.getElementById('login-btn').disabled = false;
+      document.getElementById('login-btn').textContent = 'Logg inn';
+    });
+}
+
+function doRegister() {
+  clearErrors();
+  var name = document.getElementById('register-name').value.trim();
+  var email = document.getElementById('register-email').value.trim();
+  var pw = document.getElementById('register-password').value;
+  var pw2 = document.getElementById('register-password2').value;
+
+  if (!name) { showRegisterError('Skriv inn navnet ditt'); return; }
+  if (!email) { showRegisterError('Skriv inn e-postadresse'); return; }
+  if (pw.length < 6) { showRegisterError('Passord må være minst 6 tegn'); return; }
+  if (pw !== pw2) { showRegisterError('Passordene er ikke like'); return; }
+
+  document.getElementById('register-btn').disabled = true;
+  document.getElementById('register-btn').textContent = 'Oppretter...';
+
+  auth.createUserWithEmailAndPassword(email, pw)
+    .then(function(result) {
+      return result.user.updateProfile({ displayName: name });
+    })
+    .then(function() {
+      console.log('Register success');
+      // onAuthStateChanged will handle authorization check
+    })
+    .catch(function(err) {
+      console.error('Register error:', err);
+      var msg = 'Registrering feilet';
+      if (err.code === 'auth/email-already-in-use') msg = 'Denne e-posten er allerede registrert. Prøv å logge inn.';
+      if (err.code === 'auth/invalid-email') msg = 'Ugyldig e-postadresse';
+      if (err.code === 'auth/weak-password') msg = 'Passordet er for svakt';
+      showRegisterError(msg);
+    })
+    .finally(function() {
+      document.getElementById('register-btn').disabled = false;
+      document.getElementById('register-btn').textContent = 'Opprett konto';
+    });
+}
+
+function doResetPassword() {
+  var email = document.getElementById('login-email').value.trim();
+  if (!email) { showLoginError('Skriv inn e-postadressen din først'); return; }
+
+  auth.sendPasswordResetEmail(email)
+    .then(function() {
+      showToast('📧 E-post for tilbakestilling sendt til ' + email, 'success');
+    })
+    .catch(function(err) {
+      showLoginError('Kunne ikke sende e-post: ' + err.message);
+    });
+}
+
+function doLogout() {
+  auth.signOut().then(function() {
+    currentUser = null;
+    currentCoach = null;
+    players = []; trainings = []; matches = []; trophies = []; goals = [];
+    showLoginScreen();
+    showToast('Logget ut', '');
+  });
+}
+
+// Enter key support
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') {
+    if (document.getElementById('login-form').style.display !== 'none' &&
+        document.getElementById('login-screen').style.display !== 'none') {
+      doLogin();
+    }
+  }
+});
+
+// ==================== DATA LISTENERS ====================
+var unsubscribers = [];
+
+function initDataListeners() {
+  // Clear old listeners
+  unsubscribers.forEach(function(unsub) { unsub(); });
+  unsubscribers = [];
+
+  // Players
+  unsubscribers.push(
+    db.collection(TEAM_PATH + '/players').orderBy('name')
+      .onSnapshot(function(snap) {
+        players = [];
+        snap.forEach(function(doc) { players.push(Object.assign({ id: doc.id }, doc.data())); });
+        renderPlayers(); updateStats();
+      }, function(err) { console.error('Players:', err); })
+  );
 
   // Trainings
-  db.collection(TEAM_PATH + '/trainings').orderBy('date', 'desc')
-    .onSnapshot(function(snap) {
-      trainings = [];
-      snap.forEach(function(doc) {
-        trainings.push({ id: doc.id, ...doc.data() });
-      });
-      renderTrainings();
-      renderNextTraining();
-      updateStats();
-      console.log('📥 Trainings loaded:', trainings.length);
-    }, function(err) {
-      console.error('Trainings error:', err);
-      showToast('Feil ved lasting av treninger: ' + err.message, 'error');
-    });
+  unsubscribers.push(
+    db.collection(TEAM_PATH + '/trainings').orderBy('date', 'desc')
+      .onSnapshot(function(snap) {
+        trainings = [];
+        snap.forEach(function(doc) { trainings.push(Object.assign({ id: doc.id }, doc.data())); });
+        renderTrainings(); renderNextTraining(); updateStats();
+      }, function(err) { console.error('Trainings:', err); })
+  );
 
   // Matches
-  db.collection(TEAM_PATH + '/matches').orderBy('date', 'desc')
-    .onSnapshot(function(snap) {
-      matches = [];
-      snap.forEach(function(doc) {
-        matches.push({ id: doc.id, ...doc.data() });
-      });
-      renderMatches();
-      updateStats();
-      console.log('📥 Matches loaded:', matches.length);
-    }, function(err) {
-      console.error('Matches error:', err);
-      showToast('Feil ved lasting av kamper: ' + err.message, 'error');
-    });
+  unsubscribers.push(
+    db.collection(TEAM_PATH + '/matches').orderBy('date', 'desc')
+      .onSnapshot(function(snap) {
+        matches = [];
+        snap.forEach(function(doc) { matches.push(Object.assign({ id: doc.id }, doc.data())); });
+        renderMatches(); updateStats();
+      }, function(err) { console.error('Matches:', err); })
+  );
 
   // Trophies
-  db.collection(TEAM_PATH + '/trophies').orderBy('week', 'desc')
-    .onSnapshot(function(snap) {
-      trophies = [];
-      snap.forEach(function(doc) {
-        trophies.push({ id: doc.id, ...doc.data() });
-      });
-      renderTrophies();
-      updateStats();
-    }, function(err) {
-      console.error('Trophies error:', err);
-    });
+  unsubscribers.push(
+    db.collection(TEAM_PATH + '/trophies').orderBy('week', 'desc')
+      .onSnapshot(function(snap) {
+        trophies = [];
+        snap.forEach(function(doc) { trophies.push(Object.assign({ id: doc.id }, doc.data())); });
+        renderTrophies(); updateStats();
+      }, function(err) { console.error('Trophies:', err); })
+  );
 
   // Goals
-  db.collection(TEAM_PATH + '/goals')
-    .onSnapshot(function(snap) {
-      goals = [];
-      snap.forEach(function(doc) {
-        goals.push({ id: doc.id, ...doc.data() });
-      });
-      if (goals.length === 0) initDefaultGoals();
-      renderGoals();
-    }, function(err) {
-      console.error('Goals error:', err);
-    });
+  unsubscribers.push(
+    db.collection(TEAM_PATH + '/goals')
+      .onSnapshot(function(snap) {
+        goals = [];
+        snap.forEach(function(doc) { goals.push(Object.assign({ id: doc.id }, doc.data())); });
+        if (goals.length === 0) initDefaultGoals();
+        renderGoals();
+      }, function(err) { console.error('Goals:', err); })
+  );
+
+  // Coaches
+  unsubscribers.push(
+    db.collection(TEAM_PATH + '/coaches')
+      .onSnapshot(function(snap) {
+        coaches = [];
+        snap.forEach(function(doc) { coaches.push(Object.assign({ id: doc.id }, doc.data())); });
+        renderCoaches(); renderProfile();
+      }, function(err) { console.error('Coaches:', err); })
+  );
+
+  // Invites
+  unsubscribers.push(
+    db.collection(TEAM_PATH + '/invites')
+      .onSnapshot(function(snap) {
+        invites = [];
+        snap.forEach(function(doc) { invites.push(Object.assign({ id: doc.id }, doc.data())); });
+        renderInvites();
+      }, function(err) { console.error('Invites:', err); })
+  );
 }
 
-// ============ NAVIGATION ============
+// ==================== NAVIGATION ====================
 function showPage(page, btn) {
   document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
   document.querySelectorAll('.top-nav button').forEach(function(b) { b.classList.remove('active'); });
@@ -1004,7 +1383,7 @@ function showPage(page, btn) {
   if (page === 'training') renderTemplateWeek();
 }
 
-// ============ STATS ============
+// ==================== STATS ====================
 function updateStats() {
   document.getElementById('stat-players').textContent = players.length;
   document.getElementById('stat-trainings').textContent = trainings.length;
@@ -1013,23 +1392,20 @@ function updateStats() {
   renderRecentActivity();
 }
 
-// ============ PLAYERS ============
+// ==================== PLAYERS ====================
 function renderPlayers() {
-  var container = document.getElementById('player-list');
+  var c = document.getElementById('player-list');
   if (players.length === 0) {
-    container.innerHTML = '<div class="empty-state"><div class="empty-icon">👥</div><p>Ingen spillere lagt til ennå</p></div>';
+    c.innerHTML = '<div class="empty-state"><div class="empty-icon">👥</div><p>Ingen spillere lagt til</p></div>';
     return;
   }
-  container.innerHTML = players.map(function(p) {
-    return '<div class="player-item">' +
-      '<div class="player-info">' +
-        '<div class="player-avatar">' + p.name.charAt(0) + '</div>' +
-        '<div><div class="player-name">' + p.name + '</div>' +
-        '<div class="player-pos">' + (p.position || 'Spiller') + (p.parent ? ' • ' + p.parent : '') + '</div></div>' +
-      '</div>' +
-      '<div class="player-actions">' +
-        '<button class="btn btn-danger btn-sm" onclick="deletePlayer(\'' + p.id + '\')">🗑️</button>' +
-      '</div></div>';
+  c.innerHTML = players.map(function(p) {
+    return '<div class="player-item"><div class="player-info">' +
+      '<div class="player-avatar">' + p.name.charAt(0) + '</div>' +
+      '<div><div class="player-name">' + p.name + '</div>' +
+      '<div class="player-pos">' + (p.position||'Spiller') + (p.parent ? ' • '+p.parent : '') + '</div></div>' +
+      '</div><div class="player-actions">' +
+      '<button class="btn btn-danger btn-sm" onclick="deletePlayer(\''+p.id+'\')">🗑️</button></div></div>';
   }).join('');
 }
 
@@ -1044,45 +1420,37 @@ function openAddPlayer() {
 function savePlayer() {
   var name = document.getElementById('player-name').value.trim();
   if (!name) { showToast('Skriv inn navn!', 'error'); return; }
-
-  showToast('Lagrer spiller...', '');
-
   db.collection(TEAM_PATH + '/players').add({
     name: name,
     position: document.getElementById('player-position').value,
     dob: document.getElementById('player-dob').value,
     parent: document.getElementById('player-parent').value.trim(),
     createdAt: firebase.firestore.FieldValue.serverTimestamp()
-  })
-  .then(function() {
+  }).then(function() {
     showToast('✅ ' + name + ' lagt til!', 'success');
     closeModal('modal-player');
-  })
-  .catch(function(err) {
-    console.error('Save player error:', err);
-    showToast('❌ Feil: ' + err.message, 'error');
-  });
+  }).catch(function(err) { showToast('❌ ' + err.message, 'error'); });
 }
 
 function deletePlayer(id) {
   if (!confirm('Slette denne spilleren?')) return;
   db.collection(TEAM_PATH + '/players').doc(id).delete()
-    .then(function() { showToast('Spiller slettet', 'success'); })
+    .then(function() { showToast('Slettet', 'success'); })
     .catch(function(err) { showToast('Feil: ' + err.message, 'error'); });
 }
 
-// ============ TRAININGS ============
+// ==================== TRAININGS ====================
 function renderTrainings() {
-  var container = document.getElementById('training-list');
+  var c = document.getElementById('training-list');
   if (trainings.length === 0) {
-    container.innerHTML = '<div class="empty-state"><div class="empty-icon">⚽</div><p>Ingen treninger planlagt</p></div>';
+    c.innerHTML = '<div class="empty-state"><div class="empty-icon">⚽</div><p>Ingen treninger planlagt</p></div>';
     return;
   }
-  container.innerHTML = trainings.map(function(t) {
-    return '<div class="session-item" onclick="viewTraining(\'' + t.id + '\')">' +
-      '<div class="session-date">📅 ' + formatDate(t.date) + ' kl ' + (t.time || '17:00') + '</div>' +
-      '<div class="session-info">📍 ' + (t.location || 'Ikke angitt') + ' • 🎯 ' + (t.theme || 'Generell trening') +
-      (t.blocks ? ' • ' + t.blocks.length + ' aktiviteter' : '') + '</div></div>';
+  c.innerHTML = trainings.map(function(t) {
+    return '<div class="session-item" onclick="viewTraining(\''+t.id+'\')">' +
+      '<div class="session-date">📅 ' + formatDate(t.date) + ' kl ' + (t.time||'17:00') + '</div>' +
+      '<div class="session-info">📍 ' + (t.location||'Ikke angitt') + ' • 🎯 ' + (t.theme||'Trening') +
+      (t.blocks ? ' • '+t.blocks.length+' aktiviteter' : '') + '</div></div>';
   }).join('');
 }
 
@@ -1093,53 +1461,44 @@ function openAddTraining() {
   document.getElementById('training-theme').value = '';
   document.getElementById('training-blocks').innerHTML = '';
   blockCounter = 0;
-  addTrainingBlock('Oppvarming', 'warmup', 10);
-  addTrainingBlock('Hovedøvelse 1', 'main', 15);
-  addTrainingBlock('Hovedøvelse 2', 'main', 15);
-  addTrainingBlock('Smålagsspill', 'game', 15);
+  addTrainingBlock('Oppvarming','warmup',10);
+  addTrainingBlock('Hovedøvelse 1','main',15);
+  addTrainingBlock('Hovedøvelse 2','main',15);
+  addTrainingBlock('Smålagsspill','game',15);
   openModal('modal-training');
 }
 
-function addTrainingBlock(title, type, duration) {
+function addTrainingBlock(title, type, dur) {
   blockCounter++;
   var id = blockCounter;
   var t = type || 'warmup';
-  var container = document.getElementById('training-blocks');
-  var html = '<div class="training-block block-' + t + '" id="block-' + id + '">' +
+  document.getElementById('training-blocks').insertAdjacentHTML('beforeend',
+    '<div class="training-block block-'+t+'" id="block-'+id+'">' +
     '<div class="block-header">' +
-      '<select onchange="updateBlockColor(' + id + ', this.value)" style="width:auto;margin:0;padding:6px;font-size:12px;">' +
-        '<option value="warmup"' + (t==='warmup'?' selected':'') + '>🟢 Oppvarming</option>' +
-        '<option value="main"' + (t==='main'?' selected':'') + '>🔵 Hovedøvelse</option>' +
-        '<option value="game"' + (t==='game'?' selected':'') + '>🟡 Spill</option>' +
-        '<option value="cooldown"' + (t==='cooldown'?' selected':'') + '>⚪ Avslutning</option>' +
-      '</select>' +
-      '<button class="remove-block-btn" onclick="removeBlock(' + id + ')">✕</button>' +
-    '</div>' +
-    '<input type="text" id="block-title-' + id + '" placeholder="Aktivitetsnavn" value="' + (title||'') + '" style="margin-bottom:8px;">' +
-    '<input type="number" id="block-duration-' + id + '" placeholder="Min" value="' + (duration||15) + '" style="width:100px;display:inline-block;margin-bottom:8px;"> min' +
-    '<textarea id="block-desc-' + id + '" rows="2" placeholder="Beskrivelse av aktiviteten..." style="margin-bottom:0;"></textarea>' +
-    '</div>';
-  container.insertAdjacentHTML('beforeend', html);
+    '<select onchange="updateBlockColor('+id+',this.value)" style="width:auto;margin:0;padding:6px;font-size:12px;">' +
+    '<option value="warmup"'+(t==='warmup'?' selected':'')+'>🟢 Oppvarming</option>' +
+    '<option value="main"'+(t==='main'?' selected':'')+'>🔵 Hovedøvelse</option>' +
+    '<option value="game"'+(t==='game'?' selected':'')+'>🟡 Spill</option>' +
+    '<option value="cooldown"'+(t==='cooldown'?' selected':'')+'>⚪ Avslutning</option></select>' +
+    '<button class="remove-block-btn" onclick="removeBlock('+id+')">✕</button></div>' +
+    '<input type="text" id="block-title-'+id+'" placeholder="Aktivitetsnavn" value="'+(title||'')+'" style="margin-bottom:8px;">' +
+    '<input type="number" id="block-duration-'+id+'" placeholder="Min" value="'+(dur||15)+'" style="width:100px;display:inline-block;margin-bottom:8px;"> min' +
+    '<textarea id="block-desc-'+id+'" rows="2" placeholder="Beskrivelse..." style="margin-bottom:0;"></textarea></div>'
+  );
 }
 
-function removeBlock(id) {
-  var el = document.getElementById('block-' + id);
-  if (el) el.remove();
-}
-
-function updateBlockColor(id, type) {
-  document.getElementById('block-' + id).className = 'training-block block-' + type;
-}
+function removeBlock(id) { var el = document.getElementById('block-'+id); if (el) el.remove(); }
+function updateBlockColor(id, t) { document.getElementById('block-'+id).className = 'training-block block-'+t; }
 
 function getTrainingBlocks() {
   var blocks = [];
   document.querySelectorAll('#training-blocks .training-block').forEach(function(el) {
-    var id = el.id.replace('block-', '');
+    var id = el.id.replace('block-','');
     blocks.push({
       type: el.querySelector('select').value,
-      title: document.getElementById('block-title-' + id).value.trim(),
-      duration: parseInt(document.getElementById('block-duration-' + id).value) || 15,
-      desc: document.getElementById('block-desc-' + id).value.trim()
+      title: document.getElementById('block-title-'+id).value.trim(),
+      duration: parseInt(document.getElementById('block-duration-'+id).value)||15,
+      desc: document.getElementById('block-desc-'+id).value.trim()
     });
   });
   return blocks;
@@ -1148,27 +1507,18 @@ function getTrainingBlocks() {
 function saveTraining() {
   var date = document.getElementById('training-date').value;
   if (!date) { showToast('Velg dato!', 'error'); return; }
-
-  var blocks = getTrainingBlocks();
-  showToast('Lagrer trening...', '');
-
   db.collection(TEAM_PATH + '/trainings').add({
     date: date,
     time: document.getElementById('training-time').value,
     location: document.getElementById('training-location').value.trim(),
     theme: document.getElementById('training-theme').value.trim(),
-    blocks: blocks,
+    blocks: getTrainingBlocks(),
     attendance: {},
     createdAt: firebase.firestore.FieldValue.serverTimestamp()
-  })
-  .then(function() {
+  }).then(function() {
     showToast('✅ Trening opprettet!', 'success');
     closeModal('modal-training');
-  })
-  .catch(function(err) {
-    console.error('Save training error:', err);
-    showToast('❌ Feil: ' + err.message, 'error');
-  });
+  }).catch(function(err) { showToast('❌ ' + err.message, 'error'); });
 }
 
 function viewTraining(id) {
@@ -1176,118 +1526,93 @@ function viewTraining(id) {
   var t = trainings.find(function(x) { return x.id === id; });
   if (!t) return;
 
-  var blocksHTML = '';
-  if (t.blocks && t.blocks.length > 0) {
-    blocksHTML = '<h3 style="margin:12px 0 8px;color:var(--primary);">📋 Aktiviteter</h3>';
-    blocksHTML += t.blocks.map(function(b) {
-      return '<div class="training-block block-' + b.type + '">' +
-        '<div class="block-header">' +
-          '<span class="block-type ' + b.type + '">' + getBlockLabel(b.type) + '</span>' +
-          '<span class="block-duration">' + b.duration + ' min</span>' +
-        '</div>' +
-        '<div class="block-title">' + (b.title || 'Uten navn') + '</div>' +
-        (b.desc ? '<div class="block-desc">' + b.desc + '</div>' : '') +
-      '</div>';
+  var bHTML = '';
+  if (t.blocks && t.blocks.length) {
+    bHTML = '<h3 style="margin:12px 0 8px;color:var(--primary);">📋 Aktiviteter</h3>';
+    bHTML += t.blocks.map(function(b) {
+      return '<div class="training-block block-'+b.type+'"><div class="block-header">' +
+        '<span class="block-type '+b.type+'">'+getBlockLabel(b.type)+'</span>' +
+        '<span class="block-duration">'+b.duration+' min</span></div>' +
+        '<div class="block-title">'+(b.title||'Uten navn')+'</div>' +
+        (b.desc ? '<div class="block-desc">'+b.desc+'</div>' : '') + '</div>';
     }).join('');
   }
 
   document.getElementById('view-training-content').innerHTML =
     '<div style="margin-bottom:12px;">' +
-      '<div style="font-size:16px;font-weight:700;color:var(--primary);">📅 ' + formatDate(t.date) + ' kl ' + (t.time||'17:00') + '</div>' +
-      '<div style="font-size:14px;color:var(--gray);margin-top:4px;">📍 ' + (t.location||'Ikke angitt') + '</div>' +
-      '<div style="font-size:14px;color:var(--gray);">🎯 ' + (t.theme||'Generell trening') + '</div>' +
-    '</div>' + blocksHTML;
+    '<div style="font-size:16px;font-weight:700;color:var(--primary);">📅 '+formatDate(t.date)+' kl '+(t.time||'17:00')+'</div>' +
+    '<div style="font-size:14px;color:var(--gray);margin-top:4px;">📍 '+(t.location||'Ikke angitt')+'</div>' +
+    '<div style="font-size:14px;color:var(--gray);">🎯 '+(t.theme||'Generell trening')+'</div></div>' + bHTML;
 
-  // Attendance
-  var attContainer = document.getElementById('attendance-list');
-  if (players.length === 0) {
-    attContainer.innerHTML = '<p style="font-size:13px;color:var(--gray);">Legg til spillere først</p>';
-  } else {
-    var att = t.attendance || {};
-    attContainer.innerHTML = players.map(function(p) {
-      var present = att[p.id] === true;
-      return '<div class="attendance-item">' +
-        '<span style="font-weight:600;">' + p.name + '</span>' +
-        '<button class="att-toggle ' + (present?'present':'absent') + '" onclick="toggleAttendance(\'' + id + '\',\'' + p.id + '\',' + !present + ')">' +
-        (present ? '✅' : '❌') + '</button></div>';
+  var att = t.attendance || {};
+  var ac = document.getElementById('attendance-list');
+  ac.innerHTML = players.length === 0 ? '<p style="font-size:13px;color:var(--gray);">Legg til spillere først</p>' :
+    players.map(function(p) {
+      var pr = att[p.id] === true;
+      return '<div class="attendance-item"><span style="font-weight:600;">'+p.name+'</span>' +
+        '<button class="att-toggle '+(pr?'present':'absent')+'" onclick="toggleAttendance(\''+id+'\',\''+p.id+'\','+!pr+')">' +
+        (pr?'✅':'❌')+'</button></div>';
     }).join('');
-  }
 
   openModal('modal-view-training');
 }
 
-function toggleAttendance(trainingId, playerId, present) {
-  var update = {};
-  update['attendance.' + playerId] = present;
-  db.collection(TEAM_PATH + '/trainings').doc(trainingId).update(update)
-    .catch(function(err) { showToast('Feil: ' + err.message, 'error'); });
+function toggleAttendance(tid, pid, val) {
+  var u = {}; u['attendance.'+pid] = val;
+  db.collection(TEAM_PATH+'/trainings').doc(tid).update(u)
+    .catch(function(err) { showToast('Feil: '+err.message, 'error'); });
 }
 
 function editCurrentTraining() {
   var t = trainings.find(function(x) { return x.id === currentTrainingId; });
   if (!t) return;
   closeModal('modal-view-training');
-
   document.getElementById('edit-training-date').value = t.date;
-  document.getElementById('edit-training-time').value = t.time || '17:00';
-  document.getElementById('edit-training-location').value = t.location || '';
-  document.getElementById('edit-training-theme').value = t.theme || '';
-
-  var container = document.getElementById('edit-training-blocks');
-  container.innerHTML = '';
+  document.getElementById('edit-training-time').value = t.time||'17:00';
+  document.getElementById('edit-training-location').value = t.location||'';
+  document.getElementById('edit-training-theme').value = t.theme||'';
+  document.getElementById('edit-training-blocks').innerHTML = '';
   editBlockCounter = 0;
-
-  if (t.blocks && t.blocks.length > 0) {
-    t.blocks.forEach(function(b) { addEditTrainingBlock(b.title, b.type, b.duration, b.desc); });
+  if (t.blocks && t.blocks.length) {
+    t.blocks.forEach(function(b) { addEditTrainingBlock(b.title,b.type,b.duration,b.desc); });
   } else {
-    addEditTrainingBlock('Oppvarming', 'warmup', 10, '');
-    addEditTrainingBlock('Hovedøvelse', 'main', 20, '');
-    addEditTrainingBlock('Spill', 'game', 15, '');
+    addEditTrainingBlock('Oppvarming','warmup',10,'');
+    addEditTrainingBlock('Hovedøvelse','main',20,'');
+    addEditTrainingBlock('Spill','game',15,'');
   }
-
   openModal('modal-edit-training');
 }
 
-function addEditTrainingBlock(title, type, duration, desc) {
+function addEditTrainingBlock(title,type,dur,desc) {
   editBlockCounter++;
   var id = editBlockCounter;
-  var t = type || 'warmup';
-  var container = document.getElementById('edit-training-blocks');
-  var html = '<div class="training-block block-' + t + '" id="edit-block-' + id + '">' +
-    '<div class="block-header">' +
-      '<select onchange="updateEditBlockColor(' + id + ',this.value)" style="width:auto;margin:0;padding:6px;font-size:12px;">' +
-        '<option value="warmup"' + (t==='warmup'?' selected':'') + '>🟢 Oppvarming</option>' +
-        '<option value="main"' + (t==='main'?' selected':'') + '>🔵 Hovedøvelse</option>' +
-        '<option value="game"' + (t==='game'?' selected':'') + '>🟡 Spill</option>' +
-        '<option value="cooldown"' + (t==='cooldown'?' selected':'') + '>⚪ Avslutning</option>' +
-      '</select>' +
-      '<button class="remove-block-btn" onclick="removeEditBlock(' + id + ')">✕</button>' +
-    '</div>' +
-    '<input type="text" id="edit-block-title-' + id + '" placeholder="Aktivitetsnavn" value="' + (title||'') + '" style="margin-bottom:8px;">' +
-    '<input type="number" id="edit-block-duration-' + id + '" placeholder="Min" value="' + (duration||15) + '" style="width:100px;display:inline-block;margin-bottom:8px;"> min' +
-    '<textarea id="edit-block-desc-' + id + '" rows="2" placeholder="Beskrivelse..." style="margin-bottom:0;">' + (desc||'') + '</textarea>' +
-    '</div>';
-  container.insertAdjacentHTML('beforeend', html);
+  var t = type||'warmup';
+  document.getElementById('edit-training-blocks').insertAdjacentHTML('beforeend',
+    '<div class="training-block block-'+t+'" id="edit-block-'+id+'"><div class="block-header">' +
+    '<select onchange="updateEditBlockColor('+id+',this.value)" style="width:auto;margin:0;padding:6px;font-size:12px;">' +
+    '<option value="warmup"'+(t==='warmup'?' selected':'')+'>🟢 Oppvarming</option>' +
+    '<option value="main"'+(t==='main'?' selected':'')+'>🔵 Hovedøvelse</option>' +
+    '<option value="game"'+(t==='game'?' selected':'')+'>🟡 Spill</option>' +
+    '<option value="cooldown"'+(t==='cooldown'?' selected':'')+'>⚪ Avslutning</option></select>' +
+    '<button class="remove-block-btn" onclick="removeEditBlock('+id+')">✕</button></div>' +
+    '<input type="text" id="edit-block-title-'+id+'" placeholder="Aktivitetsnavn" value="'+(title||'')+'" style="margin-bottom:8px;">' +
+    '<input type="number" id="edit-block-duration-'+id+'" placeholder="Min" value="'+(dur||15)+'" style="width:100px;display:inline-block;margin-bottom:8px;"> min' +
+    '<textarea id="edit-block-desc-'+id+'" rows="2" placeholder="Beskrivelse..." style="margin-bottom:0;">'+(desc||'')+'</textarea></div>'
+  );
 }
 
-function removeEditBlock(id) {
-  var el = document.getElementById('edit-block-' + id);
-  if (el) el.remove();
-}
-
-function updateEditBlockColor(id, type) {
-  document.getElementById('edit-block-' + id).className = 'training-block block-' + type;
-}
+function removeEditBlock(id) { var el = document.getElementById('edit-block-'+id); if (el) el.remove(); }
+function updateEditBlockColor(id,t) { document.getElementById('edit-block-'+id).className = 'training-block block-'+t; }
 
 function getEditTrainingBlocks() {
   var blocks = [];
   document.querySelectorAll('#edit-training-blocks .training-block').forEach(function(el) {
-    var id = el.id.replace('edit-block-', '');
+    var id = el.id.replace('edit-block-','');
     blocks.push({
       type: el.querySelector('select').value,
-      title: document.getElementById('edit-block-title-' + id).value.trim(),
-      duration: parseInt(document.getElementById('edit-block-duration-' + id).value) || 15,
-      desc: document.getElementById('edit-block-desc-' + id).value.trim()
+      title: document.getElementById('edit-block-title-'+id).value.trim(),
+      duration: parseInt(document.getElementById('edit-block-duration-'+id).value)||15,
+      desc: document.getElementById('edit-block-desc-'+id).value.trim()
     });
   });
   return blocks;
@@ -1295,85 +1620,78 @@ function getEditTrainingBlocks() {
 
 function updateTraining() {
   if (!currentTrainingId) return;
-  showToast('Oppdaterer trening...', '');
-
-  db.collection(TEAM_PATH + '/trainings').doc(currentTrainingId).update({
+  db.collection(TEAM_PATH+'/trainings').doc(currentTrainingId).update({
     date: document.getElementById('edit-training-date').value,
     time: document.getElementById('edit-training-time').value,
     location: document.getElementById('edit-training-location').value.trim(),
     theme: document.getElementById('edit-training-theme').value.trim(),
     blocks: getEditTrainingBlocks()
-  })
-  .then(function() {
-    showToast('✅ Trening oppdatert!', 'success');
+  }).then(function() {
+    showToast('✅ Oppdatert!', 'success');
     closeModal('modal-edit-training');
-  })
-  .catch(function(err) {
-    showToast('❌ Feil: ' + err.message, 'error');
-  });
+  }).catch(function(err) { showToast('❌ '+err.message, 'error'); });
 }
 
 function deleteTraining() {
-  if (!confirm('Slette denne treningen?')) return;
-  db.collection(TEAM_PATH + '/trainings').doc(currentTrainingId).delete()
-    .then(function() { showToast('Trening slettet', 'success'); closeModal('modal-view-training'); })
-    .catch(function(err) { showToast('Feil: ' + err.message, 'error'); });
+  if (!confirm('Slette treningen?')) return;
+  db.collection(TEAM_PATH+'/trainings').doc(currentTrainingId).delete()
+    .then(function() { showToast('Slettet','success'); closeModal('modal-view-training'); })
+    .catch(function(err) { showToast('Feil: '+err.message,'error'); });
 }
 
-function getBlockLabel(type) {
-  var labels = { warmup:'Oppvarming', main:'Hovedøvelse', game:'Spill', cooldown:'Avslutning' };
-  return labels[type] || type;
+function getBlockLabel(t) {
+  return {warmup:'Oppvarming',main:'Hovedøvelse',game:'Spill',cooldown:'Avslutning'}[t]||t;
 }
 
-// ============ TRAINING TEMPLATES ============
+// ==================== TEMPLATES ====================
 var templates = [
-  { week:1, name:'Ballkontroll & Lek', blocks:[
-    { type:'warmup', title:'Ballvenner', duration:10, desc:'Alle har ball — drible fritt, på signal: stopp ballen, sitt på ballen, hopp over ballen.' },
-    { type:'main', title:'Fotball-bowling', duration:12, desc:'Sett opp kjegler. Trille ballen og prøv å velte dem. Hvem klarer flest?' },
-    { type:'main', title:'Kaptein på ballen', duration:10, desc:'Drible gjennom hinderløype. Bruk innsiden av foten. Høyre og venstre fot.' },
-    { type:'game', title:'Smålagsspill 3v3', duration:15, desc:'Små baner, små mål. Fokus på å ha det gøy!' }
+  {week:1,name:'Ballkontroll & Lek',blocks:[
+    {type:'warmup',title:'Ballvenner',duration:10,desc:'Alle har ball — drible fritt, på signal: stopp, sitt, hopp over.'},
+    {type:'main',title:'Fotball-bowling',duration:12,desc:'Sett opp kjegler. Trille ballen og velt dem!'},
+    {type:'main',title:'Kaptein på ballen',duration:10,desc:'Drible gjennom hinderløype. Høyre og venstre fot.'},
+    {type:'game',title:'Smålagsspill 3v3',duration:15,desc:'Små baner, små mål. Ha det gøy!'}
   ]},
-  { week:2, name:'1 mot 1 & Finter', blocks:[
-    { type:'warmup', title:'Hale-sisten', duration:10, desc:'Alle har en vest i buksen. Prøv å ta andres haler mens du beskytter din egen.' },
-    { type:'main', title:'Finte-skole', duration:12, desc:'Øv på enkel finte: skuddfinten. Lat som du skyter, dra ballen til siden.' },
-    { type:'main', title:'1v1 til minimål', duration:12, desc:'Par mot par. Prøv å drible forbi og score.' },
-    { type:'game', title:'Smålagsspill 4v4', duration:15, desc:'Bruk fintene dere har øvd på!' }
+  {week:2,name:'1 mot 1 & Finter',blocks:[
+    {type:'warmup',title:'Hale-sisten',duration:10,desc:'Vest i buksen. Ta andres haler!'},
+    {type:'main',title:'Finte-skole',duration:12,desc:'Skuddfinten: lat som du skyter, dra til siden.'},
+    {type:'main',title:'1v1 til minimål',duration:12,desc:'Par mot par. Drible forbi og score.'},
+    {type:'game',title:'Smålagsspill 4v4',duration:15,desc:'Bruk fintene!'}
   ]},
-  { week:3, name:'Pasning & Samarbeid', blocks:[
-    { type:'warmup', title:'Pasnings-sirkel', duration:10, desc:'Stå i ring. Pass til hverandre med innsiden av foten. Si navnet til den du sender til!' },
-    { type:'main', title:'Tunnel-pasning', duration:10, desc:'Par: en står med beina i V, den andre triller gjennom tunnelen.' },
-    { type:'main', title:'Pasning & Bevegelse', duration:12, desc:'Send ball, løp til ny plass. Alltid i bevegelse!' },
-    { type:'game', title:'Smålagsspill 3v3', duration:15, desc:'Bonuspoeng for pasninger før scoring!' }
+  {week:3,name:'Pasning & Samarbeid',blocks:[
+    {type:'warmup',title:'Pasnings-sirkel',duration:10,desc:'Stå i ring. Pass med innsiden. Si navnet!'},
+    {type:'main',title:'Tunnel-pasning',duration:10,desc:'Par: trille gjennom tunnelen.'},
+    {type:'main',title:'Pasning & Bevegelse',duration:12,desc:'Send ball, løp til ny plass.'},
+    {type:'game',title:'Smålagsspill 3v3',duration:15,desc:'Bonuspoeng for pasninger!'}
   ]},
-  { week:4, name:'Skudd & Avslutninger', blocks:[
-    { type:'warmup', title:'Skudd-stafett', duration:10, desc:'Lag i kø. Drible til kjegle, skyt på mål, hent ballen, neste!' },
-    { type:'main', title:'Skudd fra ulike vinkler', duration:12, desc:'Plasser baller rundt 16-meteren. Skyt fra forskjellige steder.' },
-    { type:'main', title:'Mottak & skudd', duration:12, desc:'Trener triller ball, ta imot, skyt. Bruk vrista!' },
-    { type:'game', title:'Smålagsspill m/fokus', duration:15, desc:'Hvert mål teller dobbelt fra innenfor sonen!' }
+  {week:4,name:'Skudd & Avslutninger',blocks:[
+    {type:'warmup',title:'Skudd-stafett',duration:10,desc:'Drible til kjegle, skyt, neste!'},
+    {type:'main',title:'Skudd fra vinkler',duration:12,desc:'Skyt fra forskjellige steder.'},
+    {type:'main',title:'Mottak & skudd',duration:12,desc:'Trener triller, ta imot, skyt med vrista!'},
+    {type:'game',title:'Smålagsspill',duration:15,desc:'Mål innenfor sonen teller dobbelt!'}
   ]},
-  { week:5, name:'Forsvar & Gjenvinning', blocks:[
-    { type:'warmup', title:'Bok-tyven', duration:10, desc:'Alle dribbler. 2 "tyver" prøver å sparke ballen ut. Hvem beholder ballen lengst?' },
-    { type:'main', title:'Skygge-forsvar', duration:12, desc:'Par: en dribbler, en følger som skygge. Bytt roller.' },
-    { type:'main', title:'Vinn ballen tilbake', duration:10, desc:'1v1 — forsvareren prøver å vinne ballen og score selv.' },
-    { type:'game', title:'Smålagsspill 4v4', duration:15, desc:'Bonuspoeng for å vinne ballen tilbake!' }
+  {week:5,name:'Forsvar & Gjenvinning',blocks:[
+    {type:'warmup',title:'Bok-tyven',duration:10,desc:'2 tyver prøver å sparke ballen ut.'},
+    {type:'main',title:'Skygge-forsvar',duration:12,desc:'En dribbler, en følger som skygge.'},
+    {type:'main',title:'Vinn ballen tilbake',duration:10,desc:'1v1 — vinn ballen og score.'},
+    {type:'game',title:'Smålagsspill 4v4',duration:15,desc:'Bonuspoeng for å vinne ballen!'}
   ]},
-  { week:6, name:'Smålagsspill & Posisjon', blocks:[
-    { type:'warmup', title:'Nummerspill', duration:10, desc:'Alle får nummer. Trener roper tall — de løper og spiller 1v1, 2v2 osv.' },
-    { type:'main', title:'Finn rommet', duration:12, desc:'Spill 3v1: tre spillere prøver å beholde ballen. Finn åpne rom!' },
-    { type:'main', title:'Angrepsspill', duration:12, desc:'3v2 mot mål. Overtall — finn den som er ledig!' },
-    { type:'game', title:'Turnering 3v3', duration:15, desc:'Mini-turnering med flere lag. Korte kamper!' }
+  {week:6,name:'Smålagsspill & Posisjon',blocks:[
+    {type:'warmup',title:'Nummerspill',duration:10,desc:'Trener roper tall for 1v1, 2v2 osv.'},
+    {type:'main',title:'Finn rommet',duration:12,desc:'3v1: beholde ballen, finn åpne rom.'},
+    {type:'main',title:'Angrepsspill',duration:12,desc:'3v2 mot mål. Finn den ledige!'},
+    {type:'game',title:'Turnering 3v3',duration:15,desc:'Mini-turnering!'}
   ]},
-  { week:7, name:'Hurtighet & Reaksjon', blocks:[
-    { type:'warmup', title:'Trafikklyset', duration:10, desc:'Grønt=drible fort, Gult=sakte, Rødt=stopp. Lytt og reager!' },
-    { type:'main', title:'Sprint & Drible', duration:12, desc:'Sprint til kjegle, ta ball, drible tilbake. Hvem er raskest?' },
-    { type:'main', title:'Reaksjonslek', duration:10, desc:'Stå rygg mot trener. På signal: snu, finn ballen, drible til mål.' },
-    { type:'game', title:'Smålagsspill 3v3', duration:15, desc:'Raske kamper! 2 min per kamp, bytter motstander.' }
+  {week:7,name:'Hurtighet & Reaksjon',blocks:[
+    {type:'warmup',title:'Trafikklyset',duration:10,desc:'Grønt=fort, Gult=sakte, Rødt=stopp.'},
+    {type:'main',title:'Sprint & Drible',duration:12,desc:'Sprint til kjegle, drible tilbake.'},
+    {type:'main',title:'Reaksjonslek',duration:10,desc:'Rygg mot trener, snu og drible til mål.'},
+    {type:'game',title:'Smålagsspill 3v3',duration:15,desc:'2 min per kamp, bytt motstander.'}
   ]},
-  { week:8, name:'Bredde & Kreativitet', blocks:[
-    { type:'warmup', title:'Kreativ dribbling', duration:10, desc:'Drible fritt. Prøv nye triks! Såle, utsiden, vending.' },
-    { type:'main', title:'Bruk hele banen', duration:12, desc:'Spill 4v2 på bred bane. Bruk kantene!' },
-    { type:'main', title:'Fri-form øvelse', duration:12, desc:'Spillerne velger selv hva de vil øve på. Trener hjelper.' },
-    { type:'game', title:'Avslutningskamp', duration:15, desc:'Full kamp med alt dere har lært!' }
+  {week:8,name:'Bredde & Kreativitet',blocks:[
+    {type:'warmup',title:'Kreativ dribbling',duration:10,desc:'Prøv nye triks! Såle, utsiden, vending.'},
+    {type:'main',title:'Bruk hele banen',duration:12,desc:'4v2 på bred bane. Bruk kantene!'},
+    {type:'main',title:'Fri-form øvelse',duration:12,desc:'Spillerne velger selv. Trener hjelper.'},
+    {type:'game',title:'Avslutningskamp',duration:15,desc:'Full kamp med alt dere har lært!'}
   ]}
 ];
 
@@ -1386,19 +1704,16 @@ function renderTemplateWeek() {
   document.getElementById('week-label').textContent = 'Uke ' + currentWeek;
   var t = templates.find(function(x) { return x.week === currentWeek; });
   if (!t) return;
-
   document.getElementById('template-view').innerHTML =
-    '<div style="margin-bottom:12px;"><div style="font-size:16px;font-weight:700;color:var(--primary);">' + t.name + '</div></div>' +
+    '<div style="margin-bottom:12px;font-size:16px;font-weight:700;color:var(--primary);">'+t.name+'</div>' +
     t.blocks.map(function(b) {
-      return '<div class="training-block block-' + b.type + '">' +
-        '<div class="block-header">' +
-          '<span class="block-type ' + b.type + '">' + getBlockLabel(b.type) + '</span>' +
-          '<span class="block-duration">' + b.duration + ' min</span>' +
-        '</div>' +
-        '<div class="block-title">' + b.title + '</div>' +
-        '<div class="block-desc">' + b.desc + '</div></div>';
+      return '<div class="training-block block-'+b.type+'"><div class="block-header">' +
+        '<span class="block-type '+b.type+'">'+getBlockLabel(b.type)+'</span>' +
+        '<span class="block-duration">'+b.duration+' min</span></div>' +
+        '<div class="block-title">'+b.title+'</div>' +
+        '<div class="block-desc">'+b.desc+'</div></div>';
     }).join('') +
-    '<button class="btn btn-primary btn-full" onclick="useTemplate(' + t.week + ')" style="margin-top:10px;">📋 Bruk denne malen</button>';
+    '<button class="btn btn-primary btn-full" onclick="useTemplate('+t.week+')" style="margin-top:10px;">📋 Bruk denne malen</button>';
 }
 
 function useTemplate(week) {
@@ -1408,19 +1723,16 @@ function useTemplate(week) {
   document.getElementById('template-location').value = '';
   document.getElementById('template-preview').innerHTML =
     '<div style="margin-top:12px;padding:12px;background:var(--light-bg);border-radius:10px;">' +
-      '<div style="font-weight:700;color:var(--primary);">' + selectedTemplate.name + '</div>' +
-      '<div style="font-size:13px;color:var(--gray);margin-top:4px;">' + selectedTemplate.blocks.length + ' aktiviteter • ' +
-        selectedTemplate.blocks.reduce(function(s,b){return s+b.duration;},0) + ' min totalt</div></div>';
+    '<div style="font-weight:700;color:var(--primary);">'+selectedTemplate.name+'</div>' +
+    '<div style="font-size:13px;color:var(--gray);margin-top:4px;">'+selectedTemplate.blocks.length+' aktiviteter • ' +
+    selectedTemplate.blocks.reduce(function(s,b){return s+b.duration;},0)+' min totalt</div></div>';
   openModal('modal-use-template');
 }
 
 function saveTemplateTraining() {
   var date = document.getElementById('template-date').value;
-  if (!date || !selectedTemplate) { showToast('Velg dato!', 'error'); return; }
-
-  showToast('Oppretter trening fra mal...', '');
-
-  db.collection(TEAM_PATH + '/trainings').add({
+  if (!date||!selectedTemplate) { showToast('Velg dato!','error'); return; }
+  db.collection(TEAM_PATH+'/trainings').add({
     date: date,
     time: document.getElementById('template-time').value,
     location: document.getElementById('template-location').value.trim(),
@@ -1428,28 +1740,24 @@ function saveTemplateTraining() {
     blocks: selectedTemplate.blocks,
     attendance: {},
     createdAt: firebase.firestore.FieldValue.serverTimestamp()
-  })
-  .then(function() {
-    showToast('✅ Trening opprettet fra mal!', 'success');
+  }).then(function() {
+    showToast('✅ Trening fra mal opprettet!','success');
     closeModal('modal-use-template');
-  })
-  .catch(function(err) {
-    showToast('❌ Feil: ' + err.message, 'error');
-  });
+  }).catch(function(err) { showToast('❌ '+err.message,'error'); });
 }
 
-// ============ MATCHES ============
+// ==================== MATCHES ====================
 function renderMatches() {
-  var container = document.getElementById('match-list');
+  var c = document.getElementById('match-list');
   if (matches.length === 0) {
-    container.innerHTML = '<div class="empty-state"><div class="empty-icon">🏟️</div><p>Ingen kamper registrert</p></div>';
+    c.innerHTML = '<div class="empty-state"><div class="empty-icon">🏟️</div><p>Ingen kamper registrert</p></div>';
     return;
   }
-  container.innerHTML = matches.map(function(m) {
-    return '<div class="session-item" onclick="viewMatch(\'' + m.id + '\')">' +
-      '<div class="session-date">📅 ' + formatDate(m.date) + ' — ' + (m.type||'Kamp') + '</div>' +
-      '<div class="session-info">🔵 Nord J2018 vs ' + (m.opponent||'?') +
-      (m.homeScore !== undefined ? ' • ' + m.homeScore + ' - ' + m.awayScore : '') + '</div></div>';
+  c.innerHTML = matches.map(function(m) {
+    return '<div class="session-item" onclick="viewMatch(\''+m.id+'\')">' +
+      '<div class="session-date">📅 '+formatDate(m.date)+' — '+(m.type||'Kamp')+'</div>' +
+      '<div class="session-info">🔵 Nord J2018 vs '+(m.opponent||'?') +
+      (m.homeScore!==undefined ? ' • '+m.homeScore+'-'+m.awayScore : '')+'</div></div>';
   }).join('');
 }
 
@@ -1463,136 +1771,102 @@ function openAddMatch() {
 
 function saveMatch() {
   var date = document.getElementById('match-date').value;
-  var opponent = document.getElementById('match-opponent').value.trim();
-  if (!date || !opponent) { showToast('Fyll inn dato og motstander!', 'error'); return; }
-
-  showToast('Lagrer kamp...', '');
-
-  db.collection(TEAM_PATH + '/matches').add({
-    date: date,
-    opponent: opponent,
+  var opp = document.getElementById('match-opponent').value.trim();
+  if (!date||!opp) { showToast('Fyll inn dato og motstander!','error'); return; }
+  db.collection(TEAM_PATH+'/matches').add({
+    date: date, opponent: opp,
     location: document.getElementById('match-location').value.trim(),
     type: document.getElementById('match-type').value,
-    homeScore: 0,
-    awayScore: 0,
+    homeScore: 0, awayScore: 0,
     createdAt: firebase.firestore.FieldValue.serverTimestamp()
-  })
-  .then(function() {
-    showToast('✅ Kamp registrert!', 'success');
+  }).then(function() {
+    showToast('✅ Kamp registrert!','success');
     closeModal('modal-match');
-  })
-  .catch(function(err) {
-    showToast('❌ Feil: ' + err.message, 'error');
-  });
+  }).catch(function(err) { showToast('❌ '+err.message,'error'); });
 }
 
 function viewMatch(id) {
   currentMatchId = id;
   var m = matches.find(function(x) { return x.id === id; });
   if (!m) return;
-
   document.getElementById('view-match-content').innerHTML =
     '<div style="text-align:center;margin-bottom:8px;">' +
-      '<div style="font-size:14px;color:var(--gray);">' + formatDate(m.date) + ' • ' + m.type + '</div>' +
-      '<div style="font-size:13px;color:var(--gray);">📍 ' + (m.location||'Ikke angitt') + '</div></div>';
-
+    '<div style="font-size:14px;color:var(--gray);">'+formatDate(m.date)+' • '+m.type+'</div>' +
+    '<div style="font-size:13px;color:var(--gray);">📍 '+(m.location||'Ikke angitt')+'</div></div>';
   document.getElementById('match-score-area').innerHTML =
-    '<div class="match-team">' +
-      '<div class="match-team-name">🔵 Nord J2018</div>' +
-      '<div><button class="score-btn minus" onclick="updateScore(\'home\',-1)">−</button>' +
-      '<button class="score-btn plus" onclick="updateScore(\'home\',1)">+</button></div></div>' +
-    '<div><div class="score-display">' + (m.homeScore||0) + ' - ' + (m.awayScore||0) + '</div>' +
-      '<div style="text-align:center;font-size:12px;color:var(--gray);margin-top:4px;">RESULTAT</div></div>' +
-    '<div class="match-team">' +
-      '<div class="match-team-name">' + m.opponent + '</div>' +
-      '<div><button class="score-btn minus" onclick="updateScore(\'away\',-1)">−</button>' +
-      '<button class="score-btn plus" onclick="updateScore(\'away\',1)">+</button></div></div>';
-
+    '<div class="match-team"><div class="match-team-name">🔵 Nord J2018</div>' +
+    '<div><button class="score-btn minus" onclick="updateScore(\'home\',-1)">−</button>' +
+    '<button class="score-btn plus" onclick="updateScore(\'home\',1)">+</button></div></div>' +
+    '<div><div class="score-display">'+(m.homeScore||0)+' - '+(m.awayScore||0)+'</div>' +
+    '<div style="text-align:center;font-size:12px;color:var(--gray);margin-top:4px;">RESULTAT</div></div>' +
+    '<div class="match-team"><div class="match-team-name">'+m.opponent+'</div>' +
+    '<div><button class="score-btn minus" onclick="updateScore(\'away\',-1)">−</button>' +
+    '<button class="score-btn plus" onclick="updateScore(\'away\',1)">+</button></div></div>';
   openModal('modal-view-match');
 }
 
 function updateScore(team, change) {
   var m = matches.find(function(x) { return x.id === currentMatchId; });
   if (!m) return;
-  var field = team === 'home' ? 'homeScore' : 'awayScore';
-  var newScore = Math.max(0, (m[field] || 0) + change);
-  var update = {};
-  update[field] = newScore;
-  db.collection(TEAM_PATH + '/matches').doc(currentMatchId).update(update)
-    .catch(function(err) { showToast('Feil: ' + err.message, 'error'); });
+  var field = team==='home'?'homeScore':'awayScore';
+  var u = {}; u[field] = Math.max(0, (m[field]||0)+change);
+  db.collection(TEAM_PATH+'/matches').doc(currentMatchId).update(u)
+    .catch(function(err) { showToast('Feil: '+err.message,'error'); });
 }
 
 function deleteMatch() {
-  if (!confirm('Slette denne kampen?')) return;
-  db.collection(TEAM_PATH + '/matches').doc(currentMatchId).delete()
-    .then(function() { showToast('Kamp slettet', 'success'); closeModal('modal-view-match'); })
-    .catch(function(err) { showToast('Feil: ' + err.message, 'error'); });
+  if (!confirm('Slette kampen?')) return;
+  db.collection(TEAM_PATH+'/matches').doc(currentMatchId).delete()
+    .then(function() { showToast('Slettet','success'); closeModal('modal-view-match'); })
+    .catch(function(err) { showToast('Feil: '+err.message,'error'); });
 }
 
-// ============ TROPHIES ============
+// ==================== TROPHIES ====================
 function renderTrophies() {
-  var display = document.getElementById('trophy-display');
-  var history = document.getElementById('trophy-history');
-
+  var d = document.getElementById('trophy-display');
+  var h = document.getElementById('trophy-history');
   if (trophies.length === 0) {
-    display.innerHTML = '<div class="empty-state"><div class="empty-icon">🏆</div><p>Ingen trofeer delt ut ennå</p></div>';
-    history.innerHTML = '';
-    return;
+    d.innerHTML = '<div class="empty-state"><div class="empty-icon">🏆</div><p>Ingen trofeer delt ut</p></div>';
+    h.innerHTML = ''; return;
   }
-
   var latest = trophies[0];
-  display.innerHTML = '<div class="trophy-card">' +
-    '<div class="trophy-icon">🏆</div>' +
-    '<div class="trophy-title">Ukens spiller — Uke ' + latest.week + '</div>' +
-    '<div class="trophy-player">' + latest.playerName + '</div>' +
-    '<div class="trophy-reason">' + (latest.reason||'') + '</div></div>';
-
-  history.innerHTML = trophies.map(function(t) {
-    return '<div class="history-item">' +
-      '<div class="history-date">Uke ' + t.week + '</div>' +
-      '<div class="history-result">🏆 ' + t.playerName + '</div>' +
-      '<div style="font-size:13px;color:var(--gray);">' + (t.reason||'') + '</div></div>';
+  d.innerHTML = '<div class="trophy-card"><div class="trophy-icon">🏆</div>' +
+    '<div class="trophy-title">Ukens spiller — Uke '+latest.week+'</div>' +
+    '<div class="trophy-player">'+latest.playerName+'</div>' +
+    '<div class="trophy-reason">'+(latest.reason||'')+'</div></div>';
+  h.innerHTML = trophies.map(function(t) {
+    return '<div class="history-item"><div class="history-date">Uke '+t.week+'</div>' +
+      '<div class="history-result">🏆 '+t.playerName+'</div>' +
+      '<div style="font-size:13px;color:var(--gray);">'+(t.reason||'')+'</div></div>';
   }).join('');
 }
 
 function openAddTrophy() {
-  var select = document.getElementById('trophy-player');
-  if (players.length === 0) {
-    select.innerHTML = '<option>Legg til spillere først</option>';
-  } else {
-    select.innerHTML = players.map(function(p) {
-      return '<option value="' + p.id + '" data-name="' + p.name + '">' + p.name + '</option>';
-    }).join('');
-  }
+  var sel = document.getElementById('trophy-player');
+  sel.innerHTML = players.length === 0 ? '<option>Legg til spillere først</option>' :
+    players.map(function(p) { return '<option value="'+p.id+'" data-name="'+p.name+'">'+p.name+'</option>'; }).join('');
   document.getElementById('trophy-reason').value = '';
   document.getElementById('trophy-week').value = getWeekNumber();
   openModal('modal-trophy');
 }
 
 function saveTrophy() {
-  var select = document.getElementById('trophy-player');
-  var option = select.options[select.selectedIndex];
-  if (!option || players.length === 0) { showToast('Velg en spiller!', 'error'); return; }
-
-  showToast('Lagrer trofé...', '');
-
-  db.collection(TEAM_PATH + '/trophies').add({
-    playerId: option.value,
-    playerName: option.getAttribute('data-name') || option.text,
+  var sel = document.getElementById('trophy-player');
+  var opt = sel.options[sel.selectedIndex];
+  if (!opt||players.length===0) { showToast('Velg spiller!','error'); return; }
+  db.collection(TEAM_PATH+'/trophies').add({
+    playerId: opt.value,
+    playerName: opt.getAttribute('data-name')||opt.text,
     reason: document.getElementById('trophy-reason').value.trim(),
-    week: parseInt(document.getElementById('trophy-week').value) || getWeekNumber(),
+    week: parseInt(document.getElementById('trophy-week').value)||getWeekNumber(),
     createdAt: firebase.firestore.FieldValue.serverTimestamp()
-  })
-  .then(function() {
-    showToast('✅ Trofé delt ut!', 'success');
+  }).then(function() {
+    showToast('✅ Trofé delt ut!','success');
     closeModal('modal-trophy');
-  })
-  .catch(function(err) {
-    showToast('❌ Feil: ' + err.message, 'error');
-  });
+  }).catch(function(err) { showToast('❌ '+err.message,'error'); });
 }
 
-// ============ GOALS ============
+// ==================== GOALS ====================
 var defaultGoals = [
   '750+ ballberøringer per trening',
   'Kan drible med innsiden av begge føtter',
@@ -1610,104 +1884,169 @@ var defaultGoals = [
 
 function initDefaultGoals() {
   defaultGoals.forEach(function(text) {
-    db.collection(TEAM_PATH + '/goals').add({
-      text: text,
-      completed: false,
+    db.collection(TEAM_PATH+'/goals').add({
+      text: text, completed: false,
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    }).catch(function(err) { console.error('Goal init error:', err); });
+    }).catch(function(err) { console.error('Goal init:', err); });
   });
 }
 
 function renderGoals() {
-  var container = document.getElementById('goals-list');
+  var c = document.getElementById('goals-list');
   if (goals.length === 0) return;
-  container.innerHTML = goals.map(function(g) {
-    return '<div class="goal-item" onclick="toggleGoal(\'' + g.id + '\',' + !g.completed + ')">' +
-      '<span class="goal-check">' + (g.completed ? '✅' : '⬜') + '</span>' +
-      '<span class="goal-text' + (g.completed ? ' completed' : '') + '">' + g.text + '</span></div>';
+  c.innerHTML = goals.map(function(g) {
+    return '<div class="goal-item" onclick="toggleGoal(\''+g.id+'\','+!g.completed+')">' +
+      '<span class="goal-check">'+(g.completed?'✅':'⬜')+'</span>' +
+      '<span class="goal-text'+(g.completed?' completed':'')+'">'+g.text+'</span></div>';
   }).join('');
 }
 
-function toggleGoal(id, completed) {
-  db.collection(TEAM_PATH + '/goals').doc(id).update({ completed: completed })
-    .catch(function(err) { showToast('Feil: ' + err.message, 'error'); });
+function toggleGoal(id, val) {
+  db.collection(TEAM_PATH+'/goals').doc(id).update({completed:val})
+    .catch(function(err) { showToast('Feil: '+err.message,'error'); });
 }
 
-// ============ DASHBOARD HELPERS ============
-function renderNextTraining() {
-  var container = document.getElementById('next-training');
-  var today = new Date().toISOString().split('T')[0];
-  var upcoming = trainings.filter(function(t) { return t.date >= today; }).sort(function(a,b) { return a.date.localeCompare(b.date); });
+// ==================== COACH MANAGEMENT ====================
+function renderProfile() {
+  var c = document.getElementById('profile-info');
+  if (!currentUser || !currentCoach) return;
+  c.innerHTML =
+    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">' +
+    '<div class="player-avatar" style="width:50px;height:50px;font-size:20px;">' +
+    (currentCoach.name||'?').charAt(0).toUpperCase() + '</div>' +
+    '<div><div style="font-weight:700;font-size:16px;">'+( currentCoach.name||'')+'</div>' +
+    '<div style="font-size:13px;color:var(--gray);">'+currentUser.email+'</div>' +
+    '<div><span class="role-badge '+(currentCoach.role||'coach')+'">'+(currentCoach.role==='admin'?'👑 Hovedtrener':'🏃 Trener')+'</span></div></div></div>';
+}
 
-  if (upcoming.length === 0) {
-    container.innerHTML = '<div class="empty-state"><p>Ingen kommende treninger</p></div>';
+function renderCoaches() {
+  var c = document.getElementById('coach-list');
+  if (!c) return;
+  if (coaches.length === 0) {
+    c.innerHTML = '<div class="empty-state"><p>Ingen trenere</p></div>';
     return;
   }
+  var isAdmin = currentCoach && currentCoach.role === 'admin';
+  c.innerHTML = '<h3 style="font-size:14px;color:var(--gray);margin-bottom:8px;">Aktive trenere ('+coaches.length+')</h3>' +
+    coaches.map(function(co) {
+      var canRemove = isAdmin && co.uid !== currentUser.uid;
+      return '<div class="coach-item"><div class="coach-info">' +
+        '<div class="coach-avatar">'+(co.name||'?').charAt(0).toUpperCase()+'</div>' +
+        '<div><div class="coach-name">'+(co.name||'Ukjent')+'</div>' +
+        '<div class="coach-email">'+(co.email||'')+'</div></div></div>' +
+        '<div style="display:flex;align-items:center;gap:8px;">' +
+        '<span class="role-badge '+(co.role||'coach')+'">'+(co.role==='admin'?'👑 Admin':'🏃 Trener')+'</span>' +
+        (canRemove ? '<button class="btn btn-danger btn-sm" onclick="removeCoach(\''+co.id+'\')">✕</button>' : '') +
+        '</div></div>';
+    }).join('');
+}
 
-  var t = upcoming[0];
-  container.innerHTML = '<div style="padding:12px;background:var(--light-bg);border-radius:10px;">' +
-    '<div style="font-weight:700;color:var(--primary);">📅 ' + formatDate(t.date) + ' kl ' + (t.time||'17:00') + '</div>' +
-    '<div style="font-size:13px;color:var(--gray);margin-top:4px;">📍 ' + (t.location||'Ikke angitt') + ' • 🎯 ' + (t.theme||'Trening') + '</div>' +
-    (t.blocks ? '<div style="font-size:12px;color:var(--gray);margin-top:4px;">' + t.blocks.length + ' aktiviteter planlagt</div>' : '') +
-    '</div>';
+function renderInvites() {
+  var c = document.getElementById('invite-list');
+  if (!c) return;
+  if (invites.length === 0) { c.innerHTML = ''; return; }
+  c.innerHTML = '<h3 style="font-size:14px;color:var(--gray);margin-bottom:8px;">📧 Ventende invitasjoner ('+invites.length+')</h3>' +
+    invites.map(function(inv) {
+      return '<div class="invite-item"><div><div class="invite-email">'+inv.email+'</div>' +
+        (inv.name ? '<div style="font-size:12px;color:var(--gray);">'+inv.name+'</div>' : '') + '</div>' +
+        '<div style="display:flex;align-items:center;gap:8px;">' +
+        '<span class="invite-status">⏳ Venter</span>' +
+        '<button class="btn btn-danger btn-sm" onclick="removeInvite(\''+inv.id+'\')">✕</button></div></div>';
+    }).join('');
+}
+
+function openInviteCoach() {
+  document.getElementById('invite-email').value = '';
+  document.getElementById('invite-name').value = '';
+  openModal('modal-invite');
+}
+
+function saveInvite() {
+  var email = document.getElementById('invite-email').value.trim().toLowerCase();
+  if (!email) { showToast('Skriv inn e-post!','error'); return; }
+
+  // Check if already a coach
+  var existing = coaches.find(function(c) { return c.email && c.email.toLowerCase() === email; });
+  if (existing) { showToast('Denne treneren har allerede tilgang','error'); return; }
+
+  // Check if already invited
+  var existingInvite = invites.find(function(i) { return i.email === email; });
+  if (existingInvite) { showToast('Allerede invitert','error'); return; }
+
+  db.collection(TEAM_PATH+'/invites').add({
+    email: email,
+    name: document.getElementById('invite-name').value.trim(),
+    invitedBy: currentUser.uid,
+    invitedByName: currentCoach ? currentCoach.name : '',
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  }).then(function() {
+    showToast('✅ Invitasjon sendt! Treneren kan nå registrere seg med '+email,'success');
+    closeModal('modal-invite');
+  }).catch(function(err) { showToast('❌ '+err.message,'error'); });
+}
+
+function removeCoach(id) {
+  var coach = coaches.find(function(c) { return c.id === id; });
+  if (!confirm('Fjerne '+(coach?coach.name:'denne treneren')+'?')) return;
+  db.collection(TEAM_PATH+'/coaches').doc(id).delete()
+    .then(function() { showToast('Trener fjernet','success'); })
+    .catch(function(err) { showToast('Feil: '+err.message,'error'); });
+}
+
+function removeInvite(id) {
+  db.collection(TEAM_PATH+'/invites').doc(id).delete()
+    .then(function() { showToast('Invitasjon slettet','success'); })
+    .catch(function(err) { showToast('Feil: '+err.message,'error'); });
+}
+
+// ==================== DASHBOARD HELPERS ====================
+function renderNextTraining() {
+  var c = document.getElementById('next-training');
+  var today = new Date().toISOString().split('T')[0];
+  var up = trainings.filter(function(t) { return t.date >= today; }).sort(function(a,b) { return a.date.localeCompare(b.date); });
+  if (up.length === 0) { c.innerHTML = '<div class="empty-state"><p>Ingen kommende treninger</p></div>'; return; }
+  var t = up[0];
+  c.innerHTML = '<div style="padding:12px;background:var(--light-bg);border-radius:10px;">' +
+    '<div style="font-weight:700;color:var(--primary);">📅 '+formatDate(t.date)+' kl '+(t.time||'17:00')+'</div>' +
+    '<div style="font-size:13px;color:var(--gray);margin-top:4px;">📍 '+(t.location||'Ikke angitt')+' • 🎯 '+(t.theme||'Trening')+'</div>' +
+    (t.blocks ? '<div style="font-size:12px;color:var(--gray);margin-top:4px;">'+t.blocks.length+' aktiviteter</div>' : '')+'</div>';
 }
 
 function renderRecentActivity() {
-  var container = document.getElementById('recent-activity');
-  var activities = [];
-
-  trainings.slice(0, 3).forEach(function(t) {
-    activities.push('⚽ Trening: ' + (t.theme||'Generell') + ' — ' + formatDate(t.date));
-  });
-  matches.slice(0, 3).forEach(function(m) {
-    activities.push('🏟️ Kamp: Nord J2018 vs ' + m.opponent + (m.homeScore !== undefined ? ' (' + m.homeScore + '-' + m.awayScore + ')' : ''));
-  });
-  trophies.slice(0, 2).forEach(function(t) {
-    activities.push('🏆 Ukens spiller (uke ' + t.week + '): ' + t.playerName);
-  });
-
-  if (activities.length === 0) {
-    container.innerHTML = '<div class="empty-state"><p>Ingen aktivitet ennå</p></div>';
-    return;
-  }
-  container.innerHTML = activities.slice(0, 5).map(function(a) {
-    return '<div style="padding:8px 0;border-bottom:1px solid #eee;font-size:13px;">' + a + '</div>';
+  var c = document.getElementById('recent-activity');
+  var acts = [];
+  trainings.slice(0,3).forEach(function(t) { acts.push('⚽ '+(t.theme||'Trening')+' — '+formatDate(t.date)); });
+  matches.slice(0,3).forEach(function(m) { acts.push('🏟️ vs '+m.opponent+(m.homeScore!==undefined?' ('+m.homeScore+'-'+m.awayScore+')':'')); });
+  trophies.slice(0,2).forEach(function(t) { acts.push('🏆 Uke '+t.week+': '+t.playerName); });
+  if (acts.length===0) { c.innerHTML = '<div class="empty-state"><p>Ingen aktivitet ennå</p></div>'; return; }
+  c.innerHTML = acts.slice(0,5).map(function(a) {
+    return '<div style="padding:8px 0;border-bottom:1px solid #eee;font-size:13px;">'+a+'</div>';
   }).join('');
 }
 
-// ============ UTILITIES ============
-function formatDate(dateStr) {
-  if (!dateStr) return '';
+// ==================== UTILITIES ====================
+function formatDate(ds) {
+  if (!ds) return '';
   var days = ['søndag','mandag','tirsdag','onsdag','torsdag','fredag','lørdag'];
   var months = ['jan','feb','mar','apr','mai','jun','jul','aug','sep','okt','nov','des'];
-  var d = new Date(dateStr + 'T12:00:00');
-  return days[d.getDay()] + ' ' + d.getDate() + '. ' + months[d.getMonth()];
+  var d = new Date(ds+'T12:00:00');
+  return days[d.getDay()]+' '+d.getDate()+'. '+months[d.getMonth()];
 }
 
 function getWeekNumber() {
-  var d = new Date();
-  d.setHours(0,0,0,0);
-  d.setDate(d.getDate() + 3 - (d.getDay() + 6) % 7);
-  var week1 = new Date(d.getFullYear(), 0, 4);
-  return 1 + Math.round(((d - week1) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
+  var d = new Date(); d.setHours(0,0,0,0);
+  d.setDate(d.getDate()+3-(d.getDay()+6)%7);
+  var w1 = new Date(d.getFullYear(),0,4);
+  return 1+Math.round(((d-w1)/864e5-3+(w1.getDay()+6)%7)/7);
 }
 
-function openModal(id) {
-  document.getElementById(id).classList.add('active');
-}
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
-function closeModal(id) {
-  document.getElementById(id).classList.remove('active');
-}
-
-// Close modal on overlay click
-document.querySelectorAll('.modal-overlay').forEach(function(overlay) {
-  overlay.addEventListener('click', function(e) {
-    if (e.target === overlay) overlay.classList.remove('active');
-  });
+document.querySelectorAll('.modal-overlay').forEach(function(o) {
+  o.addEventListener('click', function(e) { if (e.target===o) o.classList.remove('active'); });
 });
 
-// Initial render
 renderTemplateWeek();
 </script>
 </body>

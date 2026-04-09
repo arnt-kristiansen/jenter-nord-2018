@@ -570,13 +570,30 @@ function handleLogin() {
         return;
     }
 
+    // Vis at noe skjer
+    showError('Logger inn...');
+
     auth.signInWithEmailAndPassword(email, password)
         .then(function(result) {
-            console.log('Login OK');
+            showError('Innlogging OK! Laster data...');
+            return db.ref('teams/j2018/coaches/' + result.user.uid).once('value');
+        })
+        .then(function(snapshot) {
+            if (!snapshot.exists()) {
+                showError('Brukerdata mangler i databasen. Oppretter...');
+                // Bruker finnes i Auth men ikke i databasen - opprett
+                var user = auth.currentUser;
+                return db.ref('teams/j2018/coaches/' + user.uid).set({
+                    name: user.email.split('@')[0],
+                    email: user.email,
+                    role: 'admin',
+                    createdAt: firebase.database.ServerValue.TIMESTAMP
+                });
+            }
         })
         .catch(function(error) {
             console.error('Login error:', error);
-            showError('Innlogging feilet: ' + error.code + ' — ' + error.message);
+            showError('Login feilet: ' + error.code + ' — ' + error.message);
         });
 }
 

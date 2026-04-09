@@ -3,2044 +3,1990 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nord Jenter 2018</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Nord Jenter 2018 - Utviklingsapp</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --bg-primary: #0a0e17;
-            --bg-secondary: #111827;
-            --bg-card: #1a2332;
-            --bg-input: #243044;
-            --text-primary: #e2e8f0;
-            --text-secondary: #94a3b8;
-            --text-muted: #64748b;
-            --accent-green: #10b981;
-            --accent-green-hover: #059669;
-            --accent-gold: #f59e0b;
-            --accent-gold-hover: #d97706;
-            --accent-red: #ef4444;
-            --accent-blue: #3b82f6;
-            --accent-purple: #8b5cf6;
-            --border-color: #1e3a5f;
-            --shadow: 0 4px 6px -1px rgba(0,0,0,0.3);
-        }
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body { font-family:'Inter',sans-serif; background:var(--bg-primary); color:var(--text-primary); min-height:100vh; padding-bottom:80px; }
-
-        /* AUTH */
-        .auth-container { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; padding:20px; text-align:center; }
-        .auth-container img { width:120px; margin-bottom:20px; }
-        .auth-container h1 { font-size:1.5rem; margin-bottom:8px; }
-        .auth-container p { color:var(--text-secondary); margin-bottom:24px; }
-        .auth-btn { background:var(--accent-green); color:white; border:none; padding:14px 32px; border-radius:12px; font-size:1rem; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:10px; }
-        .auth-btn:hover { background:var(--accent-green-hover); }
-        .pending-msg { background:var(--bg-card); padding:20px; border-radius:12px; border:1px solid var(--accent-gold); max-width:400px; }
-        .pending-msg i { color:var(--accent-gold); font-size:2rem; margin-bottom:10px; }
-
-        /* HEADER */
-        .app-header { background:var(--bg-secondary); padding:12px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border-color); position:sticky; top:0; z-index:100; }
-        .app-header h1 { font-size:1.1rem; font-weight:700; }
-        .app-header h1 span { color:var(--accent-green); }
-        .header-actions { display:flex; align-items:center; gap:12px; }
-        .header-actions button { background:none; border:none; color:var(--text-secondary); font-size:1.2rem; cursor:pointer; }
-        .user-avatar { width:32px; height:32px; border-radius:50%; border:2px solid var(--accent-green); }
-
-        /* TABS */
-        .tab-bar { position:fixed; bottom:0; left:0; right:0; background:var(--bg-secondary); border-top:1px solid var(--border-color); display:flex; z-index:100; padding-bottom:env(safe-area-inset-bottom); }
-        .tab-btn { flex:1; display:flex; flex-direction:column; align-items:center; padding:8px 2px 6px; border:none; background:none; color:var(--text-muted); font-size:0.6rem; cursor:pointer; transition:color 0.2s; gap:2px; }
-        .tab-btn i { font-size:1.1rem; }
-        .tab-btn.active { color:var(--accent-green); }
-        .tab-content { display:none; padding:16px; max-width:600px; margin:0 auto; }
-        .tab-content.active { display:block; }
-
-        /* CARDS */
-        .card { background:var(--bg-card); border-radius:12px; padding:16px; margin-bottom:12px; border:1px solid var(--border-color); }
-        .card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
-        .card-header h3 { font-size:0.95rem; font-weight:600; }
-
-        /* STATS ROW */
-        .stats-row { display:grid; grid-template-columns:repeat(auto-fit, minmax(100px, 1fr)); gap:8px; margin-bottom:16px; }
-        .stat-card { background:var(--bg-card); border-radius:10px; padding:12px; text-align:center; border:1px solid var(--border-color); }
-        .stat-card .number { font-size:1.5rem; font-weight:700; color:var(--accent-green); }
-        .stat-card .label { font-size:0.7rem; color:var(--text-secondary); margin-top:2px; }
-
-        /* FORMS */
-        .form-group { margin-bottom:12px; }
-        .form-group label { display:block; font-size:0.8rem; font-weight:500; color:var(--text-secondary); margin-bottom:4px; }
-        .form-group input, .form-group select, .form-group textarea {
-            width:100%; padding:10px 12px; background:var(--bg-input); border:1px solid var(--border-color);
-            border-radius:8px; color:var(--text-primary); font-size:0.9rem; font-family:inherit;
-        }
-        .form-group textarea { resize:vertical; min-height:60px; }
-
-        /* BUTTONS */
-        .btn { padding:10px 20px; border:none; border-radius:8px; font-weight:600; cursor:pointer; font-size:0.85rem; transition:all 0.2s; }
-        .btn-primary { background:var(--accent-green); color:white; }
-        .btn-primary:hover { background:var(--accent-green-hover); }
-        .btn-secondary { background:var(--bg-input); color:var(--text-primary); }
-        .btn-danger { background:var(--accent-red); color:white; }
-        .btn-gold { background:var(--accent-gold); color:black; }
-        .btn-blue { background:var(--accent-blue); color:white; }
-        .btn-purple { background:var(--accent-purple); color:white; }
-        .btn-sm { padding:6px 12px; font-size:0.75rem; }
-        .btn-block { width:100%; }
-        .btn-group { display:flex; gap:8px; flex-wrap:wrap; }
-
-        /* MODAL */
-        .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:200; align-items:center; justify-content:center; padding:16px; }
-        .modal-overlay.active { display:flex; }
-        .modal { background:var(--bg-card); border-radius:16px; padding:20px; width:100%; max-width:500px; max-height:90vh; overflow-y:auto; border:1px solid var(--border-color); }
-        .modal h3 { margin-bottom:16px; font-size:1.1rem; }
-
-        /* LISTS */
-        .list-item { display:flex; align-items:center; justify-content:space-between; padding:12px; background:var(--bg-input); border-radius:8px; margin-bottom:8px; }
-        .list-item-info { flex:1; }
-        .list-item-info h4 { font-size:0.9rem; font-weight:600; }
-        .list-item-info p { font-size:0.75rem; color:var(--text-secondary); }
-        .list-item-actions { display:flex; gap:6px; }
-        .list-item-actions button { background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:0.9rem; padding:4px; }
-
-        /* BADGE */
-        .badge { padding:3px 8px; border-radius:12px; font-size:0.65rem; font-weight:600; }
-        .badge-green { background:rgba(16,185,129,0.2); color:var(--accent-green); }
-        .badge-gold { background:rgba(245,158,11,0.2); color:var(--accent-gold); }
-        .badge-red { background:rgba(239,68,68,0.2); color:var(--accent-red); }
-        .badge-blue { background:rgba(59,130,246,0.2); color:var(--accent-blue); }
-        .badge-purple { background:rgba(139,92,246,0.2); color:var(--accent-purple); }
-
-        /* ATTENDANCE GRID */
-        .attendance-grid { display:grid; grid-template-columns:1fr repeat(auto-fill, 40px); gap:2px; font-size:0.7rem; overflow-x:auto; }
-        .att-header { background:var(--accent-green); color:white; padding:6px 4px; text-align:center; border-radius:4px; font-weight:600; }
-        .att-name { padding:6px 8px; background:var(--bg-input); border-radius:4px; white-space:nowrap; }
-        .att-cell { width:40px; height:32px; display:flex; align-items:center; justify-content:center; background:var(--bg-input); border-radius:4px; cursor:pointer; font-size:1rem; }
-        .att-cell.present { background:rgba(16,185,129,0.3); }
-        .att-cell.absent { background:rgba(239,68,68,0.3); }
-
-        /* TROPHY CARD */
-        .trophy-card { background:linear-gradient(135deg, #f59e0b22, #f59e0b08); border:1px solid var(--accent-gold); border-radius:12px; padding:16px; text-align:center; margin-bottom:12px; }
-        .trophy-card .trophy-icon { font-size:2.5rem; margin-bottom:8px; }
-        .trophy-card h4 { color:var(--accent-gold); font-size:1rem; }
-        .trophy-card p { font-size:0.8rem; color:var(--text-secondary); }
-        .trophy-card .date { font-size:0.7rem; color:var(--text-muted); margin-top:4px; }
-
-        /* LEADERBOARD */
-        .leaderboard-item { display:flex; align-items:center; gap:12px; padding:10px; background:var(--bg-input); border-radius:8px; margin-bottom:6px; }
-        .leaderboard-rank { width:28px; height:28px; display:flex; align-items:center; justify-content:center; border-radius:50%; font-weight:700; font-size:0.8rem; }
-        .rank-1 { background:var(--accent-gold); color:black; }
-        .rank-2 { background:#94a3b8; color:black; }
-        .rank-3 { background:#cd7f32; color:white; }
-        .rank-other { background:var(--bg-card); color:var(--text-secondary); }
-        .leaderboard-name { flex:1; font-weight:500; }
-        .leaderboard-count { font-weight:700; color:var(--accent-gold); }
-
-        /* STAR RATING */
-        .star-rating { display:flex; gap:4px; }
-        .star-rating i { color:var(--text-muted); cursor:pointer; font-size:1.2rem; }
-        .star-rating i.active { color:var(--accent-gold); }
-
-        /* EMPTY STATE */
-        .empty-state { text-align:center; padding:40px 20px; color:var(--text-muted); }
-        .empty-state i { font-size:2.5rem; margin-bottom:12px; }
-        .empty-state p { font-size:0.85rem; }
-
-        /* TRAINING SESSION BUILDER */
-        .session-module { border:1px solid var(--border-color); border-radius:10px; margin-bottom:10px; overflow:hidden; }
-        .session-module-header { display:flex; align-items:center; justify-content:space-between; padding:10px 14px; cursor:pointer; }
-        .session-module-header h4 { font-size:0.85rem; font-weight:600; display:flex; align-items:center; gap:8px; }
-        .session-module-header .duration { font-size:0.7rem; color:var(--text-muted); background:var(--bg-input); padding:2px 8px; border-radius:12px; }
-        .session-module-body { padding:12px 14px; border-top:1px solid var(--border-color); background:var(--bg-primary); }
-        .module-samling { background:linear-gradient(135deg, rgba(139,92,246,0.1), transparent); }
-        .module-samling .session-module-header { background:rgba(139,92,246,0.15); }
-        .module-teknikk { background:linear-gradient(135deg, rgba(59,130,246,0.1), transparent); }
-        .module-teknikk .session-module-header { background:rgba(59,130,246,0.15); }
-        .module-del3 { background:linear-gradient(135deg, rgba(16,185,129,0.1), transparent); }
-        .module-del3 .session-module-header { background:rgba(16,185,129,0.15); }
-        .module-spill { background:linear-gradient(135deg, rgba(245,158,11,0.1), transparent); }
-        .module-spill .session-module-header { background:rgba(245,158,11,0.15); }
-
-        /* PERIOD SELECTOR */
-        .period-tabs { display:flex; gap:4px; margin-bottom:16px; overflow-x:auto; }
-        .period-tab { padding:8px 12px; border-radius:8px; font-size:0.75rem; font-weight:600; cursor:pointer; white-space:nowrap; border:1px solid var(--border-color); background:var(--bg-input); color:var(--text-secondary); }
-        .period-tab.active { background:var(--accent-green); color:white; border-color:var(--accent-green); }
-
-        /* GOAL CHIPS */
-        .goal-chips { display:flex; flex-wrap:wrap; gap:6px; margin:8px 0; }
-        .goal-chip { padding:4px 10px; border-radius:16px; font-size:0.7rem; font-weight:500; cursor:pointer; border:1px solid var(--border-color); background:var(--bg-input); color:var(--text-secondary); transition:all 0.2s; }
-        .goal-chip.selected { background:var(--accent-green); color:white; border-color:var(--accent-green); }
-        .goal-chip.selected-gold { background:var(--accent-gold); color:black; border-color:var(--accent-gold); }
-
-        /* VIF TIPS */
-        .vif-tip { background:rgba(16,185,129,0.08); border-left:3px solid var(--accent-green); padding:10px 12px; border-radius:0 8px 8px 0; margin:8px 0; font-size:0.78rem; color:var(--text-secondary); }
-        .vif-tip i { color:var(--accent-green); margin-right:6px; }
-
-        /* EXERCISE CARD */
-        .exercise-card { background:var(--bg-input); border-radius:8px; padding:10px 12px; margin-bottom:6px; border-left:3px solid var(--accent-blue); }
-        .exercise-card h5 { font-size:0.82rem; font-weight:600; margin-bottom:4px; }
-        .exercise-card p { font-size:0.72rem; color:var(--text-secondary); line-height:1.4; }
-        .exercise-card .exercise-tags { display:flex; gap:4px; margin-top:6px; }
-
-        /* PROGRESS BAR */
-        .progress-bar { background:var(--bg-input); border-radius:8px; height:8px; overflow:hidden; margin-top:6px; }
-        .progress-bar-fill { height:100%; border-radius:8px; transition:width 0.5s; }
-        .progress-green { background:var(--accent-green); }
-        .progress-gold { background:var(--accent-gold); }
-        .progress-blue { background:var(--accent-blue); }
-
-        /* SCROLL */
-        ::-webkit-scrollbar { width:4px; }
-        ::-webkit-scrollbar-track { background:var(--bg-primary); }
-        ::-webkit-scrollbar-thumb { background:var(--border-color); border-radius:4px; }
-
-        @media(max-width:380px) {
-            .tab-btn { font-size:0.55rem; }
-            .tab-btn i { font-size:0.95rem; }
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- AUTH SCREEN -->
-    <div id="authScreen" class="auth-container">
-        <div style="font-size:3rem; margin-bottom:12px;">⚽</div>
-        <h1>Nord Jenter 2018</h1>
-        <p>Trenerportal</p>
-        <div id="pendingMessage" class="pending-msg" style="display:none;">
-            <i class="fas fa-clock"></i>
-            <h3>Venter på godkjenning</h3>
-            <p>Din konto venter på godkjenning fra admin.</p>
-        </div>
-        <button id="loginBtn" class="auth-btn" onclick="signIn()">
-            <i class="fab fa-google"></i> Logg inn med Google
-        </button>
-    </div>
-
-    <!-- MAIN APP -->
-    <div id="appMain" style="display:none;">
-        <header class="app-header">
-            <h1>⚽ Nord <span>Jenter 2018</span></h1>
-            <div class="header-actions">
-                <span id="userRole" class="badge badge-green" style="font-size:0.65rem;"></span>
-                <img id="userAvatar" class="user-avatar" src="" alt="">
-                <button onclick="signOutUser()" title="Logg ut"><i class="fas fa-sign-out-alt"></i></button>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-futbol"></i>
+                <span>Nord Jenter 2018</span>
             </div>
-        </header>
-
-        <!-- TAB BAR -->
-        <nav class="tab-bar">
-            <button class="tab-btn active" onclick="switchTab('home')"><i class="fas fa-home"></i>Hjem</button>
-            <button class="tab-btn" onclick="switchTab('players')"><i class="fas fa-users"></i>Spillere</button>
-            <button class="tab-btn" onclick="switchTab('goals')"><i class="fas fa-bullseye"></i>Mål</button>
-            <button class="tab-btn" onclick="switchTab('training')"><i class="fas fa-futbol"></i>Trening</button>
-            <button class="tab-btn" onclick="switchTab('matches')"><i class="fas fa-trophy"></i>Kamper</button>
-            <button class="tab-btn" onclick="switchTab('trophy')"><i class="fas fa-award"></i>Pokal</button>
-            <button class="tab-btn" onclick="switchTab('templates')"><i class="fas fa-clipboard-list"></i>Maler</button>
-            <button class="tab-btn" onclick="switchTab('settings')"><i class="fas fa-cog"></i>Innstill.</button>
-        </nav>
-
-        <!-- HOME TAB -->
-        <div id="tab-home" class="tab-content active">
-            <h2 style="margin-bottom:16px;">Dashboard</h2>
-            <div class="stats-row" id="dashboardStats"></div>
-
-            <div class="card">
-                <div class="card-header"><h3>📋 Kommende aktiviteter</h3></div>
-                <div id="upcomingActivities"><p style="color:var(--text-muted); font-size:0.85rem;">Laster...</p></div>
-            </div>
-
-            <div class="card">
-                <div class="card-header"><h3>🏆 Siste Ukens Pokal</h3></div>
-                <div id="latestTrophyHome"></div>
-            </div>
-
-            <div class="card">
-                <div class="card-header"><h3>🎯 Aktive Periodemål</h3></div>
-                <div id="activeGoalsHome"></div>
-            </div>
-        </div>
-
-        <!-- PLAYERS TAB -->
-        <div id="tab-players" class="tab-content">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-                <h2>Spillere</h2>
-                <button class="btn btn-primary btn-sm" onclick="showPlayerModal()"><i class="fas fa-plus"></i> Legg til</button>
-            </div>
-            <div id="playersList"></div>
-        </div>
-
-        <!-- GOALS TAB -->
-        <div id="tab-goals" class="tab-content">
-            <h2 style="margin-bottom:16px;">Utviklingsmål</h2>
-
-            <!-- Period selector -->
-            <div class="period-tabs" id="periodTabs">
-                <div class="period-tab active" onclick="selectPeriod('nov-des')">Nov-Des</div>
-                <div class="period-tab" onclick="selectPeriod('jan-apr')">Jan-Apr</div>
-                <div class="period-tab" onclick="selectPeriod('mai-jun')">Mai-Jun</div>
-                <div class="period-tab" onclick="selectPeriod('aug-sep')">Aug-Sep</div>
-            </div>
-
-            <!-- VIF Development info -->
-            <div class="card" id="periodInfoCard">
-                <div class="card-header">
-                    <h3 id="periodTitle">🎯 November - Desember</h3>
-                    <span class="badge badge-green" id="periodBadge">Aktiv</span>
-                </div>
-                <div id="periodDescription"></div>
-            </div>
-
-            <!-- Period Learning Goals -->
-            <div class="card">
-                <div class="card-header">
-                    <h3>📚 Læringsmål for perioden</h3>
-                    <button class="btn btn-primary btn-sm" onclick="showPeriodGoalModal()"><i class="fas fa-plus"></i></button>
-                </div>
-                <div id="periodGoalsList"></div>
-            </div>
-
-            <!-- Player Development Goals -->
-            <div class="card">
-                <div class="card-header">
-                    <h3>👤 Individuelle utviklingsmål</h3>
-                    <button class="btn btn-gold btn-sm" onclick="showPlayerGoalModal()"><i class="fas fa-plus"></i></button>
-                </div>
-                <div id="playerGoalsList"></div>
-            </div>
-        </div>
-
-        <!-- TRAINING TAB -->
-        <div id="tab-training" class="tab-content">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-                <h2>Treningsøkter</h2>
-                <button class="btn btn-primary btn-sm" onclick="showTrainingModal()"><i class="fas fa-plus"></i> Ny økt</button>
-            </div>
-            <div id="trainingList"></div>
-        </div>
-
-        <!-- MATCHES TAB -->
-        <div id="tab-matches" class="tab-content">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-                <h2>Kamper</h2>
-                <button class="btn btn-primary btn-sm" onclick="showMatchModal()"><i class="fas fa-plus"></i> Ny kamp</button>
-            </div>
-            <div id="matchesList"></div>
-        </div>
-
-        <!-- TROPHY TAB -->
-        <div id="tab-trophy" class="tab-content">
-            <h2 style="margin-bottom:16px;">Ukens Pokal 🏆</h2>
-            <button class="btn btn-gold btn-block" onclick="showTrophyModal()" style="margin-bottom:16px;">
-                <i class="fas fa-award"></i> Del ut Ukens Pokal
+            <button class="nav-toggle" id="navToggle">
+                <i class="fas fa-bars"></i>
             </button>
-            <div class="card">
-                <div class="card-header"><h3>🏅 Toppliste</h3></div>
-                <div id="trophyLeaderboard"></div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#dashboard" class="nav-link active" data-page="dashboard">
+                    <i class="fas fa-home"></i> Hjem
+                </a></li>
+                <li><a href="#players" class="nav-link" data-page="players">
+                    <i class="fas fa-users"></i> Spillere
+                </a></li>
+                <li><a href="#goals" class="nav-link" data-page="goals">
+                    <i class="fas fa-bullseye"></i> Mål
+                </a></li>
+                <li><a href="#progress" class="nav-link" data-page="progress">
+                    <i class="fas fa-chart-line"></i> Utvikling
+                </a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <!-- Dashboard Page -->
+        <div id="dashboardPage" class="page active">
+            <div class="page-header">
+                <h1><i class="fas fa-home"></i> Dashboard</h1>
+                <p>Oversikt over lagets utvikling</p>
             </div>
-            <div class="card">
-                <div class="card-header"><h3>📜 Historikk</h3></div>
-                <div id="trophyHistory"></div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="totalPlayers">0</h3>
+                        <p>Spillere</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="activeGoals">0</h3>
+                        <p>Aktive Mål</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="completedGoals">0</h3>
+                        <p>Fullførte Mål</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                        <i class="fas fa-percentage"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="avgProgress">0%</h3>
+                        <p>Gjennomsnittlig Fremgang</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-bullseye"></i> Aktive Mål for Inneværende Måned</h2>
+                </div>
+                <div id="activeGoalsContainer" class="goals-by-focus">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-star"></i> Toppspillere Denne Måneden</h2>
+                </div>
+                <div id="topPlayersContainer" class="top-players-grid">
+                    <!-- Will be populated by JavaScript -->
+                </div>
             </div>
         </div>
 
-        <!-- TEMPLATES TAB -->
-        <div id="tab-templates" class="tab-content">
-            <h2 style="margin-bottom:16px;">Treningsopplegg</h2>
-
-            <div class="vif-tip">
-                <i class="fas fa-lightbulb"></i>
-                <strong>VIF 5-7 år:</strong> "Bli vant med ballen" - Lystbetont lek. Leken står i fokus. Kom i gang så hurtig som mulig!
+        <!-- Players Page -->
+        <div id="playersPage" class="page">
+            <div class="page-header">
+                <h1><i class="fas fa-users"></i> Spillere</h1>
+                <button class="btn btn-primary" onclick="showAddPlayerModal()">
+                    <i class="fas fa-plus"></i> Legg til Spiller
+                </button>
             </div>
 
-            <!-- Session Builder -->
-            <div class="card">
-                <div class="card-header">
-                    <h3>🏗️ Bygg treningsøkt</h3>
-                    <button class="btn btn-purple btn-sm" onclick="showSessionBuilder()"><i class="fas fa-magic"></i> Bygg</button>
-                </div>
-                <p style="font-size:0.8rem; color:var(--text-secondary);">Sett sammen en økt med VIF-moduler: Samling → Teknikk → Øvelse → Spill → Samling</p>
-            </div>
-
-            <div class="card">
-                <div class="card-header">
-                    <h3>📋 Ferdige maler</h3>
-                </div>
-                <div id="templatesList"></div>
-            </div>
-
-            <div class="card">
-                <div class="card-header">
-                    <h3>🗂️ Mine lagrede økter</h3>
-                </div>
-                <div id="savedSessionsList"></div>
+            <div class="players-grid" id="playersGrid">
+                <!-- Will be populated by JavaScript -->
             </div>
         </div>
 
-        <!-- SETTINGS TAB -->
-        <div id="tab-settings" class="tab-content">
-            <h2 style="margin-bottom:16px;">Innstillinger</h2>
-            <div class="card">
-                <div class="card-header"><h3>👥 Trenere</h3></div>
-                <div id="coachesList"></div>
+        <!-- Goals Page -->
+        <div id="goalsPage" class="page">
+            <div class="page-header">
+                <h1><i class="fas fa-bullseye"></i> Månedlige Mål</h1>
+                <p>Administrer mål for hver spiller per måned</p>
             </div>
-            <div class="card" id="inviteCard" style="display:none;">
-                <div class="card-header"><h3>📨 Inviter trener</h3></div>
-                <div class="form-group">
-                    <label>E-post</label>
-                    <input type="email" id="inviteEmail" placeholder="trener@example.com">
+
+            <div class="month-selector">
+                <button class="month-tab active" data-month="0">Januar</button>
+                <button class="month-tab" data-month="1">Februar</button>
+                <button class="month-tab" data-month="2">Mars</button>
+                <button class="month-tab" data-month="3">April</button>
+                <button class="month-tab" data-month="4">Mai</button>
+                <button class="month-tab" data-month="5">Juni</button>
+                <button class="month-tab" data-month="6">Juli</button>
+                <button class="month-tab" data-month="7">August</button>
+                <button class="month-tab" data-month="8">September</button>
+                <button class="month-tab" data-month="9">Oktober</button>
+                <button class="month-tab" data-month="10">November</button>
+                <button class="month-tab" data-month="11">Desember</button>
+            </div>
+
+            <div class="goals-content">
+                <div class="player-selector">
+                    <label>Velg spiller:</label>
+                    <select id="goalPlayerSelect" onchange="loadPlayerGoals()">
+                        <option value="">Velg en spiller...</option>
+                    </select>
                 </div>
-                <button class="btn btn-primary btn-sm" onclick="inviteCoach()">Send invitasjon</button>
-            </div>
-            <div class="card">
-                <div class="card-header"><h3>ℹ️ Om appen</h3></div>
-                <p style="font-size:0.8rem; color:var(--text-secondary);">Nord Jenter 2018 - Vålerenga IF<br>Versjon 3.0.0<br>Utviklingsmål & Øktbygger</p>
+
+                <div id="playerGoalsContainer" style="display: none;">
+                    <div class="focus-areas-section">
+                        <h3>Fokusområder for Måneden (velg opptil 3)</h3>
+                        <div class="focus-chips" id="focusChips">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <div class="goals-list-section">
+                        <div class="section-header">
+                            <h3>Mål for Måneden</h3>
+                            <button class="btn btn-primary btn-sm" onclick="showPeriodGoalModal()">
+                                <i class="fas fa-plus"></i> Nytt Mål
+                            </button>
+                        </div>
+                        <div id="periodGoalsList" class="goals-list">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- MODALS -->
-
-    <!-- Player Modal -->
-    <div class="modal-overlay" id="playerModal">
-        <div class="modal">
-            <h3 id="playerModalTitle">Legg til spiller</h3>
-            <input type="hidden" id="playerId">
-            <div class="form-group">
-                <label>Navn</label>
-                <input type="text" id="playerName" placeholder="Spillerens navn">
+        <!-- Progress Page -->
+        <div id="progressPage" class="page">
+            <div class="page-header">
+                <h1><i class="fas fa-chart-line"></i> Utvikling</h1>
+                <p>Følg utviklingen til spillerne</p>
             </div>
-            <div class="form-group">
-                <label>Posisjon</label>
-                <select id="playerPosition">
-                    <option value="">Velg posisjon</option>
-                    <option value="Keeper">Keeper</option>
-                    <option value="Allrounder">Allrounder</option>
+
+            <div class="progress-filters">
+                <select id="progressPlayerSelect" onchange="loadPlayerProgress()">
+                    <option value="">Velg en spiller...</option>
                 </select>
             </div>
-            <div class="form-group">
-                <label>Draktnummer</label>
-                <input type="number" id="playerNumber" placeholder="Nummer">
-            </div>
-            <div class="form-group">
-                <label>Styrker</label>
-                <textarea id="playerStrengths" placeholder="Spillerens styrker..."></textarea>
-            </div>
-            <div class="form-group">
-                <label>Utviklingsområder</label>
-                <textarea id="playerDevelopment" placeholder="Områder å utvikle..."></textarea>
-            </div>
-            <div class="btn-group">
-                <button class="btn btn-primary" onclick="savePlayer()">Lagre</button>
-                <button class="btn btn-secondary" onclick="closeModal('playerModal')">Avbryt</button>
+
+            <div id="progressContainer">
+                <!-- Will be populated by JavaScript -->
             </div>
         </div>
-    </div>
+    </main>
 
-    <!-- Training Modal -->
-    <div class="modal-overlay" id="trainingModal">
-        <div class="modal">
-            <h3>Ny treningsøkt</h3>
-            <input type="hidden" id="trainingId">
-            <div class="form-group">
-                <label>Dato</label>
-                <input type="date" id="trainingDate">
+    <!-- Add Player Modal -->
+    <div id="addPlayerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Legg til Ny Spiller</h2>
+                <span class="close" onclick="closeAddPlayerModal()">&times;</span>
             </div>
-            <div class="form-group">
-                <label>Tittel / Tema</label>
-                <input type="text" id="trainingTitle" placeholder="F.eks. Pasningsspill">
-            </div>
-            <div class="form-group">
-                <label>🎯 Læringsmål for økten</label>
-                <div class="goal-chips" id="trainingGoalChips"></div>
-                <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Velg fra periodens læringsmål</p>
-            </div>
-            <div class="form-group">
-                <label>Øktplan (fra øktbygger)</label>
-                <select id="trainingSessionTemplate">
-                    <option value="">Ingen mal valgt</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Notater</label>
-                <textarea id="trainingNotes" placeholder="Beskrivelse, øvelser, utstyr..."></textarea>
-            </div>
-
-            <div class="card" style="margin-top:12px;">
-                <div class="card-header"><h3>✅ Oppmøte</h3></div>
-                <div id="trainingAttendance"></div>
-            </div>
-
-            <div class="card" style="margin-top:12px;">
-                <div class="card-header"><h3>⭐ Evaluering</h3></div>
+            <form id="addPlayerForm" onsubmit="addPlayer(event)">
                 <div class="form-group">
-                    <label>Innsats</label>
-                    <div class="star-rating" id="ratingEffort" data-rating="0">
-                        <i class="fas fa-star" data-val="1"></i><i class="fas fa-star" data-val="2"></i><i class="fas fa-star" data-val="3"></i><i class="fas fa-star" data-val="4"></i><i class="fas fa-star" data-val="5"></i>
-                    </div>
+                    <label for="playerName">Navn:</label>
+                    <input type="text" id="playerName" required>
                 </div>
                 <div class="form-group">
-                    <label>Engasjement</label>
-                    <div class="star-rating" id="ratingEngagement" data-rating="0">
-                        <i class="fas fa-star" data-val="1"></i><i class="fas fa-star" data-val="2"></i><i class="fas fa-star" data-val="3"></i><i class="fas fa-star" data-val="4"></i><i class="fas fa-star" data-val="5"></i>
-                    </div>
+                    <label for="playerNumber">Draktnummer:</label>
+                    <input type="number" id="playerNumber" required>
                 </div>
-                <div class="form-group">
-                    <label>Måloppnåelse</label>
-                    <div class="star-rating" id="ratingGoals" data-rating="0">
-                        <i class="fas fa-star" data-val="1"></i><i class="fas fa-star" data-val="2"></i><i class="fas fa-star" data-val="3"></i><i class="fas fa-star" data-val="4"></i><i class="fas fa-star" data-val="5"></i>
-                    </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeAddPlayerModal()">Avbryt</button>
+                    <button type="submit" class="btn btn-primary">Legg til</button>
                 </div>
-                <div class="form-group">
-                    <label>Evaluering - notater</label>
-                    <textarea id="trainingEval" placeholder="Hva fungerte bra? Hva kan forbedres?"></textarea>
-                </div>
-            </div>
-
-            <div class="btn-group" style="margin-top:12px;">
-                <button class="btn btn-primary" onclick="saveTraining()">Lagre</button>
-                <button class="btn btn-secondary" onclick="closeModal('trainingModal')">Avbryt</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Match Modal -->
-    <div class="modal-overlay" id="matchModal">
-        <div class="modal">
-            <h3>Ny kamp</h3>
-            <input type="hidden" id="matchId">
-            <div class="form-group">
-                <label>Dato</label>
-                <input type="date" id="matchDate">
-            </div>
-            <div class="form-group">
-                <label>Motstander</label>
-                <input type="text" id="matchOpponent" placeholder="Motstanderlag">
-            </div>
-            <div class="form-group">
-                <label>Mål for</label>
-                <input type="number" id="matchGoalsFor" placeholder="0" min="0">
-            </div>
-            <div class="form-group">
-                <label>Mål mot</label>
-                <input type="number" id="matchGoalsAgainst" placeholder="0" min="0">
-            </div>
-            <div class="form-group">
-                <label>Notater</label>
-                <textarea id="matchNotes" placeholder="Kampreferat..."></textarea>
-            </div>
-            <div class="btn-group">
-                <button class="btn btn-primary" onclick="saveMatch()">Lagre</button>
-                <button class="btn btn-secondary" onclick="closeModal('matchModal')">Avbryt</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Trophy Modal -->
-    <div class="modal-overlay" id="trophyModal">
-        <div class="modal">
-            <h3>🏆 Del ut Ukens Pokal</h3>
-            <div class="form-group">
-                <label>Velg spiller</label>
-                <select id="trophyPlayer"></select>
-            </div>
-            <div class="form-group">
-                <label>Dato</label>
-                <input type="date" id="trophyDate">
-            </div>
-            <div class="form-group">
-                <label>Begrunnelse</label>
-                <textarea id="trophyReason" placeholder="Hvorfor får spilleren pokalen?"></textarea>
-            </div>
-            <div class="btn-group">
-                <button class="btn btn-gold" onclick="saveTrophy()">Del ut 🏆</button>
-                <button class="btn btn-secondary" onclick="closeModal('trophyModal')">Avbryt</button>
-            </div>
+            </form>
         </div>
     </div>
 
     <!-- Period Goal Modal -->
-    <div class="modal-overlay" id="periodGoalModal">
-        <div class="modal">
-            <h3>📚 Legg til læringsmål</h3>
-            <div class="form-group">
-                <label>Velg fra VIF-mål</label>
-                <div class="goal-chips" id="vifGoalChips"></div>
+    <div id="periodGoalModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="periodGoalModalTitle">Nytt Månedsmål</h2>
+                <span class="close" onclick="closePeriodGoalModal()">&times;</span>
             </div>
-            <div class="form-group">
-                <label>Eller skriv eget mål</label>
-                <input type="text" id="customGoalText" placeholder="Egendefinert læringsmål...">
-            </div>
-            <div class="form-group">
-                <label>Kategori</label>
-                <select id="goalCategory">
-                    <option value="teknikk">Teknikk</option>
-                    <option value="spill">Spill & Forståelse</option>
-                    <option value="holdning">Holdning & Samvær</option>
-                    <option value="fysisk">Fysisk</option>
-                    <option value="annet">Annet</option>
-                </select>
-            </div>
-            <div class="btn-group">
-                <button class="btn btn-primary" onclick="savePeriodGoal()">Legg til</button>
-                <button class="btn btn-secondary" onclick="closeModal('periodGoalModal')">Avbryt</button>
-            </div>
+            <form id="periodGoalForm" onsubmit="savePeriodGoal(event)">
+                <div class="form-group">
+                    <label for="goalFocusArea">Fokusområde:</label>
+                    <select id="goalFocusArea" required onchange="updateGoalSuggestions()">
+                        <option value="">Velg fokusområde...</option>
+                    </select>
+                </div>
+                
+                <div class="form-group" id="suggestedGoalsContainer" style="display: none;">
+                    <label>Foreslåtte mål (klikk for å velge):</label>
+                    <div id="suggestedGoalsList" class="suggested-goals">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="goalDescription">Målbeskrivelse:</label>
+                    <textarea id="goalDescription" rows="3" required></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closePeriodGoalModal()">Avbryt</button>
+                    <button type="submit" class="btn btn-primary">Lagre</button>
+                </div>
+            </form>
         </div>
     </div>
 
-    <!-- Player Goal Modal -->
-    <div class="modal-overlay" id="playerGoalModal">
-        <div class="modal">
-            <h3>👤 Individuelt utviklingsmål</h3>
-            <div class="form-group">
-                <label>Velg spiller</label>
-                <select id="goalPlayer"></select>
-            </div>
-            <div class="form-group">
-                <label>Koble til læringsmål</label>
-                <div class="goal-chips" id="playerLearningGoalChips"></div>
-            </div>
-            <div class="form-group">
-                <label>Individuelt fokus</label>
-                <textarea id="individualFocus" placeholder="Spesifikt fokus for denne spilleren..."></textarea>
-            </div>
-            <div class="btn-group">
-                <button class="btn btn-gold" onclick="savePlayerGoal()">Lagre</button>
-                <button class="btn btn-secondary" onclick="closeModal('playerGoalModal')">Avbryt</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Session Builder Modal -->
-    <div class="modal-overlay" id="sessionBuilderModal">
-        <div class="modal" style="max-width:550px;">
-            <h3>🏗️ Bygg treningsøkt</h3>
-
-            <div class="vif-tip">
-                <i class="fas fa-futbol"></i>
-                <strong>Husk:</strong> Lystbetont lek! Korte, klare beskjeder. Bruk bilder i forklaringene. Unngå kø!
-            </div>
-
-            <div class="form-group">
-                <label>Økt-navn</label>
-                <input type="text" id="sessionName" placeholder="F.eks. Pasning og mottak">
-            </div>
-
-            <div class="form-group">
-                <label>🎯 Læringsmål for økten</label>
-                <div class="goal-chips" id="sessionGoalChips"></div>
-            </div>
-
-            <!-- Module 1: Samling -->
-            <div class="session-module module-samling">
-                <div class="session-module-header" onclick="toggleModuleBody(this)">
-                    <h4><i class="fas fa-circle" style="color:var(--accent-purple);font-size:0.6rem;"></i> 1. Samling</h4>
-                    <span class="duration">3 min</span>
-                </div>
-                <div class="session-module-body">
-                    <div class="form-group">
-                        <label>Innhold</label>
-                        <textarea id="mod1Content" placeholder="Samle gruppa, si hei, fortell hva vi skal gjøre i dag..." rows="2">Samle spillerne i ring. Gå gjennom dagens tema kort og enkelt. Spør om alle er klare!</textarea>
-                    </div>
-                    <div class="vif-tip" style="font-size:0.72rem;">
-                        <i class="fas fa-lightbulb"></i> Kom i gang med treningen så hurtig som mulig. Unngå kø!
-                    </div>
-                </div>
-            </div>
-
-            <!-- Module 2: Teknisk øving -->
-            <div class="session-module module-teknikk">
-                <div class="session-module-header" onclick="toggleModuleBody(this)">
-                    <h4><i class="fas fa-circle" style="color:var(--accent-blue);font-size:0.6rem;"></i> 2. Teknisk øving / Grunnferdigheter</h4>
-                    <span class="duration">10-15 min</span>
-                </div>
-                <div class="session-module-body">
-                    <div class="form-group">
-                        <label>Velg øvelse</label>
-                        <select id="mod2Exercise" onchange="populateExercise(2)">
-                            <option value="">Velg fra bibliotek...</option>
-                            <optgroup label="Ballkontroll">
-                                <option value="ex_ballmestring1">Ballmester - Føre ball fritt</option>
-                                <option value="ex_ballmestring2">Tå-touch - Såle-ball</option>
-                                <option value="ex_innsidepasning">Innsidepasning i par</option>
-                                <option value="ex_mottak">Mottak og kontroll</option>
-                            </optgroup>
-                            <optgroup label="1 mot 1">
-                                <option value="ex_1mot1_offensiv">1 mot 1 offensivt</option>
-                                <option value="ex_vendinger">Vendinger med ball</option>
-                            </optgroup>
-                            <optgroup label="Heading & Skudd">
-                                <option value="ex_skudd">Skudd på mål</option>
-                                <option value="ex_heading">Heading - kaste og heade</option>
-                            </optgroup>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Beskrivelse</label>
-                        <textarea id="mod2Content" placeholder="Beskriv øvelsen..." rows="3"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Organisering</label>
-                        <input type="text" id="mod2Org" placeholder="F.eks. Par, grupper på 3, individuelt">
-                    </div>
-                    <div class="vif-tip" style="font-size:0.72rem;">
-                        <i class="fas fa-lightbulb"></i> "Ta imot ballen som om den var en ballong fylt med vann uten at den sprekker"
-                    </div>
-                </div>
-            </div>
-
-            <!-- Module 3: Del 3 -->
-            <div class="session-module module-del3">
-                <div class="session-module-header" onclick="toggleModuleBody(this)">
-                    <h4><i class="fas fa-circle" style="color:var(--accent-green);font-size:0.6rem;"></i> 3. Spillrelatert øvelse</h4>
-                    <span class="duration">10-15 min</span>
-                </div>
-                <div class="session-module-body">
-                    <div class="form-group">
-                        <label>Velg øvelse</label>
-                        <select id="mod3Exercise" onchange="populateExercise(3)">
-                            <option value="">Velg fra bibliotek...</option>
-                            <optgroup label="Smålagsspill">
-                                <option value="ex_2mot2">2 mot 2</option>
-                                <option value="ex_3mot3">3 mot 3</option>
-                                <option value="ex_4mot4">4 mot 4 / 5 mot 5</option>
-                            </optgroup>
-                            <optgroup label="Pasningsspill">
-                                <option value="ex_rondo">Rondo (boks)</option>
-                                <option value="ex_pasn_firkant">Pasning i firkant</option>
-                            </optgroup>
-                            <optgroup label="Avslutning">
-                                <option value="ex_avslutning">Avslutning fra kant</option>
-                                <option value="ex_scoring">Scoringsøvelse</option>
-                            </optgroup>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Beskrivelse</label>
-                        <textarea id="mod3Content" placeholder="Beskriv øvelsen..." rows="3"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Organisering</label>
-                        <input type="text" id="mod3Org" placeholder="F.eks. 2 mot 2 på liten bane">
-                    </div>
-                    <div class="vif-tip" style="font-size:0.72rem;">
-                        <i class="fas fa-lightbulb"></i> Spillsekvenser bør ikke involvere mange spillere - 2 mot 2, 3 mot 3 er best for individuelle ferdigheter.
-                    </div>
-                </div>
-            </div>
-
-            <!-- Module 4: Spill -->
-            <div class="session-module module-spill">
-                <div class="session-module-header" onclick="toggleModuleBody(this)">
-                    <h4><i class="fas fa-circle" style="color:var(--accent-gold);font-size:0.6rem;"></i> 4. Spill</h4>
-                    <span class="duration">20-25 min</span>
-                </div>
-                <div class="session-module-body">
-                    <div class="form-group">
-                        <label>Spillformat</label>
-                        <select id="mod4Format">
-                            <option value="3mot3">3 mot 3</option>
-                            <option value="4mot4">4 mot 4</option>
-                            <option value="5mot5" selected>5 mot 5</option>
-                            <option value="frilek">Fri lek/spill</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Spesielle regler / fokus</label>
-                        <textarea id="mod4Content" placeholder="F.eks. Alle må røre ballen før scoring..." rows="2"></textarea>
-                    </div>
-                    <div class="vif-tip" style="font-size:0.72rem;">
-                        <i class="fas fa-lightbulb"></i> Mest mulig aktivitet og ballkontakt for alle! Bytt lag innimellom. Bruk ros og trivsel.
-                    </div>
-                </div>
-            </div>
-
-            <!-- Module 5: Avsluttende samling -->
-            <div class="session-module module-samling">
-                <div class="session-module-header" onclick="toggleModuleBody(this)">
-                    <h4><i class="fas fa-circle" style="color:var(--accent-purple);font-size:0.6rem;"></i> 5. Avsluttende samling</h4>
-                    <span class="duration">3 min</span>
-                </div>
-                <div class="session-module-body">
-                    <div class="form-group">
-                        <label>Innhold</label>
-                        <textarea id="mod5Content" placeholder="Oppsummering, ros, neste trening..." rows="2">Samle alle. Ros innsatsen! Spør hva som var gøy. Informer om neste trening/kamp.</textarea>
-                    </div>
-                </div>
-            </div>
-
-            <div class="btn-group" style="margin-top:16px;">
-                <button class="btn btn-purple" onclick="saveSession()"><i class="fas fa-save"></i> Lagre økt</button>
-                <button class="btn btn-blue" onclick="previewSession()"><i class="fas fa-eye"></i> Forhåndsvis</button>
-                <button class="btn btn-secondary" onclick="closeModal('sessionBuilderModal')">Lukk</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Session Preview Modal -->
-    <div class="modal-overlay" id="sessionPreviewModal">
-        <div class="modal" style="max-width:550px;">
-            <h3>📋 Øktplan</h3>
-            <div id="sessionPreviewContent"></div>
-            <div class="btn-group" style="margin-top:16px;">
-                <button class="btn btn-primary" onclick="useSessionForTraining()"><i class="fas fa-plus"></i> Bruk i ny treningsøkt</button>
-                <button class="btn btn-secondary" onclick="closeModal('sessionPreviewModal')">Lukk</button>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-    <script>
-        // Firebase Configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyCUI8ojxbVcD_R1Vt-wKxU0iE2XCHhqODk",
-            authDomain: "j2018-nord.firebaseapp.com",
-            databaseURL: "https://j2018-nord-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "j2018-nord",
-            storageBucket: "j2018-nord.firebasestorage.app",
-            messagingSenderId: "778742708923",
-            appId: "1:778742708923:web:998b3acbd86afea695079e"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.database();
-
-        let currentUser = null;
-        let currentRole = 'pending';
-        let playersData = {};
-        let trainingsData = {};
-        let matchesData = {};
-        let trophiesData = {};
-        let periodGoalsData = {};
-        let playerGoalsData = {};
-        let savedSessionsData = {};
-        let currentPeriod = 'nov-des';
-
-        // ======================
-        // VIF DEVELOPMENT MODEL
-        // ======================
-        const VIF_PERIODS = {
-            'nov-des': {
-                title: 'November - Desember',
-                theme: 'Bli vant med ballen',
-                icon: '⚽',
-                description: 'Individuell teknikk. Bli kjent med ballen gjennom lekbaserte øvelser.',
-                focus: [
-                    'Føre ball i ulike retninger og med ulike hastigheter',
-                    'Vendinger med ball',
-                    'Innsidepasning',
-                    'Motstand (1 mot 1)',
-                    'Stoppe ball',
-                    '1 mot 1 offensivt'
-                ],
-                suggestedGoals: [
-                    'Kunne føre ball med begge føtter',
-                    'Lære 2-3 vendinger med ball',
-                    'Innsidepasning med begge føtter',
-                    'Tørre å utfordre 1 mot 1',
-                    'Stoppe ball med såle',
-                    'Bli trygg med ball i lek'
-                ]
-            },
-            'jan-apr': {
-                title: 'Januar - April',
-                theme: 'Pasninger langs bakken',
-                icon: '🎯',
-                description: 'Utvikle pasningsspill og samhandling. Innside- og utsidepasning.',
-                focus: [
-                    'Innsidepasning - presisjon',
-                    'Utsidepasning',
-                    'Mottak og kontroll',
-                    'Ball langs bakken',
-                    'Samhandling i par og grupper'
-                ],
-                suggestedGoals: [
-                    'Presis innsidepasning på 5-8 meter',
-                    'Mottak med riktig kroppsstilling',
-                    'Lære utsidepasning',
-                    'Pasning og bevegelse (veggspill)',
-                    'Samarbeid i små grupper'
-                ]
-            },
-            'mai-jun': {
-                title: 'Mai - Juni',
-                theme: 'Score mål med innside og vrist',
-                icon: '🥅',
-                description: 'Avslutninger og scoring. Øve på skudd med innside og vrist.',
-                focus: [
-                    'Avslutning med innside',
-                    'Avslutning med vrist',
-                    'Ball eri ro - avslutning',
-                    'Avslutning etter mottak',
-                    'Etterspillere i gruppen'
-                ],
-                suggestedGoals: [
-                    'Score med innsiden på kort hold',
-                    'Lære vristskudd',
-                    'Avslutte etter mottak',
-                    'Score i fart',
-                    'Tørre å skyte fra ulike posisjoner'
-                ]
-            },
-            'aug-sep': {
-                title: 'August - September',
-                theme: 'Valgfritt / Repetisjon',
-                icon: '🔄',
-                description: 'Velg teknikktema som laget trenger å øve mer på, eller del - etterspillerne i gruppen trenger å trene mer på.',
-                focus: [
-                    'Repetisjon av tidligere perioder',
-                    'Individuelle tilpasninger',
-                    'Forberedelse til 7-er fotball',
-                    'Samværsregler og holdninger',
-                    'Lek med ball på fritiden'
-                ],
-                suggestedGoals: [
-                    'Mestre grunnleggende ballkontroll',
-                    'Vise god holdning og respekt',
-                    'Delta aktivt i spill',
-                    'Kunne grunnreglene i fotball',
-                    'Ha det gøy med fotball!'
-                ]
-            }
-        };
-
-        const VIF_STANDARD_GOALS = [
-            'Alle skal ha det gøy',
-            'Utvikle elementære basisferdigheter',
-            'Mest mulig aktivitet og ballkontakt',
-            'Individuelle ferdigheter gjennom enkle tekniske øvelser',
-            'Smågruppespill på mindre områder',
-            'Toleranse - respekt - disiplin',
-            'Skape lyst til lek med ball på fritiden',
-            'Være aktive innen flere idretter',
-            'Prioriter ferdighet og teknikk',
-            'Oppmuntre til mye ballkontakt',
-            'Lystbetont lek - leken står i fokus',
-            'Korte og klare beskjeder',
-            'Bruk mye ros for trygghet og trivsel'
-        ];
-
-        const EXERCISE_LIBRARY = {
-            ex_ballmestring1: {
-                name: 'Ballmester - Føre ball fritt',
-                desc: 'Alle har ball. Føre ball fritt i et område. Trener roper kommandoer: "Stopp!" (sett foten på ballen), "Bytt!" (bytt ball med noen), "Lyn!" (sprint med ball til en linje). Gjør det lekent!',
-                org: 'Individuelt i et avgrenset område',
-                tags: ['ballkontroll', 'lek', '1-ball-per-spiller']
-            },
-            ex_ballmestring2: {
-                name: 'Tå-touch / Såle-ball',
-                desc: 'Stå med ball. Veksle mellom å touche ballen med høyre og venstre såle. Progresjon: gjør det raskere, legg til sidesteg. "Tenk at føttene er som trommelstikker!"',
-                org: 'Individuelt',
-                tags: ['teknikk', 'koordinasjon', 'fotarbeid']
-            },
-            ex_innsidepasning: {
-                name: 'Innsidepasning i par',
-                desc: 'To og to, ca 5 meter mellom. Pass med innsiden. "Ta frem nøkkelen fra lomma, hold ankelen sånn som min, sett inn nøkkelen, lås ankelen og vips!" Fokus på låst ankel.',
-                org: 'Par, 5-8 meter mellom',
-                tags: ['pasning', 'teknikk', 'par-øvelse']
-            },
-            ex_mottak: {
-                name: 'Mottak og kontroll',
-                desc: 'Par-øvelse. A passer til B, B tar imot med såle/innside og passer tilbake. "Ta imot ballen som om den var en ballong fylt med vann uten at den sprekker." Myk berøring!',
-                org: 'Par, 5-8 meter',
-                tags: ['mottak', 'teknikk', 'par-øvelse']
-            },
-            ex_1mot1_offensiv: {
-                name: '1 mot 1 offensivt',
-                desc: 'Sett opp små baner med mål. En angriper, en forsvarer. Angriperen prøver å drible forbi og score. Bytt roller. Oppmuntre til finter og kreativitet!',
-                org: 'Par, små baner med mål',
-                tags: ['1mot1', 'dribling', 'kreativitet']
-            },
-            ex_vendinger: {
-                name: 'Vendinger med ball',
-                desc: 'Føre ball mot en kjegle, gjør en vending, føre tilbake. Øv på: innsidevending, utsidevending, Cruyff-vending. La dem velge sin favoritt!',
-                org: 'Individuelt med kjegler',
-                tags: ['vendinger', 'teknikk', 'individuelt']
-            },
-            ex_skudd: {
-                name: 'Skudd på mål',
-                desc: 'Skudd fra ulike posisjoner. Start med innside, progresjon til vrist. Bruk små mål. Gjør det til en konkurranse! "Hvem kan score flest?"',
-                org: 'Individuelt/par med mål',
-                tags: ['skudd', 'avslutning', 'mål']
-            },
-            ex_heading: {
-                name: 'Heading - kaste og heade',
-                desc: 'Par: A kaster forsiktig, B header tilbake. Kort avstand. Fokus på å treffe ballen med pannen. Frivillig! Ikke press noen.',
-                org: 'Par, kort avstand',
-                tags: ['heading', 'par-øvelse']
-            },
-            ex_2mot2: {
-                name: '2 mot 2 smålagsspill',
-                desc: 'Små baner, små mål. 2 mot 2. Korte perioder (2-3 min), bytt lag. Fokus på samarbeid og å finne rommet.',
-                org: '2 mot 2, små baner',
-                tags: ['smålagsspill', 'samarbeid']
-            },
-            ex_3mot3: {
-                name: '3 mot 3 smålagsspill',
-                desc: 'Litt større baner. 3 mot 3 med mål. Oppmuntre til pasning, men la dem prøve! "Det er lov å drible også!"',
-                org: '3 mot 3, mellomstore baner',
-                tags: ['smålagsspill', 'samarbeid', 'pasning']
-            },
-            ex_4mot4: {
-                name: '4 mot 4 / 5 mot 5',
-                desc: 'Tilnærmet kampformat. La dem spille fritt med minimale avbrytelser. Gi korte tips i pauser. Ros god innsats!',
-                org: '4 mot 4 eller 5 mot 5',
-                tags: ['kamp', 'frilek', 'spill']
-            },
-            ex_rondo: {
-                name: 'Rondo (boks)',
-                desc: '3-4 spillere i ring, 1 i midten. De på utsiden prøver å beholde ballen, den i midten jager. Bytt når du tar ballen. Gjør det lett i starten!',
-                org: 'Grupper på 4-5',
-                tags: ['pasning', 'bevegelse', 'gruppøvelse']
-            },
-            ex_pasn_firkant: {
-                name: 'Pasning i firkant',
-                desc: 'Fire kjegler i firkant. Spillere på hver kjegle. Pass og følg ballen (spring til neste kjegle). Progresjon: to baller!',
-                org: 'Grupper på 4-8',
-                tags: ['pasning', 'bevegelse', 'koordinasjon']
-            },
-            ex_avslutning: {
-                name: 'Avslutning fra kant',
-                desc: 'En spiller legger inn fra kant, en avslutter. Bytt roller. "Plasser ballen i hjørnet!" Oppmuntre til innside og vristskudd.',
-                org: 'Par/grupper med mål',
-                tags: ['avslutning', 'innlegg', 'scoring']
-            },
-            ex_scoring: {
-                name: 'Scoringsøvelse',
-                desc: 'Ulike scoringsutfordringer: skudd i bevegelse, etter mottak, etter vending. Lag det som en konkurranse med poeng!',
-                org: 'Individuelt/par med mål',
-                tags: ['scoring', 'avslutning', 'konkurranse']
-            }
-        };
-
-        // ======================
-        // AUTH FUNCTIONS
-        // ======================
-        function signIn() {
-            const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider).catch(err => alert('Innlogging feilet: ' + err.message));
-        }
-
-        function signOutUser() {
-            auth.signOut();
-        }
-
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                currentUser = user;
-                document.getElementById('userAvatar').src = user.photoURL || '';
-                checkUserRole(user);
-            } else {
-                currentUser = null;
-                document.getElementById('authScreen').style.display = 'flex';
-                document.getElementById('appMain').style.display = 'none';
-            }
-        });
-
-        function checkUserRole(user) {
-            const coachRef = db.ref('coaches/' + user.uid);
-            coachRef.once('value').then(snap => {
-                if (snap.exists()) {
-                    const data = snap.val();
-                    if (data.role === 'admin' || data.role === 'coach') {
-                        currentRole = data.role;
-                        showApp();
-                    } else {
-                        showPending();
-                    }
-                } else {
-                    coachRef.set({
-                        name: user.displayName,
-                        email: user.email,
-                        photo: user.photoURL,
-                        role: 'pending',
-                        joined: new Date().toISOString()
-                    });
-                    showPending();
-                }
-            });
-        }
-
-        function showPending() {
-            document.getElementById('authScreen').style.display = 'flex';
-            document.getElementById('appMain').style.display = 'none';
-            document.getElementById('loginBtn').style.display = 'none';
-            document.getElementById('pendingMessage').style.display = 'block';
-        }
-
-        function showApp() {
-            document.getElementById('authScreen').style.display = 'none';
-            document.getElementById('appMain').style.display = 'block';
-            document.getElementById('userRole').textContent = currentRole === 'admin' ? 'Admin' : 'Trener';
-            if (currentRole === 'admin') document.getElementById('inviteCard').style.display = 'block';
-            loadAllData();
-        }
-
-        // ======================
-        // TAB NAVIGATION
-        // ======================
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('tab-' + tabId).classList.add('active');
-            event.currentTarget.classList.add('active');
-
-            if (tabId === 'home') renderDashboard();
-            if (tabId === 'goals') renderGoals();
-            if (tabId === 'training') renderTrainings();
-            if (tabId === 'templates') renderTemplates();
-        }
-
-        // ======================
-        // DATA LOADING
-        // ======================
-        function loadAllData() {
-            db.ref('players').on('value', snap => { playersData = snap.val() || {}; renderPlayers(); renderDashboard(); });
-            db.ref('trainings').on('value', snap => { trainingsData = snap.val() || {}; renderTrainings(); renderDashboard(); });
-            db.ref('matches').on('value', snap => { matchesData = snap.val() || {}; renderMatches(); renderDashboard(); });
-            db.ref('trophies').on('value', snap => { trophiesData = snap.val() || {}; renderTrophies(); renderDashboard(); });
-            db.ref('periodGoals').on('value', snap => { periodGoalsData = snap.val() || {}; renderGoals(); });
-            db.ref('playerGoals').on('value', snap => { playerGoalsData = snap.val() || {}; renderGoals(); });
-            db.ref('savedSessions').on('value', snap => { savedSessionsData = snap.val() || {}; renderTemplates(); });
-            db.ref('coaches').on('value', snap => { renderCoaches(snap.val() || {}); });
-        }
-
-        // ======================
-        // MODAL HELPERS
-        // ======================
-        function openModal(id) { document.getElementById(id).classList.add('active'); }
-        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-
-        function toggleModuleBody(header) {
-            const body = header.nextElementSibling;
-            body.style.display = body.style.display === 'none' ? 'block' : 'none';
-        }
-
-        // ======================
-        // DASHBOARD
-        // ======================
-        function renderDashboard() {
-            const playerCount = Object.keys(playersData).length;
-            const trainingCount = Object.keys(trainingsData).length;
-            const matchCount = Object.keys(matchesData).length;
-            const trophyCount = Object.keys(trophiesData).length;
-
-            document.getElementById('dashboardStats').innerHTML = `
-                <div class="stat-card"><div class="number">${playerCount}</div><div class="label">Spillere</div></div>
-                <div class="stat-card"><div class="number">${trainingCount}</div><div class="label">Treninger</div></div>
-                <div class="stat-card"><div class="number">${matchCount}</div><div class="label">Kamper</div></div>
-                <div class="stat-card"><div class="number">${trophyCount}</div><div class="label">Pokaler</div></div>
-            `;
-
-            // Upcoming activities
-            const upcoming = [];
-            Object.entries(trainingsData).forEach(([k,v]) => {
-                if (v.date >= new Date().toISOString().split('T')[0]) upcoming.push({type:'Trening', date:v.date, title:v.title||'Trening'});
-            });
-            Object.entries(matchesData).forEach(([k,v]) => {
-                if (v.date >= new Date().toISOString().split('T')[0]) upcoming.push({type:'Kamp', date:v.date, title:'vs ' + (v.opponent||'Ukjent')});
-            });
-            upcoming.sort((a,b) => a.date.localeCompare(b.date));
-
-            document.getElementById('upcomingActivities').innerHTML = upcoming.length === 0
-                ? '<p style="color:var(--text-muted);font-size:0.85rem;">Ingen kommende aktiviteter</p>'
-                : upcoming.slice(0,5).map(a => `
-                    <div class="list-item">
-                        <div class="list-item-info">
-                            <h4>${a.title}</h4>
-                            <p>${a.date} · <span class="badge ${a.type==='Kamp'?'badge-gold':'badge-green'}">${a.type}</span></p>
-                        </div>
-                    </div>
-                `).join('');
-
-            // Latest trophy
-            const trophyArr = Object.values(trophiesData);
-            if (trophyArr.length > 0) {
-                const latest = trophyArr.sort((a,b) => b.date.localeCompare(a.date))[0];
-                const playerName = playersData[latest.playerId]?.name || 'Ukjent';
-                document.getElementById('latestTrophyHome').innerHTML = `
-                    <div class="trophy-card">
-                        <div class="trophy-icon">🏆</div>
-                        <h4>${playerName}</h4>
-                        <p>${latest.reason || ''}</p>
-                        <div class="date">${latest.date}</div>
-                    </div>
-                `;
-            } else {
-                document.getElementById('latestTrophyHome').innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem;">Ingen pokaler delt ut ennå</p>';
-            }
-
-            // Active period goals
-            const currentGoals = Object.values(periodGoalsData).filter(g => g.period === currentPeriod);
-            document.getElementById('activeGoalsHome').innerHTML = currentGoals.length === 0
-                ? '<p style="color:var(--text-muted);font-size:0.85rem;">Ingen mål satt for denne perioden</p>'
-                : currentGoals.map(g => `
-                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-                        <i class="fas fa-bullseye" style="color:var(--accent-green);font-size:0.7rem;"></i>
-                        <span style="font-size:0.82rem;">${g.text}</span>
-                        <span class="badge badge-${getCategoryBadge(g.category)}" style="margin-left:auto;">${g.category}</span>
-                    </div>
-                `).join('');
-        }
-
-        function getCategoryBadge(cat) {
-            const map = { teknikk:'blue', spill:'green', holdning:'gold', fysisk:'red', annet:'purple' };
-            return map[cat] || 'blue';
-        }
-
-        // ======================
-        // PLAYERS
-        // ======================
-        function renderPlayers() {
-            const container = document.getElementById('playersList');
-            const entries = Object.entries(playersData);
-            if (entries.length === 0) {
-                container.innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><p>Ingen spillere lagt til ennå</p></div>';
-                return;
-            }
-            container.innerHTML = entries.sort((a,b) => (a[1].number||99)-(b[1].number||99)).map(([id, p]) => `
-                <div class="list-item">
-                    <div class="list-item-info">
-                        <h4>${p.number ? '#'+p.number+' ' : ''}${p.name}</h4>
-                        <p>${p.position || 'Ingen posisjon'} ${p.strengths ? '· ⭐ '+p.strengths.substring(0,30) : ''}</p>
-                    </div>
-                    <div class="list-item-actions">
-                        <button onclick="editPlayer('${id}')" title="Rediger"><i class="fas fa-edit"></i></button>
-                        <button onclick="deletePlayer('${id}')" title="Slett"><i class="fas fa-trash"></i></button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function showPlayerModal(id) {
-            document.getElementById('playerId').value = id || '';
-            document.getElementById('playerModalTitle').textContent = id ? 'Rediger spiller' : 'Legg til spiller';
-            if (id && playersData[id]) {
-                const p = playersData[id];
-                document.getElementById('playerName').value = p.name || '';
-                document.getElementById('playerPosition').value = p.position || '';
-                document.getElementById('playerNumber').value = p.number || '';
-                document.getElementById('playerStrengths').value = p.strengths || '';
-                document.getElementById('playerDevelopment').value = p.development || '';
-            } else {
-                ['playerName','playerPosition','playerNumber','playerStrengths','playerDevelopment'].forEach(id => document.getElementById(id).value = '');
-            }
-            openModal('playerModal');
-        }
-
-        function editPlayer(id) { showPlayerModal(id); }
-
-        function savePlayer() {
-            const id = document.getElementById('playerId').value || db.ref('players').push().key;
-            const data = {
-                name: document.getElementById('playerName').value.trim(),
-                position: document.getElementById('playerPosition').value,
-                number: parseInt(document.getElementById('playerNumber').value) || null,
-                strengths: document.getElementById('playerStrengths').value.trim(),
-                development: document.getElementById('playerDevelopment').value.trim()
-            };
-            if (!data.name) return alert('Navn er påkrevd');
-            db.ref('players/' + id).set(data);
-            closeModal('playerModal');
-        }
-
-        function deletePlayer(id) {
-            if (confirm('Slett spiller?')) db.ref('players/' + id).remove();
-        }
-
-        // ======================
-        // GOALS SYSTEM
-        // ======================
-        function selectPeriod(period) {
-            currentPeriod = period;
-            document.querySelectorAll('.period-tab').forEach(t => t.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-            renderGoals();
-        }
-
-        function renderGoals() {
-            const period = VIF_PERIODS[currentPeriod];
-            if (!period) return;
-
-            // Period info
-            document.getElementById('periodTitle').textContent = period.icon + ' ' + period.title;
-            document.getElementById('periodDescription').innerHTML = `
-                <p style="font-size:0.85rem; color:var(--accent-green); font-weight:600; margin-bottom:8px;">"${period.theme}"</p>
-                <p style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:10px;">${period.description}</p>
-                <div style="font-size:0.78rem; color:var(--text-muted);">
-                    <strong>VIF Fokusområder:</strong>
-                    <ul style="margin-top:4px; padding-left:16px;">
-                        ${period.focus.map(f => `<li style="margin-bottom:2px;">${f}</li>`).join('')}
-                    </ul>
-                </div>
-            `;
-
-            // Check if current period is active
-            const month = new Date().getMonth();
-            let activePeriod;
-            if (month >= 10 || month === 11) activePeriod = 'nov-des';
-            else if (month >= 0 && month <= 3) activePeriod = 'jan-apr';
-            else if (month >= 4 && month <= 5) activePeriod = 'mai-jun';
-            else activePeriod = 'aug-sep';
-
-            const badge = document.getElementById('periodBadge');
-            if (currentPeriod === activePeriod) {
-                badge.textContent = 'Aktiv';
-                badge.className = 'badge badge-green';
-            } else {
-                badge.textContent = 'Planlegging';
-                badge.className = 'badge badge-blue';
-            }
-
-            // Period goals
-            const goals = Object.entries(periodGoalsData).filter(([k,v]) => v.period === currentPeriod);
-            const goalContainer = document.getElementById('periodGoalsList');
-
-            if (goals.length === 0) {
-                goalContainer.innerHTML = '<div class="empty-state"><i class="fas fa-bullseye"></i><p>Ingen læringsmål satt for denne perioden</p></div>';
-            } else {
-                goalContainer.innerHTML = goals.map(([id, g]) => {
-                    // Count how many trainings reference this goal
-                    const trainingCount = Object.values(trainingsData).filter(t => t.goalIds && t.goalIds.includes(id)).length;
-                    return `
-                        <div class="list-item">
-                            <div class="list-item-info">
-                                <h4 style="font-size:0.85rem;">${g.text}</h4>
-                                <p>
-                                    <span class="badge badge-${getCategoryBadge(g.category)}">${g.category}</span>
-                                    <span style="margin-left:8px;font-size:0.7rem;color:var(--text-muted);">📋 ${trainingCount} økter</span>
-                                </p>
-                            </div>
-                            <div class="list-item-actions">
-                                <button onclick="deletePeriodGoal('${id}')" title="Slett"><i class="fas fa-trash"></i></button>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-            }
-
-            // Player goals
-            const pGoals = Object.entries(playerGoalsData).filter(([k,v]) => v.period === currentPeriod);
-            const pContainer = document.getElementById('playerGoalsList');
-
-            if (pGoals.length === 0) {
-                pContainer.innerHTML = '<div class="empty-state"><i class="fas fa-user"></i><p>Ingen individuelle mål satt</p></div>';
-            } else {
-                pContainer.innerHTML = pGoals.map(([id, g]) => {
-                    const playerName = playersData[g.playerId]?.name || 'Ukjent';
-                    const linkedGoals = (g.linkedGoalIds || []).map(gid => {
-                        const goal = periodGoalsData[gid];
-                        return goal ? goal.text : '';
-                    }).filter(Boolean);
-
-                    return `
-                        <div class="list-item" style="flex-direction:column;align-items:flex-start;">
-                            <div style="display:flex;justify-content:space-between;width:100%;align-items:center;">
-                                <h4 style="font-size:0.85rem;">👤 ${playerName}</h4>
-                                <button onclick="deletePlayerGoal('${id}')" style="background:none;border:none;color:var(--text-muted);cursor:pointer;"><i class="fas fa-trash"></i></button>
-                            </div>
-                            ${g.focus ? `<p style="font-size:0.78rem; margin-top:4px;">${g.focus}</p>` : ''}
-                            ${linkedGoals.length > 0 ? `
-                                <div class="goal-chips" style="margin-top:6px;">
-                                    ${linkedGoals.map(t => `<span class="goal-chip selected" style="cursor:default;">${t}</span>`).join('')}
-                                </div>
-                            ` : ''}
-                        </div>
-                    `;
-                }).join('');
-            }
-        }
-
-        function showPeriodGoalModal() {
-            const period = VIF_PERIODS[currentPeriod];
-            const chips = document.getElementById('vifGoalChips');
-            chips.innerHTML = period.suggestedGoals.map((g, i) =>
-                `<span class="goal-chip" onclick="toggleGoalChip(this)" data-goal="${g}">${g}</span>`
-            ).join('');
-            document.getElementById('customGoalText').value = '';
-            document.getElementById('goalCategory').value = 'teknikk';
-            openModal('periodGoalModal');
-        }
-
-        function toggleGoalChip(el) {
-            el.classList.toggle('selected');
-        }
-
-        function savePeriodGoal() {
-            const selectedChips = document.querySelectorAll('#vifGoalChips .goal-chip.selected');
-            const customText = document.getElementById('customGoalText').value.trim();
-            const category = document.getElementById('goalCategory').value;
-
-            const goals = [];
-            selectedChips.forEach(c => goals.push(c.dataset.goal));
-            if (customText) goals.push(customText);
-
-            if (goals.length === 0) return alert('Velg eller skriv minst ett mål');
-
-            goals.forEach(text => {
-                const id = db.ref('periodGoals').push().key;
-                db.ref('periodGoals/' + id).set({
-                    text: text,
-                    category: category,
-                    period: currentPeriod,
-                    created: new Date().toISOString()
-                });
-            });
-
-            closeModal('periodGoalModal');
-        }
-
-        function deletePeriodGoal(id) {
-            if (confirm('Slett læringsmål?')) db.ref('periodGoals/' + id).remove();
-        }
-
-        function showPlayerGoalModal() {
-            // Populate player select
-            const sel = document.getElementById('goalPlayer');
-            sel.innerHTML = '<option value="">Velg spiller</option>' +
-                Object.entries(playersData).map(([id,p]) => `<option value="${id}">${p.name}</option>`).join('');
-
-            // Populate learning goal chips
-            const goals = Object.entries(periodGoalsData).filter(([k,v]) => v.period === currentPeriod);
-            const chips = document.getElementById('playerLearningGoalChips');
-            chips.innerHTML = goals.length === 0
-                ? '<p style="font-size:0.75rem;color:var(--text-muted);">Legg til læringsmål for perioden først</p>'
-                : goals.map(([id, g]) => `<span class="goal-chip" onclick="toggleGoalChip(this)" data-goal-id="${id}">${g.text}</span>`).join('');
-
-            document.getElementById('individualFocus').value = '';
-            openModal('playerGoalModal');
-        }
-
-        function savePlayerGoal() {
-            const playerId = document.getElementById('goalPlayer').value;
-            if (!playerId) return alert('Velg en spiller');
-
-            const selectedChips = document.querySelectorAll('#playerLearningGoalChips .goal-chip.selected');
-            const linkedGoalIds = [];
-            selectedChips.forEach(c => linkedGoalIds.push(c.dataset.goalId));
-
-            const focus = document.getElementById('individualFocus').value.trim();
-
-            const id = db.ref('playerGoals').push().key;
-            db.ref('playerGoals/' + id).set({
-                playerId: playerId,
-                period: currentPeriod,
-                linkedGoalIds: linkedGoalIds,
-                focus: focus,
-                created: new Date().toISOString()
-            });
-
-            closeModal('playerGoalModal');
-        }
-
-        function deletePlayerGoal(id) {
-            if (confirm('Slett individuelt mål?')) db.ref('playerGoals/' + id).remove();
-        }
-
-        // ======================
-        // TRAINING
-        // ======================
-        function renderTrainings() {
-            const container = document.getElementById('trainingList');
-            const entries = Object.entries(trainingsData);
-            if (entries.length === 0) {
-                container.innerHTML = '<div class="empty-state"><i class="fas fa-futbol"></i><p>Ingen treninger registrert</p></div>';
-                return;
-            }
-            container.innerHTML = entries.sort((a,b) => b[1].date.localeCompare(a[1].date)).map(([id, t]) => {
-                const attCount = t.attendance ? Object.values(t.attendance).filter(v => v === 'present').length : 0;
-                const totalPlayers = Object.keys(playersData).length;
-                const goalLabels = (t.goalIds || []).map(gid => periodGoalsData[gid]?.text).filter(Boolean);
-
-                return `
-                    <div class="card" onclick="editTraining('${id}')" style="cursor:pointer;">
-                        <div style="display:flex;justify-content:space-between;align-items:center;">
-                            <div>
-                                <h4 style="font-size:0.9rem;">${t.title || 'Trening'}</h4>
-                                <p style="font-size:0.75rem;color:var(--text-secondary);">${t.date} · ${attCount}/${totalPlayers} til stede</p>
-                            </div>
-                            <div style="text-align:right;">
-                                ${t.ratings ? `<span style="color:var(--accent-gold);font-size:0.8rem;">⭐ ${((t.ratings.effort+t.ratings.engagement+t.ratings.goals)/3).toFixed(1)}</span>` : ''}
-                            </div>
-                        </div>
-                        ${goalLabels.length > 0 ? `
-                            <div class="goal-chips" style="margin-top:8px;">
-                                ${goalLabels.map(l => `<span class="goal-chip selected" style="cursor:default;font-size:0.65rem;">${l}</span>`).join('')}
-                            </div>
-                        ` : ''}
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function showTrainingModal(id) {
-            document.getElementById('trainingId').value = id || '';
-            document.getElementById('trainingDate').value = id ? trainingsData[id]?.date || '' : new Date().toISOString().split('T')[0];
-            document.getElementById('trainingTitle').value = id ? trainingsData[id]?.title || '' : '';
-            document.getElementById('trainingNotes').value = id ? trainingsData[id]?.notes || '' : '';
-            document.getElementById('trainingEval').value = id ? trainingsData[id]?.evaluation || '' : '';
-
-            // Populate goal chips
-            const goalChips = document.getElementById('trainingGoalChips');
-            const goals = Object.entries(periodGoalsData).filter(([k,v]) => v.period === currentPeriod);
-            const selectedGoalIds = id && trainingsData[id]?.goalIds ? trainingsData[id].goalIds : [];
-
-            goalChips.innerHTML = goals.length === 0
-                ? '<p style="font-size:0.75rem;color:var(--text-muted);">Sett læringsmål i Mål-fanen først</p>'
-                : goals.map(([gid, g]) =>
-                    `<span class="goal-chip ${selectedGoalIds.includes(gid) ? 'selected' : ''}" onclick="toggleGoalChip(this)" data-goal-id="${gid}">${g.text}</span>`
-                ).join('');
-
-            // Populate session template dropdown
-            const sessionSelect = document.getElementById('trainingSessionTemplate');
-            sessionSelect.innerHTML = '<option value="">Ingen mal valgt</option>' +
-                Object.entries(savedSessionsData).map(([sid, s]) => `<option value="${sid}">${s.name}</option>`).join('');
-            if (id && trainingsData[id]?.sessionId) sessionSelect.value = trainingsData[id].sessionId;
-
-            // Attendance
-            renderTrainingAttendance(id);
-
-            // Ratings
-            const ratings = id && trainingsData[id]?.ratings ? trainingsData[id].ratings : {effort:0,engagement:0,goals:0};
-            setStarRating('ratingEffort', ratings.effort || 0);
-            setStarRating('ratingEngagement', ratings.engagement || 0);
-            setStarRating('ratingGoals', ratings.goals || 0);
-
-            openModal('trainingModal');
-        }
-
-        function editTraining(id) { showTrainingModal(id); }
-
-        function renderTrainingAttendance(trainingId) {
-            const container = document.getElementById('trainingAttendance');
-            const players = Object.entries(playersData);
-            if (players.length === 0) {
-                container.innerHTML = '<p style="font-size:0.8rem;color:var(--text-muted);">Legg til spillere først</p>';
-                return;
-            }
-            const attendance = trainingId && trainingsData[trainingId]?.attendance ? trainingsData[trainingId].attendance : {};
-            container.innerHTML = players.sort((a,b) => (a[1].number||99)-(b[1].number||99)).map(([id, p]) => {
-                const status = attendance[id] || 'none';
-                return `
-                    <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border-color);">
-                        <span style="font-size:0.82rem;">${p.number ? '#'+p.number+' ' : ''}${p.name}</span>
-                        <div style="display:flex;gap:6px;">
-                            <button class="btn btn-sm ${status==='present'?'btn-primary':'btn-secondary'}" onclick="setAttendance(this,'${id}','present')" data-player="${id}" data-status="present">✓</button>
-                            <button class="btn btn-sm ${status==='absent'?'btn-danger':'btn-secondary'}" onclick="setAttendance(this,'${id}','absent')" data-player="${id}" data-status="absent">✗</button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function setAttendance(btn, playerId, status) {
-            const row = btn.parentElement;
-            row.querySelectorAll('button').forEach(b => b.className = 'btn btn-sm btn-secondary');
-            if (status === 'present') btn.className = 'btn btn-sm btn-primary';
-            else btn.className = 'btn btn-sm btn-danger';
-            btn.dataset.status = status;
-        }
-
-        function getAttendanceFromGrid() {
-            const attendance = {};
-            document.querySelectorAll('#trainingAttendance [data-player]').forEach(btn => {
-                const pid = btn.dataset.player;
-                const status = btn.dataset.status;
-                const isActive = btn.classList.contains('btn-primary') || btn.classList.contains('btn-danger');
-                if (isActive) {
-                    if (btn.classList.contains('btn-primary')) attendance[pid] = 'present';
-                    else if (btn.classList.contains('btn-danger')) attendance[pid] = 'absent';
-                }
-            });
-            return attendance;
-        }
-
-        function setStarRating(containerId, rating) {
-            const container = document.getElementById(containerId);
-            container.dataset.rating = rating;
-            container.querySelectorAll('i').forEach(star => {
-                star.classList.toggle('active', parseInt(star.dataset.val) <= rating);
-            });
-        }
-
-        // Star click handlers
-        document.addEventListener('click', function(e) {
-            if (e.target.closest('.star-rating') && e.target.tagName === 'I') {
-                const val = parseInt(e.target.dataset.val);
-                const container = e.target.closest('.star-rating');
-                container.dataset.rating = val;
-                container.querySelectorAll('i').forEach(s => s.classList.toggle('active', parseInt(s.dataset.val) <= val));
-            }
-        });
-
-        function saveTraining() {
-            const id = document.getElementById('trainingId').value || db.ref('trainings').push().key;
-            const date = document.getElementById('trainingDate').value;
-            if (!date) return alert('Dato er påkrevd');
-
-            // Collect selected goal IDs
-            const goalIds = [];
-            document.querySelectorAll('#trainingGoalChips .goal-chip.selected').forEach(c => {
-                goalIds.push(c.dataset.goalId);
-            });
-
-            const data = {
-                date: date,
-                title: document.getElementById('trainingTitle').value.trim() || 'Trening',
-                notes: document.getElementById('trainingNotes').value.trim(),
-                goalIds: goalIds,
-                sessionId: document.getElementById('trainingSessionTemplate').value || null,
-                attendance: getAttendanceFromGrid(),
-                ratings: {
-                    effort: parseInt(document.getElementById('ratingEffort').dataset.rating) || 0,
-                    engagement: parseInt(document.getElementById('ratingEngagement').dataset.rating) || 0,
-                    goals: parseInt(document.getElementById('ratingGoals').dataset.rating) || 0
-                },
-                evaluation: document.getElementById('trainingEval').value.trim()
-            };
-            db.ref('trainings/' + id).set(data);
-            closeModal('trainingModal');
-        }
-
-        // ======================
-        // MATCHES
-        // ======================
-        function renderMatches() {
-            const container = document.getElementById('matchesList');
-            const entries = Object.entries(matchesData);
-            if (entries.length === 0) {
-                container.innerHTML = '<div class="empty-state"><i class="fas fa-trophy"></i><p>Ingen kamper registrert</p></div>';
-                return;
-            }
-            container.innerHTML = entries.sort((a,b) => b[1].date.localeCompare(a[1].date)).map(([id, m]) => {
-                const gf = m.goalsFor || 0, ga = m.goalsAgainst || 0;
-                let resultBadge = '<span class="badge badge-blue">Uavgjort</span>';
-                if (gf > ga) resultBadge = '<span class="badge badge-green">Seier</span>';
-                else if (gf < ga) resultBadge = '<span class="badge badge-red">Tap</span>';
-
-                return `
-                    <div class="card" onclick="editMatch('${id}')" style="cursor:pointer;">
-                        <div style="display:flex;justify-content:space-between;align-items:center;">
-                            <div>
-                                <h4 style="font-size:0.9rem;">vs ${m.opponent || 'Ukjent'}</h4>
-                                <p style="font-size:0.75rem;color:var(--text-secondary);">${m.date}</p>
-                            </div>
-                            <div style="text-align:right;">
-                                <div style="font-size:1.2rem;font-weight:700;">${gf} - ${ga}</div>
-                                ${resultBadge}
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function showMatchModal(id) {
-            document.getElementById('matchId').value = id || '';
-            if (id && matchesData[id]) {
-                const m = matchesData[id];
-                document.getElementById('matchDate').value = m.date || '';
-                document.getElementById('matchOpponent').value = m.opponent || '';
-                document.getElementById('matchGoalsFor').value = m.goalsFor || 0;
-                document.getElementById('matchGoalsAgainst').value = m.goalsAgainst || 0;
-                document.getElementById('matchNotes').value = m.notes || '';
-            } else {
-                document.getElementById('matchDate').value = new Date().toISOString().split('T')[0];
-                ['matchOpponent','matchNotes'].forEach(f => document.getElementById(f).value = '');
-                document.getElementById('matchGoalsFor').value = 0;
-                document.getElementById('matchGoalsAgainst').value = 0;
-            }
-            openModal('matchModal');
-        }
-
-        function editMatch(id) { showMatchModal(id); }
-
-        function saveMatch() {
-            const id = document.getElementById('matchId').value || db.ref('matches').push().key;
-            const date = document.getElementById('matchDate').value;
-            if (!date) return alert('Dato er påkrevd');
-            db.ref('matches/' + id).set({
-                date: date,
-                opponent: document.getElementById('matchOpponent').value.trim(),
-                goalsFor: parseInt(document.getElementById('matchGoalsFor').value) || 0,
-                goalsAgainst: parseInt(document.getElementById('matchGoalsAgainst').value) || 0,
-                notes: document.getElementById('matchNotes').value.trim()
-            });
-            closeModal('matchModal');
-        }
-
-        // ======================
-        // TROPHIES
-        // ======================
-        function renderTrophies() {
-            // Leaderboard
-            const counts = {};
-            Object.values(trophiesData).forEach(t => {
-                counts[t.playerId] = (counts[t.playerId] || 0) + 1;
-            });
-            const sorted = Object.entries(counts).sort((a,b) => b[1]-a[1]);
-            document.getElementById('trophyLeaderboard').innerHTML = sorted.length === 0
-                ? '<p style="color:var(--text-muted);font-size:0.85rem;">Ingen pokaler ennå</p>'
-                : sorted.map(([pid, count], i) => {
-                    const name = playersData[pid]?.name || 'Ukjent';
-                    const rankClass = i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-other';
-                    const rankIcon = i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
-                    return `
-                        <div class="leaderboard-item">
-                            <div class="leaderboard-rank ${rankClass}">${rankIcon}</div>
-                            <div class="leaderboard-name">${name}</div>
-                            <div class="leaderboard-count">${count} 🏆</div>
-                        </div>
-                    `;
-                }).join('');
-
-            // History
-            const history = Object.entries(trophiesData).sort((a,b) => b[1].date.localeCompare(a[1].date));
-            document.getElementById('trophyHistory').innerHTML = history.length === 0
-                ? '<p style="color:var(--text-muted);font-size:0.85rem;">Ingen historikk</p>'
-                : history.map(([id, t]) => `
-                    <div class="trophy-card">
-                        <div class="trophy-icon">🏆</div>
-                        <h4>${playersData[t.playerId]?.name || 'Ukjent'}</h4>
-                        <p>${t.reason || ''}</p>
-                        <div class="date">${t.date}</div>
-                    </div>
-                `).join('');
-        }
-
-        function showTrophyModal() {
-            const sel = document.getElementById('trophyPlayer');
-            sel.innerHTML = '<option value="">Velg spiller</option>' +
-                Object.entries(playersData).map(([id,p]) => `<option value="${id}">${p.name}</option>`).join('');
-            document.getElementById('trophyDate').value = new Date().toISOString().split('T')[0];
-            document.getElementById('trophyReason').value = '';
-            openModal('trophyModal');
-        }
-
-        function saveTrophy() {
-            const playerId = document.getElementById('trophyPlayer').value;
-            if (!playerId) return alert('Velg en spiller');
-            const id = db.ref('trophies').push().key;
-            db.ref('trophies/' + id).set({
-                playerId: playerId,
-                date: document.getElementById('trophyDate').value,
-                reason: document.getElementById('trophyReason').value.trim(),
-                awardedBy: currentUser.displayName
-            });
-            closeModal('trophyModal');
-        }
-
-        // ======================
-        // SESSION BUILDER
-        // ======================
-        function showSessionBuilder() {
-            // Populate goal chips for session builder
-            const goals = Object.entries(periodGoalsData).filter(([k,v]) => v.period === currentPeriod);
-            const chips = document.getElementById('sessionGoalChips');
-            chips.innerHTML = goals.length === 0
-                ? '<p style="font-size:0.75rem;color:var(--text-muted);">Sett læringsmål i Mål-fanen først</p>'
-                : goals.map(([gid, g]) =>
-                    `<span class="goal-chip" onclick="toggleGoalChip(this)" data-goal-id="${gid}">${g.text}</span>`
-                ).join('');
-
-            document.getElementById('sessionName').value = '';
-            openModal('sessionBuilderModal');
-        }
-
-        function populateExercise(moduleNum) {
-            const selectId = `mod${moduleNum}Exercise`;
-            const contentId = `mod${moduleNum}Content`;
-            const orgId = `mod${moduleNum}Org`;
-            const key = document.getElementById(selectId).value;
-            if (key && EXERCISE_LIBRARY[key]) {
-                const ex = EXERCISE_LIBRARY[key];
-                document.getElementById(contentId).value = ex.desc;
-                if (document.getElementById(orgId)) document.getElementById(orgId).value = ex.org;
-            }
-        }
-
-        function saveSession() {
-            const name = document.getElementById('sessionName').value.trim();
-            if (!name) return alert('Gi økten et navn');
-
-            const goalIds = [];
-            document.querySelectorAll('#sessionGoalChips .goal-chip.selected').forEach(c => {
-                goalIds.push(c.dataset.goalId);
-            });
-
-            const id = db.ref('savedSessions').push().key;
-            db.ref('savedSessions/' + id).set({
-                name: name,
-                goalIds: goalIds,
-                modules: {
-                    samling1: { content: document.getElementById('mod1Content').value },
-                    teknikk: {
-                        exercise: document.getElementById('mod2Exercise').value,
-                        content: document.getElementById('mod2Content').value,
-                        org: document.getElementById('mod2Org').value
-                    },
-                    del3: {
-                        exercise: document.getElementById('mod3Exercise').value,
-                        content: document.getElementById('mod3Content').value,
-                        org: document.getElementById('mod3Org').value
-                    },
-                    spill: {
-                        format: document.getElementById('mod4Format').value,
-                        content: document.getElementById('mod4Content').value
-                    },
-                    samling2: { content: document.getElementById('mod5Content').value }
-                },
-                created: new Date().toISOString()
-            });
-
-            alert('Økt lagret! ✅');
-            closeModal('sessionBuilderModal');
-        }
-
-        function previewSession() {
-            const name = document.getElementById('sessionName').value.trim() || 'Ny økt';
-            const goalIds = [];
-            document.querySelectorAll('#sessionGoalChips .goal-chip.selected').forEach(c => goalIds.push(c.dataset.goalId));
-            const goalLabels = goalIds.map(gid => periodGoalsData[gid]?.text).filter(Boolean);
-
-            const html = `
-                <h4 style="color:var(--accent-green);margin-bottom:12px;">${name}</h4>
-                ${goalLabels.length > 0 ? `
-                    <div style="margin-bottom:12px;">
-                        <strong style="font-size:0.8rem;">🎯 Læringsmål:</strong>
-                        <div class="goal-chips" style="margin-top:4px;">
-                            ${goalLabels.map(l => `<span class="goal-chip selected" style="cursor:default;">${l}</span>`).join('')}
-                        </div>
-                    </div>
-                ` : ''}
-                <div class="session-module module-samling">
-                    <div class="session-module-header"><h4>🟣 1. Samling</h4><span class="duration">3 min</span></div>
-                    <div class="session-module-body"><p style="font-size:0.8rem;">${document.getElementById('mod1Content').value || 'Ikke utfylt'}</p></div>
-                </div>
-                <div class="session-module module-teknikk">
-                    <div class="session-module-header"><h4>🔵 2. Teknisk øving</h4><span class="duration">10-15 min</span></div>
-                    <div class="session-module-body">
-                        <p style="font-size:0.8rem;"><strong>Øvelse:</strong> ${getExerciseName(document.getElementById('mod2Exercise').value)}</p>
-                        <p style="font-size:0.8rem;">${document.getElementById('mod2Content').value || ''}</p>
-                        <p style="font-size:0.75rem;color:var(--text-muted);">Org: ${document.getElementById('mod2Org').value || ''}</p>
-                    </div>
-                </div>
-                <div class="session-module module-del3">
-                    <div class="session-module-header"><h4>🟢 3. Spillrelatert øvelse</h4><span class="duration">10-15 min</span></div>
-                    <div class="session-module-body">
-                        <p style="font-size:0.8rem;"><strong>Øvelse:</strong> ${getExerciseName(document.getElementById('mod3Exercise').value)}</p>
-                        <p style="font-size:0.8rem;">${document.getElementById('mod3Content').value || ''}</p>
-                        <p style="font-size:0.75rem;color:var(--text-muted);">Org: ${document.getElementById('mod3Org').value || ''}</p>
-                    </div>
-                </div>
-                <div class="session-module module-spill">
-                    <div class="session-module-header"><h4>🟡 4. Spill</h4><span class="duration">20-25 min</span></div>
-                    <div class="session-module-body">
-                        <p style="font-size:0.8rem;"><strong>Format:</strong> ${document.getElementById('mod4Format').value || '5 mot 5'}</p>
-                        <p style="font-size:0.8rem;">${document.getElementById('mod4Content').value || ''}</p>
-                    </div>
-                </div>
-                <div class="session-module module-samling">
-                    <div class="session-module-header"><h4>🟣 5. Avsluttende samling</h4><span class="duration">3 min</span></div>
-                    <div class="session-module-body"><p style="font-size:0.8rem;">${document.getElementById('mod5Content').value || 'Ikke utfylt'}</p></div>
-                </div>
-                <div style="margin-top:12px;padding:10px;background:var(--bg-input);border-radius:8px;font-size:0.75rem;color:var(--text-muted);">
-                    <strong>Total tid:</strong> ca. 46-61 min
-                </div>
-            `;
-
-            document.getElementById('sessionPreviewContent').innerHTML = html;
-            openModal('sessionPreviewModal');
-        }
-
-        function getExerciseName(key) {
-            if (!key) return 'Ikke valgt';
-            return EXERCISE_LIBRARY[key]?.name || key;
-        }
-
-        function useSessionForTraining() {
-            closeModal('sessionPreviewModal');
-            closeModal('sessionBuilderModal');
-            showTrainingModal();
-        }
-
-        // ======================
-        // TEMPLATES
-        // ======================
-        function renderTemplates() {
-            // Pre-built VIF templates
-            const templates = [
-                { name: '⚽ Ballmestring & Lek', desc: 'Føre ball, tå-touch, fri lek med ball. Perfekt for Nov-Des perioden.', period: 'nov-des' },
-                { name: '🎯 Pasningstrening', desc: 'Innsidepasning i par, pasning i firkant, rondo. Jan-Apr fokus.', period: 'jan-apr' },
-                { name: '🥅 Avslutningstrening', desc: 'Skudd på mål, avslutning fra kant, scoringsøvelser. Mai-Jun fokus.', period: 'mai-jun' },
-                { name: '🔄 1 mot 1 fokus', desc: 'Dribling, vendinger, 1 mot 1 offensivt og defensivt.', period: 'nov-des' },
-                { name: '🤝 Samarbeid & Småspill', desc: '2 mot 2, 3 mot 3, fokus på samhandling og kommunikasjon.', period: 'jan-apr' },
-                { name: '🎪 Stafetter & Lek', desc: 'Lekbaserte stafetter med ball. Motivasjon og glede!', period: 'aug-sep' },
-                { name: '⚡ Fart & Ball', desc: 'Sprint med ball, raske vendinger, reaksjonsleker.', period: 'aug-sep' },
-                { name: '👑 Kamp-forberedelse', desc: 'Spillformat, posisjoner, enkle taktiske grep for 5-er fotball.', period: 'mai-jun' }
-            ];
-
-            document.getElementById('templatesList').innerHTML = templates.map((t, i) => `
-                <div class="list-item" style="cursor:pointer;" onclick="loadTemplate(${i})">
-                    <div class="list-item-info">
-                        <h4>${t.name}</h4>
-                        <p>${t.desc}</p>
-                    </div>
-                    <span class="badge badge-${t.period==='nov-des'?'purple':t.period==='jan-apr'?'blue':t.period==='mai-jun'?'green':'gold'}">${VIF_PERIODS[t.period]?.theme || ''}</span>
-                </div>
-            `).join('');
-
-            // Saved sessions
-            const saved = Object.entries(savedSessionsData);
-            document.getElementById('savedSessionsList').innerHTML = saved.length === 0
-                ? '<p style="color:var(--text-muted);font-size:0.85rem;">Ingen lagrede økter ennå</p>'
-                : saved.sort((a,b) => (b[1].created||'').localeCompare(a[1].created||'')).map(([id, s]) => {
-                    const goalLabels = (s.goalIds || []).map(gid => periodGoalsData[gid]?.text).filter(Boolean);
-                    return `
-                        <div class="card">
-                            <div style="display:flex;justify-content:space-between;align-items:center;">
-                                <div>
-                                    <h4 style="font-size:0.9rem;">${s.name}</h4>
-                                    <p style="font-size:0.7rem;color:var(--text-muted);">${s.created ? s.created.split('T')[0] : ''}</p>
-                                </div>
-                                <div class="list-item-actions">
-                                    <button onclick="viewSavedSession('${id}')" title="Se"><i class="fas fa-eye"></i></button>
-                                    <button onclick="deleteSavedSession('${id}')" title="Slett"><i class="fas fa-trash"></i></button>
-                                </div>
-                            </div>
-                            ${goalLabels.length > 0 ? `
-                                <div class="goal-chips" style="margin-top:6px;">
-                                    ${goalLabels.map(l => `<span class="goal-chip selected" style="cursor:default;font-size:0.62rem;">${l}</span>`).join('')}
-                                </div>
-                            ` : ''}
-                        </div>
-                    `;
-                }).join('');
-        }
-
-        function loadTemplate(index) {
-            const templates = [
-                { name:'Ballmestring & Lek', mod2:'ex_ballmestring1', mod3:'ex_1mot1_offensiv', format:'3mot3' },
-                { name:'Pasningstrening', mod2:'ex_innsidepasning', mod3:'ex_rondo', format:'4mot4' },
-                { name:'Avslutningstrening', mod2:'ex_skudd', mod3:'ex_avslutning', format:'5mot5' },
-                { name:'1 mot 1 fokus', mod2:'ex_1mot1_offensiv', mod3:'ex_vendinger', format:'3mot3' },
-                { name:'Samarbeid & Småspill', mod2:'ex_pasn_firkant', mod3:'ex_3mot3', format:'4mot4' },
-                { name:'Stafetter & Lek', mod2:'ex_ballmestring2', mod3:'ex_2mot2', format:'frilek' },
-                { name:'Fart & Ball', mod2:'ex_ballmestring1', mod3:'ex_4mot4', format:'5mot5' },
-                { name:'Kamp-forberedelse', mod2:'ex_mottak', mod3:'ex_4mot4', format:'5mot5' }
-            ];
-
-            const t = templates[index];
-            if (!t) return;
-
-            showSessionBuilder();
-            document.getElementById('sessionName').value = t.name;
-            document.getElementById('mod2Exercise').value = t.mod2;
-            populateExercise(2);
-            document.getElementById('mod3Exercise').value = t.mod3;
-            populateExercise(3);
-            document.getElementById('mod4Format').value = t.format;
-        }
-
-        function viewSavedSession(id) {
-            const s = savedSessionsData[id];
-            if (!s) return;
-
-            const goalLabels = (s.goalIds || []).map(gid => periodGoalsData[gid]?.text).filter(Boolean);
-            const m = s.modules || {};
-
-            const html = `
-                <h4 style="color:var(--accent-green);margin-bottom:12px;">${s.name}</h4>
-                ${goalLabels.length > 0 ? `
-                    <div style="margin-bottom:12px;">
-                        <strong style="font-size:0.8rem;">🎯 Læringsmål:</strong>
-                        <div class="goal-chips" style="margin-top:4px;">
-                            ${goalLabels.map(l => `<span class="goal-chip selected" style="cursor:default;">${l}</span>`).join('')}
-                        </div>
-                    </div>
-                ` : ''}
-                <div class="session-module module-samling">
-                    <div class="session-module-header"><h4>🟣 1. Samling</h4><span class="duration">3 min</span></div>
-                    <div class="session-module-body"><p style="font-size:0.8rem;">${m.samling1?.content || ''}</p></div>
-                </div>
-                <div class="session-module module-teknikk">
-                    <div class="session-module-header"><h4>🔵 2. Teknisk øving</h4><span class="duration">10-15 min</span></div>
-                    <div class="session-module-body">
-                        <p style="font-size:0.8rem;"><strong>Øvelse:</strong> ${getExerciseName(m.teknikk?.exercise)}</p>
-                        <p style="font-size:0.8rem;">${m.teknikk?.content || ''}</p>
-                        <p style="font-size:0.75rem;color:var(--text-muted);">Org: ${m.teknikk?.org || ''}</p>
-                    </div>
-                </div>
-                <div class="session-module module-del3">
-                    <div class="session-module-header"><h4>🟢 3. Spillrelatert øvelse</h4><span class="duration">10-15 min</span></div>
-                    <div class="session-module-body">
-                        <p style="font-size:0.8rem;"><strong>Øvelse:</strong> ${getExerciseName(m.del3?.exercise)}</p>
-                        <p style="font-size:0.8rem;">${m.del3?.content || ''}</p>
-                        <p style="font-size:0.75rem;color:var(--text-muted);">Org: ${m.del3?.org || ''}</p>
-                    </div>
-                </div>
-                <div class="session-module module-spill">
-                    <div class="session-module-header"><h4>🟡 4. Spill</h4><span class="duration">20-25 min</span></div>
-                    <div class="session-module-body">
-                        <p style="font-size:0.8rem;"><strong>Format:</strong> ${m.spill?.format || ''}</p>
-                        <p style="font-size:0.8rem;">${m.spill?.content || ''}</p>
-                    </div>
-                </div>
-                <div class="session-module module-samling">
-                    <div class="session-module-header"><h4>🟣 5. Avsluttende samling</h4><span class="duration">3 min</span></div>
-                    <div class="session-module-body"><p style="font-size:0.8rem;">${m.samling2?.content || ''}</p></div>
-                </div>
-            `;
-
-            document.getElementById('sessionPreviewContent').innerHTML = html;
-            openModal('sessionPreviewModal');
-        }
-
-        function deleteSavedSession(id) {
-            if (confirm('Slett lagret økt?')) db.ref('savedSessions/' + id).remove();
-        }
-
-        // ======================
-        // COACHES (SETTINGS)
-        // ======================
-        function renderCoaches(coaches) {
-            const container = document.getElementById('coachesList');
-            container.innerHTML = Object.entries(coaches).map(([uid, c]) => {
-                const roleBadge = c.role === 'admin' ? 'badge-gold' : c.role === 'coach' ? 'badge-green' : 'badge-red';
-                return `
-                    <div class="list-item">
-                        <div class="list-item-info">
-                            <h4>${c.name || c.email}</h4>
-                            <p>${c.email} · <span class="badge ${roleBadge}">${c.role}</span></p>
-                        </div>
-                        ${currentRole === 'admin' && c.role === 'pending' ? `
-                            <div class="list-item-actions">
-                                <button class="btn btn-primary btn-sm" onclick="approveCoach('${uid}')">Godkjenn</button>
-                                <button class="btn btn-danger btn-sm" onclick="removeCoach('${uid}')">Fjern</button>
-                            </div>
-                        ` : ''}
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function approveCoach(uid) {
-            db.ref('coaches/' + uid + '/role').set('coach');
-        }
-
-        function removeCoach(uid) {
-            if (confirm('Fjern denne treneren?')) db.ref('coaches/' + uid).remove();
-        }
-
-        function inviteCoach() {
-            const email = document.getElementById('inviteEmail').value.trim();
-            if (!email) return alert('Skriv inn e-post');
-            db.ref('invites').push({ email: email, invited: new Date().toISOString(), by: currentUser.displayName });
-            document.getElementById('inviteEmail').value = '';
-            alert('Invitasjon registrert for ' + email);
-        }
-
-        // Init
-        renderDashboard();
-    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
+
+=================================================================================
+FILE 2: styles.css
+=================================================================================
+
+/* Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-color: #667eea;
+    --secondary-color: #764ba2;
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --danger-color: #ef4444;
+    --text-dark: #1f2937;
+    --text-light: #6b7280;
+    --bg-light: #f9fafb;
+    --bg-white: #ffffff;
+    --border-color: #e5e7eb;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+    line-height: 1.6;
+}
+
+/* Navigation */
+.navbar {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    box-shadow: var(--shadow-md);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: white;
+    font-size: 1.25rem;
+    font-weight: 700;
+    padding: 1rem 0;
+}
+
+.nav-brand i {
+    font-size: 1.5rem;
+}
+
+.nav-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.nav-menu {
+    display: flex;
+    list-style: none;
+    gap: 0.5rem;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.nav-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.nav-link.active {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+/* Main Content */
+.main-content {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.page-header {
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.page-header h1 {
+    font-size: 2rem;
+    color: var(--text-dark);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.page-header p {
+    color: var(--text-light);
+    font-size: 1rem;
+    width: 100%;
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: var(--bg-white);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+}
+
+.stat-content h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.stat-content p {
+    color: var(--text-light);
+    font-size: 0.875rem;
+}
+
+/* Buttons */
+.btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    font-size: 1rem;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.btn-secondary {
+    background: var(--bg-light);
+    color: var(--text-dark);
+    border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+    background: #e5e7eb;
+}
+
+.btn-success {
+    background: var(--success-color);
+    color: white;
+}
+
+.btn-danger {
+    background: var(--danger-color);
+    color: white;
+}
+
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+}
+
+/* Month Selector */
+.month-selector {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    background: var(--bg-white);
+    padding: 1rem;
+    border-radius: 0.75rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.month-tab {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border-color);
+    background: var(--bg-white);
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    color: var(--text-dark);
+    font-size: 0.875rem;
+}
+
+.month-tab:hover {
+    background: var(--bg-light);
+}
+
+.month-tab.active {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+/* Focus Areas */
+.focus-areas-section {
+    background: var(--bg-white);
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.focus-areas-section h3 {
+    margin-bottom: 1rem;
+    color: var(--text-dark);
+}
+
+.focus-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.focus-chip {
+    padding: 0.75rem 1.25rem;
+    border: 2px solid var(--border-color);
+    border-radius: 2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+    background: var(--bg-white);
+}
+
+.focus-chip:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.focus-chip.selected {
+    border-color: var(--primary-color);
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: white;
+}
+
+.focus-chip.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.focus-chip.disabled:hover {
+    transform: none;
+}
+
+/* Players Grid */
+.players-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.player-card {
+    background: var(--bg-white);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+}
+
+.player-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-4px);
+}
+
+.player-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--bg-light);
+}
+
+.player-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.player-info h3 {
+    font-size: 1.25rem;
+    color: var(--text-dark);
+    margin-bottom: 0.25rem;
+}
+
+.player-number {
+    color: var(--text-light);
+    font-size: 0.875rem;
+}
+
+.player-stats {
+    display: flex;
+    justify-content: space-around;
+    margin: 1rem 0;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: var(--text-light);
+    text-transform: uppercase;
+}
+
+.player-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.player-actions .btn {
+    flex: 1;
+    justify-content: center;
+    font-size: 0.875rem;
+    padding: 0.5rem;
+}
+
+/* Goals List */
+.goals-content {
+    background: var(--bg-white);
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.player-selector {
+    margin-bottom: 1.5rem;
+}
+
+.player-selector label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.player-selector select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+.goals-list-section {
+    background: var(--bg-white);
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.section-header h3 {
+    color: var(--text-dark);
+}
+
+.section-header h2 {
+    color: var(--text-dark);
+    font-size: 1.5rem;
+}
+
+.goals-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.goal-item {
+    background: var(--bg-light);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border-left: 4px solid var(--primary-color);
+}
+
+.goal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 0.75rem;
+}
+
+.goal-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.goal-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: white;
+}
+
+.goal-description {
+    color: var(--text-light);
+    margin-bottom: 0.75rem;
+    line-height: 1.5;
+}
+
+.goal-progress {
+    margin-bottom: 0.5rem;
+}
+
+.progress-bar-container {
+    height: 8px;
+    background: #e5e7eb;
+    border-radius: 1rem;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    font-size: 0.875rem;
+    color: var(--text-light);
+    display: flex;
+    justify-content: space-between;
+}
+
+.goal-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+/* Modals */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    animation: fadeIn 0.3s ease;
+}
+
+.modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: var(--bg-white);
+    border-radius: 1rem;
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h2 {
+    font-size: 1.5rem;
+    color: var(--text-dark);
+}
+
+.close {
+    font-size: 2rem;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close:hover {
+    color: var(--text-dark);
+}
+
+.modal-content form {
+    padding: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    font-family: inherit;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.suggested-goals {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.suggested-goal-item {
+    padding: 0.75rem;
+    background: var(--bg-light);
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.suggested-goal-item:hover {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+/* Dashboard Sections */
+.dashboard-section {
+    background: var(--bg-white);
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 2rem;
+}
+
+.goals-by-focus {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.focus-group {
+    border-left: 4px solid;
+    padding-left: 1rem;
+}
+
+.focus-group-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.top-players-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.top-player-card {
+    background: var(--bg-light);
+    padding: 1rem;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.top-player-rank {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.25rem;
+}
+
+/* Progress Page */
+.progress-filters {
+    background: var(--bg-white);
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 2rem;
+}
+
+.progress-filters select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+#progressContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .nav-toggle {
+        display: block;
+    }
+
+    .nav-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        flex-direction: column;
+        padding: 1rem;
+        gap: 0.25rem;
+        display: none;
+    }
+
+    .nav-menu.active {
+        display: flex;
+    }
+
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .players-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .month-selector {
+        justify-content: center;
+    }
+
+    .month-tab {
+        flex: 1;
+        min-width: 80px;
+        text-align: center;
+    }
+}
+
+@media (max-width: 640px) {
+    .goal-actions {
+        flex-direction: column;
+    }
+
+    .goal-actions .btn {
+        width: 100%;
+    }
+}
+
+=================================================================================
+FILE 3: app.js
+=================================================================================
+
+// Firebase configuration
+const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_AUTH_DOMAIN",
+    databaseURL: "YOUR_DATABASE_URL",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_STORAGE_BUCKET",
+    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+    appId: "YOUR_APP_ID"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
+
+// Constants
+const MONTHS = [
+    { id: 0, name: 'Januar' },
+    { id: 1, name: 'Februar' },
+    { id: 2, name: 'Mars' },
+    { id: 3, name: 'April' },
+    { id: 4, name: 'Mai' },
+    { id: 5, name: 'Juni' },
+    { id: 6, name: 'Juli' },
+    { id: 7, name: 'August' },
+    { id: 8, name: 'September' },
+    { id: 9, name: 'Oktober' },
+    { id: 10, name: 'November' },
+    { id: 11, name: 'Desember' }
+];
+
+const FOCUS_AREAS = {
+    passing: {
+        name: 'Pasning',
+        icon: 'fa-people-arrows',
+        color: '#3b82f6',
+        suggestions: [
+            'Korte pasninger med innsiden av foten',
+            'Passe til medspiller som beveger seg',
+            'Se opp før jeg passer'
+        ]
+    },
+    receiving: {
+        name: 'Mottak',
+        icon: 'fa-hand-back-fist',
+        color: '#8b5cf6',
+        suggestions: [
+            'Stoppe ballen med innsiden av foten',
+            'Ta imot ballen og snu',
+            'Kontrollere ballen med ett touch'
+        ]
+    },
+    shooting: {
+        name: 'Skudd',
+        icon: 'fa-futbol',
+        color: '#ec4899',
+        suggestions: [
+            'Skyte på mål med innsiden av foten',
+            'Treffe målområdet 5 av 10 ganger',
+            'Skyte etter å ha drillet'
+        ]
+    },
+    dribbling: {
+        name: 'Dribling',
+        icon: 'fa-shoe-prints',
+        color: '#f59e0b',
+        suggestions: [
+            'Drible rundt 5 kjegler uten å miste ballen',
+            'Bruke begge føtter når jeg driblers',
+            'Holde ballen nær føttene'
+        ]
+    },
+    oneVone: {
+        name: '1mot1',
+        icon: 'fa-users-line',
+        color: '#10b981',
+        suggestions: [
+            'Vinne ballen i duell',
+            'Forsvare uten å bruke hendene',
+            'Være modig i nærkamper'
+        ]
+    },
+    teamwork: {
+        name: 'Samarbeid',
+        icon: 'fa-handshake',
+        color: '#06b6d4',
+        suggestions: [
+            'Kommunisere med lagkamerater',
+            'Feire andres mål',
+            'Hjelpe laget både i forsvar og angrep'
+        ]
+    },
+    ballControl: {
+        name: 'Ballkontroll',
+        icon: 'fa-circle-dot',
+        color: '#6366f1',
+        suggestions: [
+            'Holde ballen tett til kroppen',
+            'Bruke forskjellige deler av foten',
+            'Kontrollere ballen i fart'
+        ]
+    },
+    attitude: {
+        name: 'Holdning & Lek',
+        icon: 'fa-smile',
+        color: '#f97316',
+        suggestions: [
+            'Ha det gøy på trening',
+            'Prøve mitt beste hver gang',
+            'Være en god lagkamerat'
+        ]
+    }
+};
+
+// Global state
+let currentMonth = new Date().getMonth();
+let selectedPlayer = null;
+let editingGoal = null;
+
+// ==================== INITIALIZATION ====================
+
+document.addEventListener('DOMContentLoaded', function() {
+    initializeNavigation();
+    initializeMonthSelector();
+    loadPlayers();
+    loadDashboard();
+});
+
+function initializeNavigation() {
+    const navToggle = document.getElementById('navToggle');
+    const navMenu = document.getElementById('navMenu');
+    
+    if (navToggle) {
+        navToggle.addEventListener('click', function() {
+            navMenu.classList.toggle('active');
+        });
+    }
+
+    const navLinks = document.querySelectorAll('.nav-link');
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetPage = this.getAttribute('data-page');
+            showPage(targetPage);
+            
+            navLinks.forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+            
+            if (navMenu) {
+                navMenu.classList.remove('active');
+            }
+        });
+    });
+}
+
+function initializeMonthSelector() {
+    const monthTabs = document.querySelectorAll('.month-tab');
+    monthTabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            currentMonth = parseInt(this.getAttribute('data-month'));
+            
+            monthTabs.forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            
+            loadPlayerGoals();
+        });
+    });
+}
+
+function showPage(pageName) {
+    const pages = document.querySelectorAll('.page');
+    pages.forEach(page => {
+        page.classList.remove('active');
+    });
+    
+    const targetPage = document.getElementById(pageName + 'Page');
+    if (targetPage) {
+        targetPage.classList.add('active');
+    }
+    
+    if (pageName === 'dashboard') {
+        loadDashboard();
+    } else if (pageName === 'players') {
+        loadPlayers();
+    } else if (pageName === 'goals') {
+        loadGoalsPage();
+    } else if (pageName === 'progress') {
+        loadProgressPage();
+    }
+}
+
+// ==================== PLAYER MANAGEMENT ====================
+
+function showAddPlayerModal() {
+    document.getElementById('addPlayerModal').classList.add('active');
+}
+
+function closeAddPlayerModal() {
+    document.getElementById('addPlayerModal').classList.remove('active');
+    document.getElementById('addPlayerForm').reset();
+}
+
+function addPlayer(event) {
+    event.preventDefault();
+    
+    const name = document.getElementById('playerName').value;
+    const number = document.getElementById('playerNumber').value;
+    
+    const playerData = {
+        name: name,
+        number: number,
+        createdAt: Date.now()
+    };
+    
+    database.ref('players').push(playerData)
+        .then(() => {
+            closeAddPlayerModal();
+            loadPlayers();
+            alert('Spiller lagt til!');
+        })
+        .catch((error) => {
+            console.error('Error adding player:', error);
+            alert('Kunne ikke legge til spiller');
+        });
+}
+
+function loadPlayers() {
+    database.ref('players').once('value')
+        .then((snapshot) => {
+            const players = [];
+            snapshot.forEach((childSnapshot) => {
+                players.push({
+                    id: childSnapshot.key,
+                    ...childSnapshot.val()
+                });
+            });
+            
+            displayPlayers(players);
+            populatePlayerSelects(players);
+        });
+}
+
+function displayPlayers(players) {
+    const grid = document.getElementById('playersGrid');
+    if (!grid) return;
+    
+    if (players.length === 0) {
+        grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-light);">Ingen spillere lagt til ennå.</p>';
+        return;
+    }
+    
+    grid.innerHTML = players.map(player => `
+        <div class="player-card">
+            <div class="player-header">
+                <div class="player-avatar">${player.number}</div>
+                <div class="player-info">
+                    <h3>${player.name}</h3>
+                    <span class="player-number">Nummer ${player.number}</span>
+                </div>
+            </div>
+            <div class="player-stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="player-goals-${player.id}">0</div>
+                    <div class="stat-label">Mål</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="player-progress-${player.id}">0%</div>
+                    <div class="stat-label">Fremgang</div>
+                </div>
+            </div>
+            <div class="player-actions">
+                <button class="btn btn-secondary btn-sm" onclick="deletePlayer('${player.id}', '${player.name}')">
+                    <i class="fas fa-trash"></i> Slett
+                </button>
+            </div>
+        </div>
+    `).join('');
+    
+    players.forEach(player => {
+        loadPlayerStats(player.id);
+    });
+}
+
+function deletePlayer(playerId, playerName) {
+    if (confirm(`Er du sikker på at du vil slette ${playerName}?`)) {
+        database.ref('players/' + playerId).remove()
+            .then(() => {
+                database.ref('goals/' + playerId).remove();
+                loadPlayers();
+                alert('Spiller slettet');
+            })
+            .catch((error) => {
+                console.error('Error deleting player:', error);
+                alert('Kunne ikke slette spiller');
+            });
+    }
+}
+
+function loadPlayerStats(playerId) {
+    database.ref('goals/' + playerId).once('value')
+        .then((snapshot) => {
+            let totalGoals = 0;
+            let completedGoals = 0;
+            
+            snapshot.forEach((monthSnapshot) => {
+                const monthData = monthSnapshot.val();
+                if (monthData.periodGoals) {
+                    Object.values(monthData.periodGoals).forEach(goal => {
+                        totalGoals++;
+                        if (goal.progress >= 100) {
+                            completedGoals++;
+                        }
+                    });
+                }
+            });
+            
+            const progressPercent = totalGoals > 0 ? Math.round((completedGoals / totalGoals) * 100) : 0;
+            
+            const goalsElement = document.getElementById(`player-goals-${playerId}`);
+            const progressElement = document.getElementById(`player-progress-${playerId}`);
+            
+            if (goalsElement) goalsElement.textContent = totalGoals;
+            if (progressElement) progressElement.textContent = progressPercent + '%';
+        });
+}
+
+function populatePlayerSelects(players) {
+    const selects = ['goalPlayerSelect', 'progressPlayerSelect'];
+    
+    selects.forEach(selectId => {
+        const select = document.getElementById(selectId);
+        if (!select) return;
+        
+        select.innerHTML = '<option value="">Velg en spiller...</option>' +
+            players.map(player => 
+                `<option value="${player.id}">${player.name} (#${player.number})</option>`
+            ).join('');
+    });
+}
+
+// ==================== GOALS PAGE ====================
+
+function loadGoalsPage() {
+    loadPlayers();
+}
+
+function loadPlayerGoals() {
+    const selectElement = document.getElementById('goalPlayerSelect');
+    const playerId = selectElement.value;
+    selectedPlayer = playerId;
+    
+    const container = document.getElementById('playerGoalsContainer');
+    
+    if (!playerId) {
+        container.style.display = 'none';
+        return;
+    }
+    
+    container.style.display = 'block';
+    loadFocusAreas(playerId);
+    loadPeriodGoals(playerId);
+}
+
+function loadFocusAreas(playerId) {
+    const container = document.getElementById('focusChips');
+    if (!container) return;
+    
+    database.ref(`goals/${playerId}/${currentMonth}/monthFocus`).once('value')
+        .then((snapshot) => {
+            const selectedFocus = snapshot.val() || [];
+            
+            container.innerHTML = Object.keys(FOCUS_AREAS).map(key => {
+                const area = FOCUS_AREAS[key];
+                const isSelected = selectedFocus.includes(key);
+                const isDisabled = !isSelected && selectedFocus.length >= 3;
+                
+                return `
+                    <div class="focus-chip ${isSelected ? 'selected' : ''} ${isDisabled ? 'disabled' : ''}"
+                         onclick="toggleFocusArea('${key}')"
+                         style="border-color: ${area.color}; ${isSelected ? `background: ${area.color}; color: white;` : ''}">
+                        <i class="fas ${area.icon}"></i>
+                        <span>${area.name}</span>
+                    </div>
+                `;
+            }).join('');
+        });
+}
+
+function toggleFocusArea(areaKey) {
+    if (!selectedPlayer) return;
+    
+    database.ref(`goals/${selectedPlayer}/${currentMonth}/monthFocus`).once('value')
+        .then((snapshot) => {
+            let selectedFocus = snapshot.val() || [];
+            
+            if (selectedFocus.includes(areaKey)) {
+                selectedFocus = selectedFocus.filter(key => key !== areaKey);
+            } else {
+                if (selectedFocus.length < 3) {
+                    selectedFocus.push(areaKey);
+                } else {
+                    alert('Du kan velge maksimalt 3 fokusområder per måned');
+                    return;
+                }
+            }
+            
+            return database.ref(`goals/${selectedPlayer}/${currentMonth}/monthFocus`).set(selectedFocus);
+        })
+        .then(() => {
+            loadFocusAreas(selectedPlayer);
+        })
+        .catch((error) => {
+            console.error('Error toggling focus area:', error);
+        });
+}
+
+function loadPeriodGoals(playerId) {
+    const container = document.getElementById('periodGoalsList');
+    if (!container) return;
+    
+    database.ref(`goals/${playerId}/${currentMonth}/periodGoals`).once('value')
+        .then((snapshot) => {
+            const goals = [];
+            snapshot.forEach((childSnapshot) => {
+                goals.push({
+                    id: childSnapshot.key,
+                    ...childSnapshot.val()
+                });
+            });
+            
+            if (goals.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--text-light); padding: 2rem;">Ingen mål satt for denne måneden ennå.</p>';
+                return;
+            }
+            
+            container.innerHTML = goals.map(goal => {
+                const focusArea = FOCUS_AREAS[goal.focusArea];
+                const progress = goal.progress || 0;
+                
+                return `
+                    <div class="goal-item" style="border-left-color: ${focusArea.color}">
+                        <div class="goal-header">
+                            <div class="goal-title">
+                                <i class="fas ${focusArea.icon}" style="color: ${focusArea.color}"></i>
+                                <span>${focusArea.name}</span>
+                            </div>
+                            <span class="goal-badge" style="background: ${focusArea.color}">
+                                ${MONTHS[currentMonth].name}
+                            </span>
+                        </div>
+                        <div class="goal-description">${goal.description}</div>
+                        <div class="goal-progress">
+                            <div class="progress-bar-container">
+                                <div class="progress-bar" style="width: ${progress}%"></div>
+                            </div>
+                            <div class="progress-text">
+                                <span>Fremgang</span>
+                                <span>${progress}%</span>
+                            </div>
+                        </div>
+                        <div class="goal-actions">
+                            <button class="btn btn-success btn-sm" onclick="updateProgress('${goal.id}', ${Math.min(progress + 25, 100)})">
+                                <i class="fas fa-plus"></i> +25%
+                            </button>
+                            <button class="btn btn-secondary btn-sm" onclick="editPeriodGoal('${goal.id}')">
+                                <i class="fas fa-edit"></i> Rediger
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="deletePeriodGoal('${goal.id}')">
+                                <i class="fas fa-trash"></i> Slett
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        });
+}
+
+// ==================== GOAL MODAL ====================
+
+function showPeriodGoalModal() {
+    if (!selectedPlayer) {
+        alert('Velg en spiller først');
+        return;
+    }
+    
+    editingGoal = null;
+    document.getElementById('periodGoalModalTitle').textContent = 'Nytt Månedsmål';
+    document.getElementById('periodGoalForm').reset();
+    document.getElementById('suggestedGoalsContainer').style.display = 'none';
+    
+    populateFocusAreaSelect();
+    
+    document.getElementById('periodGoalModal').classList.add('active');
+}
+
+function closePeriodGoalModal() {
+    document.getElementById('periodGoalModal').classList.remove('active');
+    document.getElementById('periodGoalForm').reset();
+    editingGoal = null;
+}
+
+function populateFocusAreaSelect() {
+    const select = document.getElementById('goalFocusArea');
+    if (!select) return;
+    
+    database.ref(`goals/${selectedPlayer}/${currentMonth}/monthFocus`).once('value')
+        .then((snapshot) => {
+            const selectedFocus = snapshot.val() || [];
+            
+            if (selectedFocus.length === 0) {
+                select.innerHTML = '<option value="">Velg fokusområder først (ovenfor)</option>';
+                select.disabled = true;
+                return;
+            }
+            
+            select.disabled = false;
+            select.innerHTML = '<option value="">Velg fokusområde...</option>' +
+                selectedFocus.map(key => {
+                    const area = FOCUS_AREAS[key];
+                    return `<option value="${key}">${area.name}</option>`;
+                }).join('');
+        });
+}
+
+function updateGoalSuggestions() {
+    const select = document.getElementById('goalFocusArea');
+    const focusArea = select.value;
+    const container = document.getElementById('suggestedGoalsContainer');
+    const listContainer = document.getElementById('suggestedGoalsList');
+    
+    if (!focusArea) {
+        container.style.display = 'none';
+        return;
+    }
+    
+    const area = FOCUS_AREAS[focusArea];
+    container.style.display = 'block';
+    
+    listContainer.innerHTML = area.suggestions.map(suggestion => `
+        <div class="suggested-goal-item" onclick="selectSuggestion('${suggestion.replace(/'/g, "\\'")}')">
+            ${suggestion}
+        </div>
+    `).join('');
+}
+
+function selectSuggestion(text) {
+    document.getElementById('goalDescription').value = text;
+}
+
+function savePeriodGoal(event) {
+    event.preventDefault();
+    
+    const focusArea = document.getElementById('goalFocusArea').value;
+    const description = document.getElementById('goalDescription').value;
+    
+    const goalData = {
+        focusArea: focusArea,
+        description: description,
+        progress: 0,
+        createdAt: Date.now()
+    };
+    
+    let promise;
+    if (editingGoal) {
+        promise = database.ref(`goals/${selectedPlayer}/${currentMonth}/periodGoals/${editingGoal}`).update(goalData);
+    } else {
+        promise = database.ref(`goals/${selectedPlayer}/${currentMonth}/periodGoals`).push(goalData);
+    }
+    
+    promise
+        .then(() => {
+            closePeriodGoalModal();
+            loadPeriodGoals(selectedPlayer);
+            alert(editingGoal ? 'Mål oppdatert!' : 'Mål lagt til!');
+        })
+        .catch((error) => {
+            console.error('Error saving goal:', error);
+            alert('Kunne ikke lagre mål');
+        });
+}
+
+function editPeriodGoal(goalId) {
+    editingGoal = goalId;
+    
+    database.ref(`goals/${selectedPlayer}/${currentMonth}/periodGoals/${goalId}`).once('value')
+        .then((snapshot) => {
+            const goal = snapshot.val();
+            
+            document.getElementById('periodGoalModalTitle').textContent = 'Rediger Mål';
+            document.getElementById('goalFocusArea').value = goal.focusArea;
+            document.getElementById('goalDescription').value = goal.description;
+            
+            populateFocusAreaSelect();
+            updateGoalSuggestions();
+            
+            document.getElementById('periodGoalModal').classList.add('active');
+        });
+}
+
+function deletePeriodGoal(goalId) {
+    if (confirm('Er du sikker på at du vil slette dette målet?')) {
+        database.ref(`goals/${selectedPlayer}/${currentMonth}/periodGoals/${goalId}`).remove()
+            .then(() => {
+                loadPeriodGoals(selectedPlayer);
+                alert('Mål slettet');
+            })
+            .catch((error) => {
+                console.error('Error deleting goal:', error);
+                alert('Kunne ikke slette mål');
+            });
+    }
+}
+
+function updateProgress(goalId, newProgress) {
+    database.ref(`goals/${selectedPlayer}/${currentMonth}/periodGoals/${goalId}/progress`).set(newProgress)
+        .then(() => {
+            loadPeriodGoals(selectedPlayer);
+            loadDashboard();
+        })
+        .catch((error) => {
+            console.error('Error updating progress:', error);
+        });
+}
+
+// ==================== DASHBOARD ====================
+
+function loadDashboard() {
+    loadDashboardStats();
+    loadActiveGoals();
+    loadTopPlayers();
+}
+
+function loadDashboardStats() {
+    database.ref('players').once('value')
+        .then((playersSnapshot) => {
+            const playerCount = playersSnapshot.numChildren();
+            document.getElementById('totalPlayers').textContent = playerCount;
+            
+            let totalGoals = 0;
+            let completedGoals = 0;
+            let totalProgress = 0;
+            let goalCount = 0;
+            
+            const promises = [];
+            
+            playersSnapshot.forEach((playerSnapshot) => {
+                const playerId = playerSnapshot.key;
+                const promise = database.ref(`goals/${playerId}`).once('value')
+                    .then((goalsSnapshot) => {
+                        goalsSnapshot.forEach((monthSnapshot) => {
+                            const monthData = monthSnapshot.val();
+                            if (monthData.periodGoals) {
+                                Object.values(monthData.periodGoals).forEach(goal => {
+                                    totalGoals++;
+                                    goalCount++;
+                                    totalProgress += (goal.progress || 0);
+                                    if (goal.progress >= 100) {
+                                        completedGoals++;
+                                    }
+                                });
+                            }
+                        });
+                    });
+                promises.push(promise);
+            });
+            
+            return Promise.all(promises).then(() => {
+                document.getElementById('activeGoals').textContent = totalGoals;
+                document.getElementById('completedGoals').textContent = completedGoals;
+                const avgProgress = goalCount > 0 ? Math.round(totalProgress / goalCount) : 0;
+                document.getElementById('avgProgress').textContent = avgProgress + '%';
+            });
+        });
+}
+
+function loadActiveGoals() {
+    const container = document.getElementById('activeGoalsContainer');
+    if (!container) return;
+    
+    database.ref('players').once('value')
+        .then((playersSnapshot) => {
+            const goalsByFocus = {};
+            const promises = [];
+            
+            playersSnapshot.forEach((playerSnapshot) => {
+                const playerId = playerSnapshot.key;
+                const playerName = playerSnapshot.val().name;
+                
+                const promise = database.ref(`goals/${playerId}/${currentMonth}/periodGoals`).once('value')
+                    .then((goalsSnapshot) => {
+                        goalsSnapshot.forEach((goalSnapshot) => {
+                            const goal = goalSnapshot.val();
+                            const focusKey = goal.focusArea;
+                            
+                            if (!goalsByFocus[focusKey]) {
+                                goalsByFocus[focusKey] = [];
+                            }
+                            
+                            goalsByFocus[focusKey].push({
+                                playerName: playerName,
+                                ...goal
+                            });
+                        });
+                    });
+                promises.push(promise);
+            });
+            
+            Promise.all(promises).then(() => {
+                if (Object.keys(goalsByFocus).length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: var(--text-light); padding: 2rem;">Ingen aktive mål for denne måneden.</p>';
+                    return;
+                }
+                
+                container.innerHTML = Object.keys(goalsByFocus).map(focusKey => {
+                    const area = FOCUS_AREAS[focusKey];
+                    const goals = goalsByFocus[focusKey];
+                    
+                    return `
+                        <div class="focus-group" style="border-left-color: ${area.color}">
+                            <div class="focus-group-header" style="color: ${area.color}">
+                                <i class="fas ${area.icon}"></i>
+                                <span>${area.name}</span>
+                                <span style="font-size: 0.875rem; color: var(--text-light);">(${goals.length} mål)</span>
+                            </div>
+                            <div class="goals-list">
+                                ${goals.map(goal => `
+                                    <div class="goal-item" style="border-left-color: ${area.color}">
+                                        <div class="goal-header">
+                                            <div class="goal-title">
+                                                <i class="fas fa-user" style="color: ${area.color}"></i>
+                                                <span>${goal.playerName}</span>
+                                            </div>
+                                        </div>
+                                        <div class="goal-description">${goal.description}</div>
+                                        <div class="goal-progress">
+                                            <div class="progress-bar-container">
+                                                <div class="progress-bar" style="width: ${goal.progress || 0}%"></div>
+                                            </div>
+                                            <div class="progress-text">
+                                                <span>Fremgang</span>
+                                                <span>${goal.progress || 0}%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            });
+        });
+}
+
+function loadTopPlayers() {
+    const container = document.getElementById('topPlayersContainer');
+    if (!container) return;
+    
+    database.ref('players').once('value')
+        .then((playersSnapshot) => {
+            const playerStats = [];
+            const promises = [];
+            
+            playersSnapshot.forEach((playerSnapshot) => {
+                const playerId = playerSnapshot.key;
+                const playerData = playerSnapshot.val();
+                
+                const promise = database.ref(`goals/${playerId}/${currentMonth}/periodGoals`).once('value')
+                    .then((goalsSnapshot) => {
+                        let totalProgress = 0;
+                        let goalCount = 0;
+                        
+                        goalsSnapshot.forEach((goalSnapshot) => {
+                            const goal = goalSnapshot.val();
+                            totalProgress += (goal.progress || 0);
+                            goalCount++;
+                        });
+                        
+                        if (goalCount > 0) {
+                            playerStats.push({
+                                name: playerData.name,
+                                number: playerData.number,
+                                avgProgress: Math.round(totalProgress / goalCount),
+                                goalCount: goalCount
+                            });
+                        }
+                    });
+                promises.push(promise);
+            });
+            
+            Promise.all(promises).then(() => {
+                playerStats.sort((a, b) => b.avgProgress - a.avgProgress);
+                const topPlayers = playerStats.slice(0, 5);
+                
+                if (topPlayers.length === 0) {
+                    container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-light); padding: 2rem;">Ingen data for denne måneden ennå.</p>';
+                    return;
+                }
+                
+                container.innerHTML = topPlayers.map((player, index) => `
+                    <div class="top-player-card">
+                        <div class="top-player-rank">${index + 1}</div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 600;">${player.name}</div>
+                            <div style="font-size: 0.875rem; color: var(--text-light);">
+                                ${player.goalCount} mål - ${player.avgProgress}% gjennomsnitt
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            });
+        });
+}
+
+// ==================== PROGRESS PAGE ====================
+
+function loadProgressPage() {
+    loadPlayers();
+}
+
+function loadPlayerProgress() {
+    const playerId = document.getElementById('progressPlayerSelect').value;
+    const container = document.getElementById('progressContainer');
+    
+    if (!playerId) {
+        container.innerHTML = '<p style="text-align: center; color: var(--text-light); padding: 2rem;">Velg en spiller for å se fremgang.</p>';
+        return;
+    }
+    
+    database.ref(`goals/${playerId}`).once('value')
+        .then((snapshot) => {
+            const monthsData = [];
+            
+            snapshot.forEach((monthSnapshot) => {
+                const monthId = parseInt(monthSnapshot.key);
+                const monthData = monthSnapshot.val();
+                
+                if (monthData.periodGoals) {
+                    let totalProgress = 0;
+                    let goalCount = 0;
+                    const goals = [];
+                    
+                    Object.entries(monthData.periodGoals).forEach(([goalId, goal]) => {
+                        totalProgress += (goal.progress || 0);
+                        goalCount++;
+                        goals.push(goal);
+                    });
+                    
+                    monthsData.push({
+                        monthId: monthId,
+                        monthName: MONTHS[monthId].name,
+                        avgProgress: goalCount > 0 ? Math.round(totalProgress / goalCount) : 0,
+                        goalCount: goalCount,
+                        goals: goals,
+                        focusAreas: monthData.monthFocus || []
+                    });
+                }
+            });
+            
+            monthsData.sort((a, b) => a.monthId - b.monthId);
+            
+            if (monthsData.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--text-light); padding: 2rem;">Ingen data funnet for denne spilleren.</p>';
+                return;
+            }
+            
+            container.innerHTML = monthsData.map(month => `
+                <div class="dashboard-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-calendar"></i> ${month.monthName}</h3>
+                        <span class="goal-badge" style="background: var(--primary-color);">
+                            ${month.goalCount} mål - ${month.avgProgress}% gjennomsnitt
+                        </span>
+                    </div>
+                    
+                    ${month.focusAreas.length > 0 ? `
+                        <div style="margin-bottom: 1rem;">
+                            <strong>Fokusområder:</strong>
+                            <div class="focus-chips" style="margin-top: 0.5rem;">
+                                ${month.focusAreas.map(key => {
+                                    const area = FOCUS_AREAS[key];
+                                    return `
+                                        <div class="focus-chip selected" style="border-color: ${area.color}; background: ${area.color}; color: white;">
+                                            <i class="fas ${area.icon}"></i>
+                                            <span>${area.name}</span>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+                    
+                    <div class="goals-list">
+                        ${month.goals.map(goal => {
+                            const area = FOCUS_AREAS[goal.focusArea];
+                            return `
+                                <div class="goal-item" style="border-left-color: ${area.color}">
+                                    <div class="goal-header">
+                                        <div class="goal-title">
+                                            <i class="fas ${area.icon}" style="color: ${area.color}"></i>
+                                            <span>${area.name}</span>
+                                        </div>
+                                        <span class="goal-badge" style="background: ${area.color}">
+                                            ${goal.progress || 0}%
+                                        </span>
+                                    </div>
+                                    <div class="goal-description">${goal.description}</div>
+                                    <div class="progress-bar-container">
+                                        <div class="progress-bar" style="width: ${goal.progress || 0}%"></div>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `).join('');
+        });
+}

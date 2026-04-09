@@ -2321,20 +2321,6 @@ function toggleAttendance(el) {
     check.textContent = el.classList.contains('present') ? '✓' : '';
 }
 
-function getAttendanceFromGrid(containerId) {
-    const items = document.querySelectorAll('#' + containerId + ' .attendance-item');
-    const attendance = {};
-    items.forEach(item => {
-        const onclick = item.getAttribute('onclick');
-        const match = onclick.match(/'([^']+)'/g);
-        if (match && match.length >= 2) {
-            const id = match[1].replace(/'/g, '');
-            attendance[id] = item.classList.contains('present');
-        }
-    });
-    return attendance;
-}
-
 function setRating(n) {
     currentRating = n;
     document.querySelectorAll('#trainingRating .star').forEach((star, i) => {
@@ -2633,15 +2619,27 @@ function openTrophyModal() {
     openModal('trophyModal');
 }
 
+        
 function saveTrophy() {
     const playerId = document.getElementById('trophyPlayer').value;
     if (!playerId) { showToast('Velg en spiller'); return; }
     
     db.ref('trophies').push({
         playerId: playerId,
-        category: document.getEleme// ============================================
-// TRAINING TEMPLATES (continued)
+        category: document.getElementById('trophyCategory').value,
+        reason: document.getElementById('trophyReason').value.trim(),
+        date: document.getElementById('trophyDate').value,
+        awardedBy: currentUser.uid,
+        createdAt: Date.now()
+    });
+    
+    showToast('Pokal delt ut! 🏆');
+    closeModal('trophyModal');
+}
+
 // ============================================
+// TRAINING TEMPLATES
+// ============================================            
 const TRAINING_TEMPLATES = [
     {
         title: "Pasningsspill & Samarbeid",
@@ -2896,7 +2894,6 @@ function getAttendanceFromGrid(containerId) {
 // INIT ON LOAD
 // ============================================
 document.addEventListener('DOMContentLoaded', () => {
-    // Set default dates
     const today = getTodayStr();
     document.querySelectorAll('input[type="date"]').forEach(el => {
         if (!el.value) el.value = today;
@@ -2904,15 +2901,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
     </script>
 </body>
-</html>ntById('trophyCategory').value,
-        reason: document.getElementById('trophyReason').value.trim(),
-        date: document.getElementById('trophyDate').value,
-        awardedBy: currentUser.uid,
-        createdAt: Date.now()
-    });
-    
-    showToast('Pokal delt ut! 🏆');
-    closeModal('trophyModal');
-}
+</html>
 
     

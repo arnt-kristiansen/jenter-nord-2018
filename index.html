@@ -1,1212 +1,2220 @@
 <!DOCTYPE html>
-<html lang="no">
+<html lang="no" data-theme="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Nord Jenter 2018</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #0a1628;
-            color: #e2e8f0;
-            min-height: 100vh;
+        /* ===== CSS VARIABLES ===== */
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: #1a1a2e;
+            --bg-card-hover: #22223a;
+            --bg-input: #16162a;
+            --text-primary: #e8e8f0;
+            --text-secondary: #8888aa;
+            --text-muted: #555577;
+            --accent: #6c5ce7;
+            --accent-light: #a29bfe;
+            --accent-dark: #4834d4;
+            --accent-glow: rgba(108, 92, 231, 0.3);
+            --success: #00cec9;
+            --success-bg: rgba(0, 206, 201, 0.1);
+            --warning: #fdcb6e;
+            --warning-bg: rgba(253, 203, 110, 0.1);
+            --danger: #ff6b6b;
+            --danger-bg: rgba(255, 107, 107, 0.1);
+            --info: #74b9ff;
+            --info-bg: rgba(116, 185, 255, 0.1);
+            --border: rgba(255, 255, 255, 0.06);
+            --border-light: rgba(255, 255, 255, 0.1);
+            --shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.6);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --radius-xs: 6px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
+
+        /* ===== RESET & BASE ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            min-height: 100dvh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ===== ANIMATED BACKGROUND ===== */
+        .bg-gradient {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        .bg-gradient::before {
+            content: '';
+            position: absolute;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, var(--accent-glow), transparent 70%);
+            top: -200px; right: -200px;
+            animation: floatBg 20s ease-in-out infinite;
+        }
+        .bg-gradient::after {
+            content: '';
+            position: absolute;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(0, 206, 201, 0.15), transparent 70%);
+            bottom: -100px; left: -100px;
+            animation: floatBg2 25s ease-in-out infinite;
+        }
+        @keyframes floatBg {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(-100px, 100px) scale(1.1); }
+            66% { transform: translate(50px, -50px) scale(0.9); }
+        }
+        @keyframes floatBg2 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(100px, -80px) scale(1.2); }
+        }
+
+        /* ===== LOADING SCREEN ===== */
+        .loading-screen {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--bg-primary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+        .loading-screen.hidden { opacity: 0; visibility: hidden; }
+        .loading-logo {
+            font-size: 48px;
+            margin-bottom: 20px;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.7; }
+        }
+        .loading-spinner {
+            width: 40px; height: 40px;
+            border: 3px solid var(--border);
+            border-top: 3px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ===== TOAST NOTIFICATIONS ===== */
+        .toast-container {
+            position: fixed;
+            top: 20px; right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .toast {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-sm);
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: var(--shadow-lg);
+            animation: slideInRight 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(20px);
+            max-width: 360px;
+            font-size: 14px;
+        }
+        .toast.success { border-left: 3px solid var(--success); }
+        .toast.error { border-left: 3px solid var(--danger); }
+        .toast.info { border-left: 3px solid var(--info); }
+        .toast.exit { animation: slideOutRight 0.3s forwards; }
+        @keyframes slideInRight {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOutRight {
+            to { transform: translateX(100px); opacity: 0; }
+        }
+
+        /* ===== AUTH SCREEN ===== */
         .auth-container {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .auth-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 48px 40px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: var(--shadow-lg);
+            animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        @keyframes fadeInUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .auth-logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .auth-logo .icon { font-size: 56px; display: block; margin-bottom: 12px; }
+        .auth-logo h1 {
+            font-size: 24px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-light), var(--success));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .auth-logo p { color: var(--text-secondary); font-size: 14px; margin-top: 4px; }
+
+        .auth-tabs {
+            display: flex;
+            background: var(--bg-input);
+            border-radius: var(--radius-sm);
+            padding: 4px;
+            margin-bottom: 28px;
+        }
+        .auth-tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--text-secondary);
+            border: none;
+            background: none;
+        }
+        .auth-tab.active {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 2px 12px var(--accent-glow);
+        }
+
+        /* ===== FORM ELEMENTS ===== */
+        .form-group { margin-bottom: 18px; }
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-size: 15px;
+            font-family: var(--font);
+            transition: var(--transition);
+            outline: none;
+        }
+        .form-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+        .form-input::placeholder { color: var(--text-muted); }
+        textarea.form-input { resize: vertical; min-height: 80px; }
+        select.form-input {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238888aa' stroke-width='2'%3E%3Cpolyline points='6,9 12,15 18,9'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 40px;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 24px;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 600;
+            font-family: var(--font);
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(rgba(255,255,255,0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .btn:hover::after { opacity: 1; }
+        .btn:active { transform: scale(0.97); }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            color: white;
+            box-shadow: 0 4px 16px var(--accent-glow);
+            width: 100%;
+        }
+        .btn-primary:hover {
+            box-shadow: 0 6px 24px rgba(108, 92, 231, 0.5);
+            transform: translateY(-1px);
+        }
+        .btn-secondary {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+        .btn-secondary:hover { border-color: var(--accent); }
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #00b894);
+            color: white;
+        }
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #ee5a24);
+            color: white;
+        }
+        .btn-sm { padding: 8px 16px; font-size: 13px; }
+        .btn-icon {
+            width: 40px; height: 40px;
+            padding: 0;
+            border-radius: var(--radius-xs);
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-icon:hover { border-color: var(--accent); color: var(--accent); }
+
+        .forgot-link {
+            display: block;
+            text-align: center;
+            color: var(--accent-light);
+            font-size: 13px;
+            margin-top: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            background: none;
+            border: none;
+            font-family: var(--font);
+        }
+        .forgot-link:hover { color: var(--accent); }
+
+        /* ===== PENDING SCREEN ===== */
+        .pending-screen {
+            position: relative;
+            z-index: 1;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
-            background: linear-gradient(135deg, #0a1628 0%, #1a2a4a 100%);
+            text-align: center;
         }
-        .auth-box {
-            background: #111d35;
-            border-radius: 20px;
-            padding: 40px 30px;
-            width: 100%;
-            max-width: 400px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-            border: 1px solid rgba(255,255,255,0.05);
+        .pending-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 48px;
+            max-width: 440px;
+            animation: fadeInUp 0.6s;
         }
-        .auth-logo { text-align: center; margin-bottom: 30px; }
-        .auth-logo .icon { font-size: 48px; margin-bottom: 10px; }
-        .auth-logo h1 { font-size: 24px; color: #fff; margin-bottom: 5px; }
-        .auth-logo p { color: #64748b; font-size: 14px; }
-        .form-group { margin-bottom: 16px; }
-        .form-group label { display: block; margin-bottom: 6px; font-size: 14px; color: #94a3b8; }
-        .form-group input {
-            width: 100%;
-            padding: 12px 16px;
-            background: #0a1628;
-            border: 1px solid #1e3a5f;
-            border-radius: 10px;
-            color: #fff;
-            font-size: 16px;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-        .form-group input:focus { border-color: #3b82f6; }
-        .btn-primary {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            color: #fff;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(59,130,246,0.4); }
-        .auth-footer { text-align: center; margin-top: 20px; font-size: 14px; color: #64748b; }
-        .auth-footer a { color: #3b82f6; text-decoration: none; cursor: pointer; }
-        .auth-footer a:hover { text-decoration: underline; }
-        .error-msg {
-            background: rgba(239,68,68,0.15);
-            border: 1px solid rgba(239,68,68,0.3);
-            color: #fca5a5;
-            padding: 12px;
-            border-radius: 10px;
-            font-size: 13px;
-            margin-bottom: 16px;
-            display: none;
-            word-break: break-word;
-        }
-        .success-msg {
-            background: rgba(34,197,94,0.15);
-            border: 1px solid rgba(34,197,94,0.3);
-            color: #86efac;
-            padding: 12px;
-            border-radius: 10px;
-            font-size: 13px;
-            margin-bottom: 16px;
-            display: none;
+        .pending-box .icon { font-size: 64px; display: block; margin-bottom: 20px; }
+        .pending-box h2 { margin-bottom: 12px; }
+        .pending-box p { color: var(--text-secondary); margin-bottom: 24px; line-height: 1.6; }
+
+        /* ===== APP LAYOUT ===== */
+        .app-container {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* App styles */
-        .app-container { display: none; min-height: 100vh; }
+        /* ===== TOP BAR ===== */
         .top-bar {
-            background: #111d35;
-            padding: 12px 20px;
+            background: rgba(18, 18, 26, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
             position: sticky;
             top: 0;
             z-index: 100;
         }
-        .top-bar-left { display: flex; align-items: center; gap: 10px; }
-        .top-bar-left .icon { font-size: 24px; }
-        .top-bar-left h2 { font-size: 16px; color: #fff; }
-        .top-bar-right { display: flex; align-items: center; gap: 12px; }
-        .user-name { font-size: 12px; color: #94a3b8; }
-        .btn-logout {
-            padding: 6px 14px;
-            background: rgba(239,68,68,0.15);
-            color: #fca5a5;
-            border: 1px solid rgba(239,68,68,0.3);
-            border-radius: 8px;
-            font-size: 12px;
-            cursor: pointer;
+        .top-bar-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        .btn-logout:hover { background: rgba(239,68,68,0.25); }
+        .top-bar-title .icon { font-size: 24px; }
+        .top-bar-title h2 {
+            font-size: 16px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-light), var(--success));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .top-bar-actions { display: flex; gap: 8px; align-items: center; }
+        .user-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: var(--bg-input);
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        .user-badge .role {
+            background: var(--accent);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
 
-        .main-content { padding: 20px; padding-bottom: 80px; max-width: 600px; margin: 0 auto; }
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            padding-bottom: 100px;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+        }
 
-        /* Dashboard */
-        .stats-grid {
+        /* ===== PAGE ANIMATIONS ===== */
+        .page { display: none; animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .page.active { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== PAGE HEADER ===== */
+        .page-header {
+            margin-bottom: 24px;
+        }
+        .page-header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+        .page-header p { color: var(--text-secondary); font-size: 14px; }
+
+        /* ===== STAT CARDS (Dashboard) ===== */
+        .stat-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
             margin-bottom: 24px;
         }
         .stat-card {
-            background: #111d35;
-            border-radius: 14px;
-            padding: 16px;
-            border: 1px solid rgba(255,255,255,0.05);
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
         }
-        .stat-card .stat-icon { font-size: 24px; margin-bottom: 8px; }
-        .stat-card .stat-value { font-size: 28px; font-weight: 700; color: #fff; }
-        .stat-card .stat-label { font-size: 12px; color: #64748b; margin-top: 2px; }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--success));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .stat-card:hover::before { opacity: 1; }
+        .stat-card:hover { transform: translateY(-2px); border-color: var(--border-light); }
+        .stat-card .icon { font-size: 28px; margin-bottom: 10px; }
+        .stat-card .value {
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--text-primary), var(--accent-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .stat-card .label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 2px;
+        }
 
-        .section-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: #fff;
+        /* ===== CARDS ===== */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
             margin-bottom: 16px;
+            transition: var(--transition);
+        }
+        .card:hover { border-color: var(--border-light); }
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        .card-header h3 {
+            font-size: 16px;
+            font-weight: 700;
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        /* Trophy */
-        .trophy-card {
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
-            border-radius: 16px;
-            padding: 20px;
-            border: 1px solid rgba(255,215,0,0.2);
-            margin-bottom: 24px;
-            text-align: center;
-        }
-        .trophy-card .trophy-icon { font-size: 48px; margin-bottom: 8px; }
-        .trophy-card .trophy-name { font-size: 20px; font-weight: 700; color: #ffd700; }
-        .trophy-card .trophy-reason { font-size: 14px; color: #94a3b8; margin-top: 4px; }
-        .trophy-card .trophy-empty { color: #64748b; font-style: italic; }
-
-        /* Cards */
-        .card {
-            background: #111d35;
-            border-radius: 14px;
-            padding: 16px;
-            border: 1px solid rgba(255,255,255,0.05);
-            margin-bottom: 12px;
-        }
-        .card h3 { font-size: 16px; color: #fff; margin-bottom: 4px; }
-        .card p { font-size: 13px; color: #94a3b8; }
-
-        /* Player list */
-        .player-item {
+        /* ===== LISTS ===== */
+        .list-item {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding: 14px 16px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            margin-bottom: 8px;
+            transition: var(--transition);
         }
-        .player-item:last-child { border-bottom: none; }
-        .player-info { display: flex; align-items: center; gap: 10px; }
-        .player-avatar {
-            width: 36px; height: 36px;
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
+        .list-item:hover {
+            border-color: var(--accent);
+            transform: translateX(4px);
+        }
+        .list-item-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            min-width: 0;
+        }
+        .list-item-avatar {
+            width: 40px; height: 40px;
             border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 14px; font-weight: 600;
-        }
-        .player-name { font-size: 14px; color: #fff; }
-        .player-pos { font-size: 11px; color: #64748b; }
-
-        /* Match */
-        .match-score {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 16px;
-            padding: 16px;
+            font-size: 18px;
+            flex-shrink: 0;
         }
-        .match-team { text-align: center; flex: 1; }
-        .match-team-name { font-size: 14px; color: #fff; font-weight: 600; }
-        .match-vs { font-size: 24px; font-weight: 700; color: #3b82f6; }
-
-        /* Training */
-        .training-week {
-            background: #111d35;
-            border-radius: 14px;
-            padding: 16px;
-            border: 1px solid rgba(255,255,255,0.05);
-            margin-bottom: 12px;
+        .list-item-text h4 {
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-        .training-week h3 { font-size: 15px; color: #fff; margin-bottom: 8px; }
-        .training-drill { padding: 6px 0; font-size: 13px; color: #94a3b8; }
-        .attendance-btn {
-            margin-top: 8px;
-            padding: 8px 16px;
-            background: rgba(34,197,94,0.15);
-            color: #86efac;
-            border: 1px solid rgba(34,197,94,0.3);
-            border-radius: 8px;
+        .list-item-text span {
             font-size: 12px;
+            color: var(--text-secondary);
+        }
+        .list-item-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+        /* ===== BADGE ===== */
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .badge-accent { background: var(--accent-glow); color: var(--accent-light); }
+        .badge-success { background: var(--success-bg); color: var(--success); }
+        .badge-warning { background: var(--warning-bg); color: var(--warning); }
+        .badge-danger { background: var(--danger-bg); color: var(--danger); }
+        .badge-info { background: var(--info-bg); color: var(--info); }
+
+        /* ===== PROGRESS BAR ===== */
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--bg-input);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--success));
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ===== CHART ===== */
+        .chart-container {
+            position: relative;
+            padding: 20px 0;
+        }
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            height: 160px;
+            padding: 0 4px;
+        }
+        .bar-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            height: 100%;
+            justify-content: flex-end;
+        }
+        .bar {
+            width: 100%;
+            max-width: 40px;
+            border-radius: 6px 6px 2px 2px;
+            background: linear-gradient(180deg, var(--accent), var(--accent-dark));
+            transition: height 1s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            min-height: 4px;
+        }
+        .bar.win { background: linear-gradient(180deg, var(--success), #00b894); }
+        .bar.loss { background: linear-gradient(180deg, var(--danger), #ee5a24); }
+        .bar.draw { background: linear-gradient(180deg, var(--warning), #f39c12); }
+        .bar-label {
+            font-size: 10px;
+            color: var(--text-muted);
+            text-align: center;
+        }
+        .bar-value {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-secondary);
+        }
+
+        /* ===== ATTENDANCE GRID ===== */
+        .attendance-grid {
+            display: grid;
+            gap: 6px;
+        }
+        .attendance-row {
+            display: grid;
+            grid-template-columns: 120px 1fr auto;
+            gap: 12px;
+            align-items: center;
+            padding: 8px 0;
+        }
+        .attendance-name {
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .attendance-pct {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--success);
+            min-width: 40px;
+            text-align: right;
+        }
+
+        /* ===== CHAT ===== */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 220px);
+            max-height: 500px;
+        }
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .chat-msg {
+            max-width: 80%;
+            animation: fadeIn 0.3s;
+        }
+        .chat-msg.own { align-self: flex-end; }
+        .chat-msg.other { align-self: flex-start; }
+        .chat-bubble {
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 14px;
+            line-height: 1.5;
+            position: relative;
+        }
+        .chat-msg.own .chat-bubble {
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+        .chat-msg.other .chat-bubble {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-bottom-left-radius: 4px;
+        }
+        .chat-meta {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            padding: 0 4px;
+        }
+        .chat-msg.own .chat-meta { text-align: right; }
+        .chat-input-row {
+            display: flex;
+            gap: 10px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+        .chat-input-row .form-input { flex: 1; }
+
+        /* ===== DOCUMENTS ===== */
+        .doc-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            margin-bottom: 8px;
+            transition: var(--transition);
             cursor: pointer;
         }
+        .doc-item:hover {
+            border-color: var(--accent);
+            transform: translateX(4px);
+        }
+        .doc-icon {
+            width: 44px; height: 44px;
+            border-radius: var(--radius-xs);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+        .doc-icon.pdf { background: var(--danger-bg); }
+        .doc-icon.img { background: var(--info-bg); }
+        .doc-icon.doc { background: var(--accent-glow); }
+        .doc-icon.other { background: var(--warning-bg); }
+        .doc-info { flex: 1; min-width: 0; }
+        .doc-info h4 {
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .doc-info span { font-size: 12px; color: var(--text-secondary); }
 
-        /* Action buttons */
-        .action-buttons { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
-        .btn-action {
-            padding: 10px 18px;
-            border-radius: 10px;
+        .upload-area {
+            border: 2px dashed var(--border-light);
+            border-radius: var(--radius);
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-bottom: 20px;
+        }
+        .upload-area:hover {
+            border-color: var(--accent);
+            background: rgba(108, 92, 231, 0.05);
+        }
+        .upload-area .icon { font-size: 40px; margin-bottom: 10px; }
+        .upload-area p { color: var(--text-secondary); font-size: 14px; }
+        .upload-area input { display: none; }
+
+        /* ===== TABS ===== */
+        .tabs {
+            display: flex;
+            gap: 4px;
+            background: var(--bg-input);
+            border-radius: var(--radius-sm);
+            padding: 4px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .tab-btn {
+            flex: 1;
+            min-width: 0;
+            padding: 10px 12px;
+            text-align: center;
+            border-radius: 8px;
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
+            transition: var(--transition);
+            color: var(--text-secondary);
             border: none;
-            transition: transform 0.2s;
+            background: none;
+            font-family: var(--font);
+            white-space: nowrap;
         }
-        .btn-action:hover { transform: translateY(-1px); }
-        .btn-add { background: rgba(34,197,94,0.15); color: #86efac; border: 1px solid rgba(34,197,94,0.3); }
-        .btn-edit { background: rgba(59,130,246,0.15); color: #93c5fd; border: 1px solid rgba(59,130,246,0.3); }
-        .btn-danger { background: rgba(239,68,68,0.15); color: #fca5a5; border: 1px solid rgba(239,68,68,0.3); }
+        .tab-btn.active {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 2px 12px var(--accent-glow);
+        }
+        .tab-content { display: none; animation: fadeIn 0.3s; }
+        .tab-content.active { display: block; }
 
-        /* Modal */
+        /* ===== MODAL ===== */
         .modal-overlay {
-            display: none;
             position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.7);
-            z-index: 200;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            animation: fadeIn 0.2s;
+            display: none;
         }
         .modal-overlay.active { display: flex; }
         .modal {
-            background: #111d35;
-            border-radius: 16px;
-            padding: 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 32px;
             width: 100%;
-            max-width: 420px;
-            max-height: 80vh;
+            max-width: 480px;
+            max-height: 90vh;
             overflow-y: auto;
-            border: 1px solid rgba(255,255,255,0.1);
+            animation: modalIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .modal h3 { font-size: 18px; color: #fff; margin-bottom: 16px; }
-        .modal .form-group { margin-bottom: 12px; }
-        .modal-buttons { display: flex; gap: 8px; margin-top: 16px; }
-        .modal-buttons button { flex: 1; padding: 12px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; }
-        .modal-buttons .btn-save { background: #3b82f6; color: #fff; }
-        .modal-buttons .btn-cancel { background: rgba(255,255,255,0.1); color: #94a3b8; }
-
-        select {
-            width: 100%;
-            padding: 12px 16px;
-            background: #0a1628;
-            border: 1px solid #1e3a5f;
-            border-radius: 10px;
-            color: #fff;
-            font-size: 16px;
-            outline: none;
+        @keyframes modalIn {
+            from { transform: scale(0.9) translateY(20px); opacity: 0; }
+            to { transform: scale(1) translateY(0); opacity: 1; }
         }
+        .modal h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 24px;
+        }
+        .modal-actions .btn { flex: 1; }
 
-        /* Bottom nav */
+        /* ===== EMPTY STATE ===== */
+        .empty-state {
+            text-align: center;
+            padding: 48px 20px;
+            color: var(--text-secondary);
+        }
+        .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+        .empty-state h3 { font-size: 18px; color: var(--text-primary); margin-bottom: 8px; }
+        .empty-state p { font-size: 14px; }
+
+        /* ===== BOTTOM NAV ===== */
         .bottom-nav {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            background: #111d35;
-            border-top: 1px solid rgba(255,255,255,0.05);
+            background: rgba(18, 18, 26, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border);
             display: flex;
+            justify-content: space-around;
+            padding: 8px 4px;
+            padding-bottom: max(8px, env(safe-area-inset-bottom));
             z-index: 100;
-            padding-bottom: env(safe-area-inset-bottom);
         }
         .nav-item {
-            flex: 1;
-            padding: 8px 0;
-            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            padding: 6px 10px;
+            border-radius: var(--radius-sm);
             cursor: pointer;
-            transition: color 0.3s;
-            color: #64748b;
-            text-decoration: none;
+            transition: var(--transition);
+            color: var(--text-muted);
+            background: none;
+            border: none;
+            font-family: var(--font);
+            position: relative;
         }
-        .nav-item.active { color: #3b82f6; }
-        .nav-item .nav-icon { font-size: 20px; display: block; }
-        .nav-item .nav-label { font-size: 10px; margin-top: 2px; display: block; }
-
-        /* Coach settings */
-        .coach-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px;
-            background: rgba(255,255,255,0.03);
-            border-radius: 10px;
-            margin-bottom: 8px;
+        .nav-item .nav-icon { font-size: 22px; transition: var(--transition); }
+        .nav-item .nav-label { font-size: 10px; font-weight: 600; }
+        .nav-item.active {
+            color: var(--accent-light);
         }
-        .coach-item .coach-email { font-size: 14px; color: #fff; }
-        .coach-item .coach-role { font-size: 12px; color: #64748b; }
-        .badge {
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-        .badge-admin { background: rgba(255,215,0,0.15); color: #ffd700; }
-        .badge-coach { background: rgba(59,130,246,0.15); color: #93c5fd; }
-        .badge-pending { background: rgba(251,191,36,0.15); color: #fbbf24; }
-
-        /* Unauthorized */
-        .unauthorized-container {
-            display: none;
-            min-height: 100vh;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            background: linear-gradient(135deg, #0a1628 0%, #1a2a4a 100%);
-        }
-        .unauthorized-box {
-            text-align: center;
-            max-width: 400px;
-        }
-        .unauthorized-box .icon { font-size: 64px; margin-bottom: 16px; }
-        .unauthorized-box h2 { font-size: 22px; color: #fff; margin-bottom: 8px; }
-        .unauthorized-box p { color: #94a3b8; font-size: 14px; line-height: 1.6; margin-bottom: 20px; }
-
-        /* Attendance checkboxes */
-        .attendance-list { margin-top: 8px; }
-        .attendance-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 6px 0;
-        }
-        .attendance-item input[type="checkbox"] {
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
             width: 20px;
-            height: 20px;
-            accent-color: #3b82f6;
+            height: 3px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+        .nav-item:hover { color: var(--accent-light); }
+        .nav-item .nav-badge {
+            position: absolute;
+            top: 2px;
+            right: 4px;
+            width: 8px;
+            height: 8px;
+            background: var(--danger);
+            border-radius: 50%;
+            border: 2px solid var(--bg-primary);
         }
 
-        /* Score input */
-        .score-input {
-            width: 60px;
-            padding: 8px;
-            text-align: center;
-            background: #0a1628;
-            border: 1px solid #1e3a5f;
-            border-radius: 8px;
-            color: #fff;
-            font-size: 20px;
-            font-weight: 700;
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-light);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 480px) {
+            .auth-box { padding: 32px 24px; border-radius: 20px; }
+            .main-content { padding: 16px; padding-bottom: 90px; }
+            .page-header h1 { font-size: 24px; }
+            .stat-grid { gap: 10px; }
+            .stat-card { padding: 16px; }
+            .stat-card .value { font-size: 26px; }
+            .card { padding: 18px; }
+            .modal { padding: 24px; margin: 10px; border-radius: 20px; }
+            .chat-container { height: calc(100vh - 200px); max-height: none; }
+            .attendance-row { grid-template-columns: 90px 1fr auto; }
         }
 
-        .loading { text-align: center; padding: 40px; color: #64748b; }
+        /* ===== UTILITY ===== */
+        .hidden { display: none !important; }
+        .mt-2 { margin-top: 16px; }
+        .mb-2 { margin-bottom: 16px; }
+        .text-center { text-align: center; }
+        .flex-between { display: flex; align-items: center; justify-content: space-between; }
+        .gap-2 { gap: 16px; }
     </style>
 </head>
 <body>
+    <!-- ANIMATED BG -->
+    <div class="bg-gradient"></div>
 
-<!-- AUTH: Login -->
-<div class="auth-container" id="authContainer">
-    <div class="auth-box">
-        <div class="auth-logo">
-            <div class="icon">⚽</div>
-            <h1>Nord Jenter 2018</h1>
-            <p>Fotballklubb Nord — Karmøy</p>
-        </div>
-        <div class="error-msg" id="authError"></div>
-        <div class="success-msg" id="authSuccess"></div>
+    <!-- LOADING -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-logo">⚽</div>
+        <div class="loading-spinner"></div>
+    </div>
 
-        <!-- Login Form -->
-        <div id="loginForm">
-            <div class="form-group">
-                <label>E-post</label>
-                <input type="email" id="loginEmail" placeholder="din@epost.no">
-            </div>
-            <div class="form-group">
-                <label>Passord</label>
-                <input type="password" id="loginPassword" placeholder="Ditt passord">
-            </div>
-            <button onclick="handleLogin()" class="btn-primary">Logg inn</button>
+    <!-- TOAST -->
+    <div class="toast-container" id="toastContainer"></div>
 
-            <div class="auth-footer">
-                <a onclick="showForgotPassword()">Glemt passord?</a><br><br>
-                <a onclick="showRegister()">Opprett konto</a>
-            </div>
-        </div>
-
-        <!-- Register Form -->
-        <div id="registerForm" style="display:none;">
-            <div class="form-group">
-                <label>Fullt navn</label>
-                <input type="text" id="regName" placeholder="Ditt navn">
-            </div>
-            <div class="form-group">
-                <label>E-post</label>
-                <input type="email" id="regEmail" placeholder="din@epost.no">
-            </div>
-            <div class="form-group">
-                <label>Passord (minst 6 tegn)</label>
-                <input type="password" id="regPassword" placeholder="Velg passord">
-            </div>
-            <button class="btn-primary" onclick="handleRegister()">Opprett konto</button>
-            <div class="auth-footer">
-                <a onclick="showLogin()">Har allerede konto? Logg inn</a>
-            </div>
-        </div>
-
-        <!-- Forgot Password Form -->
-        <div id="forgotForm" style="display:none;">
-            <div class="form-group">
-                <label>E-post</label>
-                <input type="email" id="forgotEmail" placeholder="din@epost.no">
-            </div>
-            <button class="btn-primary" onclick="handleForgotPassword()">Send tilbakestillingslenke</button>
-            <div class="auth-footer">
-                <a onclick="showLogin()">Tilbake til innlogging</a>
+    <!-- ==================== AUTH SCREEN ==================== -->
+    <div id="authScreen" class="hidden">
+        <div class="auth-container">
+            <div class="auth-box">
+                <div class="auth-logo">
+                    <span class="icon">⚽</span>
+                    <h1>Nord Jenter 2018</h1>
+                    <p>Trenerportal</p>
+                </div>
+                <div class="auth-tabs">
+                    <button class="auth-tab active" onclick="showAuthTab('login')">Logg inn</button>
+                    <button class="auth-tab" onclick="showAuthTab('register')">Registrer</button>
+                </div>
+                <!-- LOGIN -->
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label>E-post</label>
+                        <input type="email" class="form-input" id="loginEmail" placeholder="din@epost.no" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Passord</label>
+                        <input type="password" class="form-input" id="loginPass" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Logg inn</button>
+                    <button type="button" class="forgot-link" onclick="handleForgotPassword()">Glemt passord?</button>
+                </form>
+                <!-- REGISTER -->
+                <form id="registerForm" class="hidden" onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label>Fullt navn</label>
+                        <input type="text" class="form-input" id="regName" placeholder="Ditt navn" required>
+                    </div>
+                    <div class="form-group">
+                        <label>E-post</label>
+                        <input type="email" class="form-input" id="regEmail" placeholder="din@epost.no" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Passord</label>
+                        <input type="password" class="form-input" id="regPass" placeholder="Minst 6 tegn" required minlength="6">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Opprett konto</button>
+                </form>
             </div>
         </div>
     </div>
-</div>
 
-<!-- UNAUTHORIZED -->
-<div class="unauthorized-container" id="unauthorizedContainer">
-    <div class="unauthorized-box">
-        <div class="icon">⏳</div>
-        <h2>Venter på godkjenning</h2>
-        <p>Din konto er opprettet, men en administrator må godkjenne tilgangen din før du kan bruke appen.</p>
-        <p>Kontakt hovedtreneren for å få tilgang.</p>
-        <button class="btn-primary" onclick="handleLogout()" style="max-width:200px;margin:0 auto;">Logg ut</button>
-    </div>
-</div>
-
-<!-- MAIN APP -->
-<div class="app-container" id="appContainer">
-    <div class="top-bar">
-        <div class="top-bar-left">
-            <span class="icon">⚽</span>
-            <h2>Nord J2018</h2>
-        </div>
-        <div class="top-bar-right">
-            <span class="user-name" id="userName"></span>
-            <button class="btn-logout" onclick="handleLogout()">Logg ut</button>
+    <!-- ==================== PENDING SCREEN ==================== -->
+    <div id="pendingScreen" class="hidden">
+        <div class="pending-screen">
+            <div class="pending-box">
+                <span class="icon">⏳</span>
+                <h2>Venter på godkjenning</h2>
+                <p>Kontoen din er opprettet! En admin må godkjenne tilgangen din før du kan bruke appen.</p>
+                <button class="btn btn-secondary" onclick="handleLogout()">Logg ut</button>
+            </div>
         </div>
     </div>
 
-    <div class="main-content" id="mainContent">
-        <!-- Content loads here -->
+    <!-- ==================== MAIN APP ==================== -->
+    <div id="appScreen" class="hidden">
+        <div class="app-container">
+            <!-- TOP BAR -->
+            <div class="top-bar">
+                <div class="top-bar-title">
+                    <span class="icon">⚽</span>
+                    <h2>Nord J2018</h2>
+                </div>
+                <div class="top-bar-actions">
+                    <div class="user-badge">
+                        <span id="userName">Trener</span>
+                        <span class="role" id="userRole">coach</span>
+                    </div>
+                    <button class="btn-icon" onclick="handleLogout()" title="Logg ut">🚪</button>
+                </div>
+            </div>
+
+            <!-- CONTENT -->
+            <div class="main-content">
+                <!-- ===== DASHBOARD ===== -->
+                <div class="page active" id="pageDashboard">
+                    <div class="page-header">
+                        <h1>Dashboard 📊</h1>
+                        <p>Oversikt over laget</p>
+                    </div>
+                    <div class="stat-grid">
+                        <div class="stat-card">
+                            <div class="icon">👥</div>
+                            <div class="value" id="statPlayers">0</div>
+                            <div class="label">Spillere</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="icon">⚽</div>
+                            <div class="value" id="statMatches">0</div>
+                            <div class="label">Kamper</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="icon">🏆</div>
+                            <div class="value" id="statWins">0</div>
+                            <div class="label">Seiere</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="icon">📈</div>
+                            <div class="value" id="statAttendance">0%</div>
+                            <div class="label">Oppmøte</div>
+                        </div>
+                    </div>
+
+                    <!-- Season Chart -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>📊 Sesongresultater</h3>
+                        </div>
+                        <div class="chart-container">
+                            <div class="bar-chart" id="seasonChart"></div>
+                        </div>
+                        <div style="display:flex;gap:16px;justify-content:center;margin-top:8px;">
+                            <span style="display:flex;align-items:center;gap:6px;font-size:12px;"><span style="width:12px;height:12px;border-radius:3px;background:var(--success);display:inline-block;"></span> Seier</span>
+                            <span style="display:flex;align-items:center;gap:6px;font-size:12px;"><span style="width:12px;height:12px;border-radius:3px;background:var(--warning);display:inline-block;"></span> Uavgjort</span>
+                            <span style="display:flex;align-items:center;gap:6px;font-size:12px;"><span style="width:12px;height:12px;border-radius:3px;background:var(--danger);display:inline-block;"></span> Tap</span>
+                        </div>
+                    </div>
+
+                    <!-- Player of the Week -->
+                    <div class="card" id="trophyCard">
+                        <div class="card-header">
+                            <h3>⭐ Ukens spiller</h3>
+                            <button class="btn btn-sm btn-secondary" onclick="openTrophyModal()">Endre</button>
+                        </div>
+                        <div id="trophyContent" class="text-center" style="padding:20px;">
+                            <p style="color:var(--text-secondary);">Ingen valgt ennå</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== PLAYERS ===== -->
+                <div class="page" id="pagePlayers">
+                    <div class="page-header">
+                        <div class="flex-between">
+                            <div>
+                                <h1>Spillere ⚽</h1>
+                                <p>Administrer spillertroppen</p>
+                            </div>
+                            <button class="btn btn-sm btn-primary" onclick="openPlayerModal()">+ Legg til</button>
+                        </div>
+                    </div>
+                    <div id="playersList"></div>
+                </div>
+
+                <!-- ===== TRAINING ===== -->
+                <div class="page" id="pageTraining">
+                    <div class="page-header">
+                        <div class="flex-between">
+                            <div>
+                                <h1>Trening 🏃</h1>
+                                <p>Ukeplaner og oppmøte</p>
+                            </div>
+                            <button class="btn btn-sm btn-primary" onclick="openTrainingModal()">+ Ny økt</button>
+                        </div>
+                    </div>
+                    <div class="tabs">
+                        <button class="tab-btn active" onclick="showTrainingTab('plans')">Treningsøkter</button>
+                        <button class="tab-btn" onclick="showTrainingTab('attendance')">Oppmøte</button>
+                    </div>
+                    <div class="tab-content active" id="tabPlans">
+                        <div id="trainingList"></div>
+                    </div>
+                    <div class="tab-content" id="tabAttendance">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>📋 Oppmøteoversikt</h3>
+                            </div>
+                            <div id="attendanceOverview"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== MATCHES ===== -->
+                <div class="page" id="pageMatches">
+                    <div class="page-header">
+                        <div class="flex-between">
+                            <div>
+                                <h1>Kamper 🏟️</h1>
+                                <p>Resultater og statistikk</p>
+                            </div>
+                            <button class="btn btn-sm btn-primary" onclick="openMatchModal()">+ Ny kamp</button>
+                        </div>
+                    </div>
+                    <div id="matchesList"></div>
+                </div>
+
+                <!-- ===== CHAT ===== -->
+                <div class="page" id="pageChat">
+                    <div class="page-header">
+                        <h1>Meldinger 💬</h1>
+                        <p>Chat mellom trenere</p>
+                    </div>
+                    <div class="card">
+                        <div class="chat-container">
+                            <div class="chat-messages" id="chatMessages"></div>
+                            <div class="chat-input-row">
+                                <input type="text" class="form-input" id="chatInput" placeholder="Skriv en melding..." onkeydown="if(event.key==='Enter')sendMessage()">
+                                <button class="btn btn-primary" style="width:auto;" onclick="sendMessage()">📤</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== DOCUMENTS ===== -->
+                <div class="page" id="pageDocs">
+                    <div class="page-header">
+                        <h1>Dokumenter 📁</h1>
+                        <p>Laginfo og filer</p>
+                    </div>
+                    <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                        <div class="icon">📤</div>
+                        <p>Klikk for å laste opp dokument</p>
+                        <p style="font-size:12px;color:var(--text-muted);margin-top:4px;">Maks 5 MB — lagres som lenke/tekst</p>
+                        <input type="file" id="fileInput" onchange="handleFileUpload(event)">
+                    </div>
+                    <div id="docsList"></div>
+                </div>
+
+                <!-- ===== SETTINGS ===== -->
+                <div class="page" id="pageSettings">
+                    <div class="page-header">
+                        <h1>Innstillinger ⚙️</h1>
+                        <p>Administrer teamet</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>👥 Trenere</h3>
+                        </div>
+                        <div id="coachesList"></div>
+                    </div>
+                    <div class="card" id="inviteCard">
+                        <div class="card-header">
+                            <h3>📧 Inviter trener</h3>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" class="form-input" id="inviteEmail" placeholder="trener@epost.no">
+                        </div>
+                        <button class="btn btn-primary" style="width:auto;" onclick="sendInvite()">Send invitasjon</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BOTTOM NAV -->
+            <nav class="bottom-nav">
+                <button class="nav-item active" onclick="navigateTo('Dashboard')">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-label">Hjem</span>
+                </button>
+                <button class="nav-item" onclick="navigateTo('Players')">
+                    <span class="nav-icon">⚽</span>
+                    <span class="nav-label">Spillere</span>
+                </button>
+                <button class="nav-item" onclick="navigateTo('Training')">
+                    <span class="nav-icon">🏃</span>
+                    <span class="nav-label">Trening</span>
+                </button>
+                <button class="nav-item" onclick="navigateTo('Matches')">
+                    <span class="nav-icon">🏟️</span>
+                    <span class="nav-label">Kamper</span>
+                </button>
+                <button class="nav-item" onclick="navigateTo('Chat')">
+                    <span class="nav-icon">💬</span>
+                    <span class="nav-label">Chat</span>
+                    <span class="nav-badge hidden" id="chatBadge"></span>
+                </button>
+                <button class="nav-item" onclick="navigateTo('Docs')">
+                    <span class="nav-icon">📁</span>
+                    <span class="nav-label">Filer</span>
+                </button>
+                <button class="nav-item" onclick="navigateTo('Settings')">
+                    <span class="nav-icon">⚙️</span>
+                    <span class="nav-label">Innstill.</span>
+                </button>
+            </nav>
+        </div>
     </div>
 
-    <div class="bottom-nav">
-        <a class="nav-item active" onclick="navigate('dashboard')" id="nav-dashboard">
-            <span class="nav-icon">📊</span>
-            <span class="nav-label">Oversikt</span>
-        </a>
-        <a class="nav-item" onclick="navigate('players')" id="nav-players">
-            <span class="nav-icon">👥</span>
-            <span class="nav-label">Spillere</span>
-        </a>
-        <a class="nav-item" onclick="navigate('training')" id="nav-training">
-            <span class="nav-icon">🏋️</span>
-            <span class="nav-label">Trening</span>
-        </a>
-        <a class="nav-item" onclick="navigate('matches')" id="nav-matches">
-            <span class="nav-icon">🏟️</span>
-            <span class="nav-label">Kamper</span>
-        </a>
-        <a class="nav-item" onclick="navigate('settings')" id="nav-settings">
-            <span class="nav-icon">⚙️</span>
-            <span class="nav-label">Innst.</span>
-        </a>
+    <!-- ==================== MODALS ==================== -->
+    <!-- Player Modal -->
+    <div class="modal-overlay" id="playerModal">
+        <div class="modal">
+            <h3>⚽ <span id="playerModalTitle">Legg til spiller</span></h3>
+            <div class="form-group">
+                <label>Navn</label>
+                <input type="text" class="form-input" id="playerName" placeholder="Spillerens navn">
+            </div>
+            <div class="form-group">
+                <label>Posisjon</label>
+                <select class="form-input" id="playerPosition">
+                    <option value="Keeper">Keeper</option>
+                    <option value="Forsvar">Forsvar</option>
+                    <option value="Midtbane">Midtbane</option>
+                    <option value="Angrep">Angrep</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Fødselsdato</label>
+                <input type="date" class="form-input" id="playerBirth">
+            </div>
+            <div class="form-group">
+                <label>Foresattes telefon</label>
+                <input type="tel" class="form-input" id="playerPhone" placeholder="Telefonnummer">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal('playerModal')">Avbryt</button>
+                <button class="btn btn-primary" onclick="savePlayer()">Lagre</button>
+            </div>
+        </div>
     </div>
-</div>
 
-<!-- Modal -->
-<div class="modal-overlay" id="modalOverlay">
-    <div class="modal" id="modalContent"></div>
-</div>
+    <!-- Training Modal -->
+    <div class="modal-overlay" id="trainingModal">
+        <div class="modal">
+            <h3>🏃 <span id="trainingModalTitle">Ny treningsøkt</span></h3>
+            <div class="form-group">
+                <label>Dato</label>
+                <input type="date" class="form-input" id="trainingDate">
+            </div>
+            <div class="form-group">
+                <label>Tid</label>
+                <input type="time" class="form-input" id="trainingTime" value="17:00">
+            </div>
+            <div class="form-group">
+                <label>Fokusområde</label>
+                <input type="text" class="form-input" id="trainingFocus" placeholder="F.eks. Pasninger, Avslutninger">
+            </div>
+            <div class="form-group">
+                <label>Notater</label>
+                <textarea class="form-input" id="trainingNotes" placeholder="Øvelser, plan etc."></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal('trainingModal')">Avbryt</button>
+                <button class="btn btn-primary" onclick="saveTraining()">Lagre</button>
+            </div>
+        </div>
+    </div>
 
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <!-- Match Modal -->
+    <div class="modal-overlay" id="matchModal">
+        <div class="modal">
+            <h3>🏟️ <span id="matchModalTitle">Ny kamp</span></h3>
+            <div class="form-group">
+                <label>Dato</label>
+                <input type="date" class="form-input" id="matchDate">
+            </div>
+            <div class="form-group">
+                <label>Motstander</label>
+                <input type="text" class="form-input" id="matchOpponent" placeholder="Motstanderlag">
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <div class="form-group">
+                    <label>Mål for</label>
+                    <input type="number" class="form-input" id="matchGoalsFor" value="0" min="0">
+                </div>
+                <div class="form-group">
+                    <label>Mål mot</label>
+                    <input type="number" class="form-input" id="matchGoalsAgainst" value="0" min="0">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Notater</label>
+                <textarea class="form-input" id="matchNotes" placeholder="Kampoppsummering"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal('matchModal')">Avbryt</button>
+                <button class="btn btn-primary" onclick="saveMatch()">Lagre</button>
+            </div>
+        </div>
+    </div>
 
-<script>
-// Firebase config
-var firebaseConfig = {
-    apiKey: "AIzaSyCUI8ojxbVcD_R1Vt-wKxU0iE2XCHhqODk",
-    authDomain: "j2018-nord.firebaseapp.com",
-    databaseURL: "https://j2018-nord-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "j2018-nord",
-    storageBucket: "j2018-nord.firebasestorage.app",
-    messagingSenderId: "778742708923",
-    appId: "1:778742708923:web:998b3acbd86afea695079e"
-};
+    <!-- Trophy Modal -->
+    <div class="modal-overlay" id="trophyModal">
+        <div class="modal">
+            <h3>⭐ Velg ukens spiller</h3>
+            <div class="form-group">
+                <label>Spiller</label>
+                <select class="form-input" id="trophyPlayer"></select>
+            </div>
+            <div class="form-group">
+                <label>Begrunnelse</label>
+                <textarea class="form-input" id="trophyReason" placeholder="Hvorfor denne spilleren?"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal('trophyModal')">Avbryt</button>
+                <button class="btn btn-primary" onclick="saveTrophy()">Lagre</button>
+            </div>
+        </div>
+    </div>
 
-firebase.initializeApp(firebaseConfig);
-var auth = firebase.auth();
-var db = firebase.database();
-var currentUser = null;
-var currentUserData = null;
-var currentPage = 'dashboard';
-var isAdmin = false;
+    <!-- Attendance Modal -->
+    <div class="modal-overlay" id="attendanceModal">
+        <div class="modal">
+            <h3>📋 Registrer oppmøte</h3>
+            <p style="color:var(--text-secondary);margin-bottom:16px;" id="attendanceTitle">Trening</p>
+            <div id="attendanceCheckboxes"></div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal('attendanceModal')">Avbryt</button>
+                <button class="btn btn-primary" onclick="saveAttendance()">Lagre</button>
+            </div>
+        </div>
+    </div>
 
-// Show/hide auth forms
-function showLogin() {
-    document.getElementById('loginForm').style.display = 'block';
-    document.getElementById('registerForm').style.display = 'none';
-    document.getElementById('forgotForm').style.display = 'none';
-    hideMessages();
-}
+    <!-- ==================== FIREBASE SDK ==================== -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-function showRegister() {
-    document.getElementById('loginForm').style.display = 'none';
-    document.getElementById('registerForm').style.display = 'block';
-    document.getElementById('forgotForm').style.display = 'none';
-    hideMessages();
-}
+    <script>
+    // ===== FIREBASE CONFIG =====
+    const firebaseConfig = {
+        apiKey: "AIzaSyBBJtMFGSrmfVBg20YpNLSnWKz0UoBVYdY",
+        authDomain: "j2018-nord.firebaseapp.com",
+        databaseURL: "https://j2018-nord-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "j2018-nord",
+        storageBucket: "j2018-nord.firebasestorage.app",
+        messagingSenderId: "778742708923",
+        appId: "1:778742708923:web:998b3acbd86afea695079e"
+    };
 
-function showForgotPassword() {
-    document.getElementById('loginForm').style.display = 'none';
-    document.getElementById('registerForm').style.display = 'none';
-    document.getElementById('forgotForm').style.display = 'block';
-    hideMessages();
-}
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.database();
+    const TEAM_PATH = 'teams/j2018';
 
-function hideMessages() {
-    document.getElementById('authError').style.display = 'none';
-    document.getElementById('authSuccess').style.display = 'none';
-}
+    // ===== APP STATE =====
+    let currentUser = null;
+    let currentRole = null;
+    let currentUserName = '';
+    let currentPage = 'Dashboard';
+    let editingId = null;
+    let attendanceTrainingId = null;
+    let playersCache = {};
+    let lastChatTimestamp = 0;
 
-function showError(msg) {
-    var el = document.getElementById('authError');
-    el.textContent = msg;
-    el.style.display = 'block';
-    document.getElementById('authSuccess').style.display = 'none';
-}
+    // ===== HELPERS =====
+    function ref(path) { return db.ref(`${TEAM_PATH}/${path}`); }
 
-function showSuccess(msg) {
-    var el = document.getElementById('authSuccess');
-    el.textContent = msg;
-    el.style.display = 'block';
-    document.getElementById('authError').style.display = 'none';
-}
-
-function handleLogin() {
-    var email = document.getElementById('loginEmail').value.trim();
-    var password = document.getElementById('loginPassword').value;
-    hideMessages();
-
-    if (!email || !password) {
-        showError('Fyll inn e-post og passord');
-        return;
+    function showToast(message, type = 'info') {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        const icons = { success: '✅', error: '❌', info: 'ℹ️' };
+        toast.innerHTML = `<span>${icons[type] || 'ℹ️'}</span><span>${message}</span>`;
+        container.appendChild(toast);
+        setTimeout(() => {
+            toast.classList.add('exit');
+            setTimeout(() => toast.remove(), 300);
+        }, 3500);
     }
 
-    showError('Logger inn... vennligst vent');
+    function openModal(id) { document.getElementById(id).classList.add('active'); }
+    function closeModal(id) {
+        document.getElementById(id).classList.remove('active');
+        editingId = null;
+    }
 
-    auth.signInWithEmailAndPassword(email, password)
-        .catch(function(error) {
-            showError('Login feilet: ' + error.code + ' — ' + error.message);
+    function formatDate(d) {
+        if (!d) return '';
+        const date = new Date(d);
+        return date.toLocaleDateString('nb-NO', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    function positionEmoji(pos) {
+        const map = { Keeper: '🧤', Forsvar: '🛡️', Midtbane: '🎯', Angrep: '⚡' };
+        return map[pos] || '⚽';
+    }
+
+    // ===== AUTH TABS =====
+    function showAuthTab(tab) {
+        document.querySelectorAll('.auth-tab').forEach((t, i) => {
+            t.classList.toggle('active', (tab === 'login' && i === 0) || (tab === 'register' && i === 1));
         });
-}
-
-function handleRegister() {
-    var name = document.getElementById('regName').value.trim();
-    var email = document.getElementById('regEmail').value.trim();
-    var password = document.getElementById('regPassword').value;
-    hideMessages();
-
-    if (!name || !email || !password) {
-        showError('Fyll inn alle feltene');
-        return;
-    }
-    if (password.length < 6) {
-        showError('Passordet må være minst 6 tegn');
-        return;
+        document.getElementById('loginForm').classList.toggle('hidden', tab !== 'login');
+        document.getElementById('registerForm').classList.toggle('hidden', tab !== 'register');
     }
 
-    showError('');
-    document.getElementById('authError').style.display = 'none';
-
-    auth.createUserWithEmailAndPassword(email, password)
-        .then(function(result) {
-            // Now we are logged in, so we can read/write the database
-            return db.ref('teams/j2018/coaches').once('value')
-                .then(function(snapshot) {
-                    var isFirstUser = !snapshot.exists();
-                    var userData = {
-                        name: name,
-                        email: email,
-                        role: isFirstUser ? 'admin' : 'pending',
-                        createdAt: firebase.database.ServerValue.TIMESTAMP
-                    };
-                    return db.ref('teams/j2018/coaches/' + result.user.uid).set(userData);
-                });
-        })
-        .catch(function(error) {
-            console.error('Register error:', error);
-            showError('Registrering feilet: ' + error.code + ' — ' + error.message);
-        });
-}
-
-function handleForgotPassword() {
-    var email = document.getElementById('forgotEmail').value.trim();
-    hideMessages();
-
-    if (!email) {
-        showError('Fyll inn e-postadressen din');
-        return;
+    // ===== AUTH HANDLERS =====
+    async function handleLogin(e) {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value;
+        const pass = document.getElementById('loginPass').value;
+        try {
+            await auth.signInWithEmailAndPassword(email, pass);
+            showToast('Logget inn!', 'success');
+        } catch (err) {
+            showToast('Feil: ' + err.message, 'error');
+        }
     }
 
-    auth.sendPasswordResetEmail(email)
-        .then(function() {
-            showSuccess('Tilbakestillingslenke er sendt til ' + email);
-        })
-        .catch(function(error) {
-            console.error('Reset error:', error);
-            showError('Feil: ' + error.code + ' — ' + error.message);
-        });
-}
-
-function handleLogout() {
-    auth.signOut();
-}
-
-// AUTH STATE
-auth.onAuthStateChanged(function(user) {
-    if (user) {
-        currentUser = user;
-        db.ref('teams/j2018/coaches/' + user.uid).once('value')
-            .then(function(snapshot) {
-                if (!snapshot.exists()) {
-                    // Bruker finnes i Auth men ikke i databasen — opprett automatisk
-                    var isFirstUser = false;
-                    return db.ref('teams/j2018/coaches').once('value')
-                        .then(function(coachesSnap) {
-                            isFirstUser = !coachesSnap.exists();
-                            var userData = {
-                                name: user.displayName || user.email.split('@')[0],
-                                email: user.email,
-                                role: isFirstUser ? 'admin' : 'pending',
-                                createdAt: firebase.database.ServerValue.TIMESTAMP
-                            };
-                            return db.ref('teams/j2018/coaches/' + user.uid).set(userData);
-                        })
-                        .then(function() {
-                            // Nå starter vi lytteren
-                            startUserListener(user.uid);
-                        });
-                } else {
-                    // Brukerdata finnes allerede
-                    startUserListener(user.uid);
-                }
-            })
-            .catch(function(error) {
-                console.error('Auth state error:', error);
-                alert('Database feil: ' + error.message);
+    async function handleRegister(e) {
+        e.preventDefault();
+        const name = document.getElementById('regName').value;
+        const email = document.getElementById('regEmail').value;
+        const pass = document.getElementById('regPass').value;
+        try {
+            const cred = await auth.createUserWithEmailAndPassword(email, pass);
+            // Check if first user
+            const coachesSnap = await ref('coaches').once('value');
+            const role = coachesSnap.exists() ? 'pending' : 'admin';
+            await ref(`coaches/${cred.user.uid}`).set({
+                name: name,
+                email: email,
+                role: role,
+                joined: Date.now()
             });
-    } else {
-        currentUser = null;
-        currentUserData = null;
-        showAuth();
+            showToast(role === 'admin' ? 'Admin-konto opprettet!' : 'Konto opprettet — venter på godkjenning', 'success');
+        } catch (err) {
+            showToast('Feil: ' + err.message, 'error');
+        }
     }
-});
 
-function startUserListener(uid) {
-    db.ref('teams/j2018/coaches/' + uid).on('value', function(snapshot) {
-        currentUserData = snapshot.val();
-        if (!currentUserData) {
-            showUnauthorized();
+    async function handleForgotPassword() {
+        const email = document.getElementById('loginEmail').value;
+        if (!email) { showToast('Skriv inn e-post først', 'error'); return; }
+        try {
+            await auth.sendPasswordResetEmail(email);
+            showToast('Tilbakestillingslenke sendt!', 'success');
+        } catch (err) {
+            showToast('Feil: ' + err.message, 'error');
+        }
+    }
+
+    function handleLogout() {
+        auth.signOut();
+        showToast('Logget ut', 'info');
+    }
+
+    // ===== AUTH STATE =====
+    auth.onAuthStateChanged(async (user) => {
+        document.getElementById('loadingScreen').classList.add('hidden');
+        if (!user) {
+            currentUser = null;
+            showScreen('auth');
             return;
         }
-        if (currentUserData.role === 'pending') {
-            showUnauthorized();
-            return;
-        }
-        isAdmin = currentUserData.role === 'admin';
-        showApp();
-    });
-}
-
-function showAuth() {
-    document.getElementById('authContainer').style.display = 'flex';
-    document.getElementById('appContainer').style.display = 'none';
-    document.getElementById('unauthorizedContainer').style.display = 'none';
-}
-
-function showApp() {
-    document.getElementById('authContainer').style.display = 'none';
-    document.getElementById('appContainer').style.display = 'block';
-    document.getElementById('unauthorizedContainer').style.display = 'none';
-    document.getElementById('userName').textContent = currentUserData.name || '';
-    navigate(currentPage);
-}
-
-function showUnauthorized() {
-    document.getElementById('authContainer').style.display = 'none';
-    document.getElementById('appContainer').style.display = 'none';
-    document.getElementById('unauthorizedContainer').style.display = 'flex';
-}
-
-// NAVIGATION
-function navigate(page) {
-    currentPage = page;
-    var navItems = document.querySelectorAll('.nav-item');
-    for (var i = 0; i < navItems.length; i++) {
-        navItems[i].classList.remove('active');
-    }
-    var activeNav = document.getElementById('nav-' + page);
-    if (activeNav) activeNav.classList.add('active');
-
-    if (page === 'dashboard') loadDashboard();
-    else if (page === 'players') loadPlayers();
-    else if (page === 'training') loadTraining();
-    else if (page === 'matches') loadMatches();
-    else if (page === 'settings') loadSettings();
-}
-
-// DASHBOARD
-function loadDashboard() {
-    var content = document.getElementById('mainContent');
-    content.innerHTML = '<div class="loading">Laster...</div>';
-
-    var playersPromise = db.ref('teams/j2018/players').once('value');
-    var matchesPromise = db.ref('teams/j2018/matches').once('value');
-    var trophyPromise = db.ref('teams/j2018/trophy').once('value');
-
-    Promise.all([playersPromise, matchesPromise, trophyPromise])
-        .then(function(results) {
-            var playersSnap = results[0];
-            var matchesSnap = results[1];
-            var trophySnap = results[2];
-
-            var playerCount = playersSnap.exists() ? Object.keys(playersSnap.val()).length : 0;
-            var matches = matchesSnap.val() || {};
-            var matchCount = Object.keys(matches).length;
-            var wins = 0;
-            var goals = 0;
-
-            var matchKeys = Object.keys(matches);
-            for (var i = 0; i < matchKeys.length; i++) {
-                var m = matches[matchKeys[i]];
-                var ours = parseInt(m.goalsFor) || 0;
-                var theirs = parseInt(m.goalsAgainst) || 0;
-                goals += ours;
-                if (ours > theirs) wins++;
+        currentUser = user;
+        try {
+            const snap = await ref(`coaches/${user.uid}`).once('value');
+            if (!snap.exists()) {
+                showScreen('pending');
+                return;
             }
+            const data = snap.val();
+            currentRole = data.role;
+            currentUserName = data.name || 'Trener';
+            if (currentRole === 'pending') {
+                showScreen('pending');
+                return;
+            }
+            document.getElementById('userName').textContent = currentUserName;
+            document.getElementById('userRole').textContent = currentRole;
+            showScreen('app');
+            initApp();
+        } catch (err) {
+            console.error(err);
+            showToast('Feil ved lasting', 'error');
+        }
+    });
 
-            var trophy = trophySnap.val();
-            var trophyHtml = '';
-            if (trophy && trophy.name) {
-                trophyHtml = '<div class="trophy-card">' +
-                    '<div class="trophy-icon">🏆</div>' +
-                    '<div class="trophy-name">' + trophy.name + '</div>' +
-                    '<div class="trophy-reason">' + (trophy.reason || '') + '</div>' +
-                    '</div>';
+    function showScreen(screen) {
+        document.getElementById('authScreen').classList.toggle('hidden', screen !== 'auth');
+        document.getElementById('pendingScreen').classList.toggle('hidden', screen !== 'pending');
+        document.getElementById('appScreen').classList.toggle('hidden', screen !== 'app');
+    }
+
+    // ===== NAVIGATION =====
+    function navigateTo(page) {
+        currentPage = page;
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(`page${page}`).classList.add('active');
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+    }
+
+    // ===== INIT APP =====
+    function initApp() {
+        loadPlayers();
+        loadTraining();
+        loadMatches();
+        loadTrophy();
+        loadCoaches();
+        loadChat();
+        loadDocs();
+    }
+
+    // ===== PLAYERS =====
+    function loadPlayers() {
+        ref('players').on('value', (snap) => {
+            const data = snap.val() || {};
+            playersCache = data;
+            renderPlayers(data);
+            document.getElementById('statPlayers').textContent = Object.keys(data).length;
+            updateAttendanceOverview();
+        });
+    }
+
+    function renderPlayers(data) {
+        const container = document.getElementById('playersList');
+        const entries = Object.entries(data);
+        if (entries.length === 0) {
+            container.innerHTML = `<div class="empty-state"><div class="icon">⚽</div><h3>Ingen spillere ennå</h3><p>Legg til din første spiller!</p></div>`;
+            return;
+        }
+        container.innerHTML = entries.map(([id, p]) => `
+            <div class="list-item">
+                <div class="list-item-info">
+                    <div class="list-item-avatar">${positionEmoji(p.position)}</div>
+                    <div class="list-item-text">
+                        <h4>${p.name}</h4>
+                        <span>${p.position}${p.birth ? ' • ' + formatDate(p.birth) : ''}</span>
+                    </div>
+                </div>
+                <div class="list-item-actions">
+                    <button class="btn-icon" onclick="editPlayer('${id}')" title="Rediger">✏️</button>
+                    <button class="btn-icon" onclick="deletePlayer('${id}')" title="Slett">🗑️</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function openPlayerModal(id) {
+        editingId = id || null;
+        document.getElementById('playerModalTitle').textContent = id ? 'Rediger spiller' : 'Legg til spiller';
+        if (id && playersCache[id]) {
+            const p = playersCache[id];
+            document.getElementById('playerName').value = p.name || '';
+            document.getElementById('playerPosition').value = p.position || 'Midtbane';
+            document.getElementById('playerBirth').value = p.birth || '';
+            document.getElementById('playerPhone').value = p.phone || '';
+        } else {
+            document.getElementById('playerName').value = '';
+            document.getElementById('playerPosition').value = 'Midtbane';
+            document.getElementById('playerBirth').value = '';
+            document.getElementById('playerPhone').value = '';
+        }
+        openModal('playerModal');
+    }
+
+    function editPlayer(id) { openPlayerModal(id); }
+
+    async function savePlayer() {
+        const name = document.getElementById('playerName').value.trim();
+        if (!name) { showToast('Skriv inn navn', 'error'); return; }
+        const data = {
+            name: name,
+            position: document.getElementById('playerPosition').value,
+            birth: document.getElementById('playerBirth').value,
+            phone: document.getElementById('playerPhone').value
+        };
+        try {
+            if (editingId) {
+                await ref(`players/${editingId}`).update(data);
+                showToast('Spiller oppdatert!', 'success');
             } else {
-                trophyHtml = '<div class="trophy-card">' +
-                    '<div class="trophy-icon">🏆</div>' +
-                    '<div class="trophy-empty">Ingen ukens spiller valgt ennå</div>' +
-                    '</div>';
+                await ref('players').push(data);
+                showToast('Spiller lagt til!', 'success');
             }
+            closeModal('playerModal');
+        } catch (err) {
+            showToast('Feil: ' + err.message, 'error');
+        }
+    }
 
-            content.innerHTML =
-                '<div class="section-title">📊 Oversikt</div>' +
-                '<div class="stats-grid">' +
-                    '<div class="stat-card"><div class="stat-icon">👥</div><div class="stat-value">' + playerCount + '</div><div class="stat-label">Spillere</div></div>' +
-                    '<div class="stat-card"><div class="stat-icon">🏟️</div><div class="stat-value">' + matchCount + '</div><div class="stat-label">Kamper</div></div>' +
-                    '<div class="stat-card"><div class="stat-icon">🏆</div><div class="stat-value">' + wins + '</div><div class="stat-label">Seiere</div></div>' +
-                    '<div class="stat-card"><div class="stat-icon">⚽</div><div class="stat-value">' + goals + '</div><div class="stat-label">Mål</div></div>' +
-                '</div>' +
-                '<div class="section-title">🏆 Ukens Spiller</div>' +
-                trophyHtml +
-                (isAdmin ? '<button class="btn-action btn-edit" onclick="showTrophyModal()">Velg ukens spiller</button>' : '');
+    async function deletePlayer(id) {
+        if (!confirm('Slett denne spilleren?')) return;
+        try {
+            await ref(`players/${id}`).remove();
+            showToast('Spiller slettet', 'info');
+        } catch (err) {
+            showToast('Feil: ' + err.message, 'error');
+        }
+    }
+
+    // ===== TRAINING =====
+    function loadTraining() {
+        ref('training').orderByChild('date').on('value', (snap) => {
+            const data = snap.val() || {};
+            renderTraining(data);
         });
-}
-
-// PLAYERS
-function loadPlayers() {
-    var content = document.getElementById('mainContent');
-    content.innerHTML = '<div class="loading">Laster...</div>';
-
-    db.ref('teams/j2018/players').on('value', function(snapshot) {
-        var players = snapshot.val() || {};
-        var keys = Object.keys(players);
-
-        var html = '<div class="section-title">👥 Spillere (' + keys.length + ')</div>';
-
-        if (isAdmin) {
-            html += '<div class="action-buttons"><button class="btn-action btn-add" onclick="showAddPlayerModal()">+ Legg til spiller</button></div>';
-        }
-
-        html += '<div class="card">';
-        if (keys.length === 0) {
-            html += '<p style="text-align:center;padding:20px;">Ingen spillere lagt til ennå</p>';
-        }
-        for (var i = 0; i < keys.length; i++) {
-            var p = players[keys[i]];
-            var initials = (p.name || '?').substring(0, 2).toUpperCase();
-            html += '<div class="player-item">' +
-                '<div class="player-info">' +
-                    '<div class="player-avatar">' + initials + '</div>' +
-                    '<div><div class="player-name">' + (p.name || '') + '</div>' +
-                    '<div class="player-pos">' + (p.position || '') + '</div></div>' +
-                '</div>' +
-                (isAdmin ? '<button class="btn-action btn-danger" onclick="deletePlayer(\'' + keys[i] + '\')" style="padding:4px 10px;font-size:11px;">Slett</button>' : '') +
-            '</div>';
-        }
-        html += '</div>';
-        content.innerHTML = html;
-    });
-}
-
-function showAddPlayerModal() {
-    var modal = document.getElementById('modalContent');
-    modal.innerHTML =
-        '<h3>Legg til spiller</h3>' +
-        '<div class="form-group"><label>Navn</label><input type="text" id="playerName" placeholder="Spillerens navn"></div>' +
-        '<div class="form-group"><label>Posisjon</label>' +
-            '<select id="playerPosition">' +
-                '<option value="Keeper">Keeper</option>' +
-                '<option value="Forsvar">Forsvar</option>' +
-                '<option value="Midtbane">Midtbane</option>' +
-                '<option value="Angrep">Angrep</option>' +
-            '</select></div>' +
-        '<div class="modal-buttons">' +
-            '<button class="btn-cancel" onclick="closeModal()">Avbryt</button>' +
-            '<button class="btn-save" onclick="addPlayer()">Legg til</button>' +
-        '</div>';
-    document.getElementById('modalOverlay').classList.add('active');
-}
-
-function addPlayer() {
-    var name = document.getElementById('playerName').value.trim();
-    var position = document.getElementById('playerPosition').value;
-    if (!name) return;
-    db.ref('teams/j2018/players').push({ name: name, position: position });
-    closeModal();
-}
-
-function deletePlayer(key) {
-    if (confirm('Slette denne spilleren?')) {
-        db.ref('teams/j2018/players/' + key).remove();
     }
-}
 
-// TRAINING
-function loadTraining() {
-    var content = document.getElementById('mainContent');
-    content.innerHTML = '<div class="loading">Laster...</div>';
-
-    db.ref('teams/j2018/training').on('value', function(snapshot) {
-        var weeks = snapshot.val() || {};
-        var keys = Object.keys(weeks);
-
-        var html = '<div class="section-title">🏋️ Treningsplan</div>';
-        if (isAdmin) {
-            html += '<div class="action-buttons"><button class="btn-action btn-add" onclick="showAddTrainingModal()">+ Ny treningsuke</button></div>';
+    function renderTraining(data) {
+        const container = document.getElementById('trainingList');
+        const entries = Object.entries(data).sort((a, b) => (b[1].date || '').localeCompare(a[1].date || ''));
+        if (entries.length === 0) {
+            container.innerHTML = `<div class="empty-state"><div class="icon">🏃</div><h3>Ingen treningsøkter</h3><p>Opprett din første økt!</p></div>`;
+            return;
         }
-
-        if (keys.length === 0) {
-            html += '<div class="card"><p style="text-align:center;padding:20px;">Ingen treningsuker lagt til ennå</p></div>';
-        }
-
-        keys.sort().reverse();
-        for (var i = 0; i < keys.length; i++) {
-            var w = weeks[keys[i]];
-            html += '<div class="training-week">' +
-                '<h3>📅 ' + (w.title || 'Uke') + '</h3>' +
-                '<div class="training-drill">🎯 ' + (w.focus || 'Ingen fokus satt') + '</div>' +
-                '<div class="training-drill">📝 ' + (w.notes || '') + '</div>' +
-                '<button class="attendance-btn" onclick="showAttendanceModal(\'' + keys[i] + '\')">📋 Oppmøte</button>' +
-                (isAdmin ? ' <button class="btn-action btn-danger" onclick="deleteTraining(\'' + keys[i] + '\')" style="padding:4px 10px;font-size:11px;margin-top:8px;">Slett</button>' : '') +
-            '</div>';
-        }
-        content.innerHTML = html;
-    });
-}
-
-function showAddTrainingModal() {
-    var modal = document.getElementById('modalContent');
-    modal.innerHTML =
-        '<h3>Ny treningsuke</h3>' +
-        '<div class="form-group"><label>Tittel (f.eks. Uke 3)</label><input type="text" id="trainingTitle" placeholder="Uke 3 - Januar"></div>' +
-        '<div class="form-group"><label>Fokusområde</label><input type="text" id="trainingFocus" placeholder="Pasning og mottak"></div>' +
-        '<div class="form-group"><label>Notater</label><input type="text" id="trainingNotes" placeholder="Husk drikke!"></div>' +
-        '<div class="modal-buttons">' +
-            '<button class="btn-cancel" onclick="closeModal()">Avbryt</button>' +
-            '<button class="btn-save" onclick="addTraining()">Lagre</button>' +
-        '</div>';
-    document.getElementById('modalOverlay').classList.add('active');
-}
-
-function addTraining() {
-    var title = document.getElementById('trainingTitle').value.trim();
-    var focus = document.getElementById('trainingFocus').value.trim();
-    var notes = document.getElementById('trainingNotes').value.trim();
-    if (!title) return;
-    db.ref('teams/j2018/training').push({
-        title: title,
-        focus: focus,
-        notes: notes,
-        createdAt: firebase.database.ServerValue.TIMESTAMP
-    });
-    closeModal();
-}
-
-function deleteTraining(key) {
-    if (confirm('Slette denne treningsuken?')) {
-        db.ref('teams/j2018/training/' + key).remove();
+        container.innerHTML = entries.map(([id, t]) => {
+            const attendCount = t.attendance ? Object.values(t.attendance).filter(v => v).length : 0;
+            const totalPlayers = Object.keys(playersCache).length;
+            return `
+            <div class="card">
+                <div class="card-header">
+                    <h3>📅 ${formatDate(t.date)} ${t.time || ''}</h3>
+                    <div style="display:flex;gap:6px;">
+                        <button class="btn-icon" onclick="openAttendanceModal('${id}')" title="Oppmøte">📋</button>
+                        <button class="btn-icon" onclick="editTraining('${id}')" title="Rediger">✏️</button>
+                        <button class="btn-icon" onclick="deleteTraining('${id}')" title="Slett">🗑️</button>
+                    </div>
+                </div>
+                ${t.focus ? `<p><strong>Fokus:</strong> ${t.focus}</p>` : ''}
+                ${t.notes ? `<p style="color:var(--text-secondary);font-size:13px;margin-top:6px;">${t.notes}</p>` : ''}
+                <div style="margin-top:12px;display:flex;align-items:center;gap:10px;">
+                    <span class="badge badge-info">👥 ${attendCount}/${totalPlayers}</span>
+                    <div class="progress-bar" style="flex:1;">
+                        <div class="progress-fill" style="width:${totalPlayers ? (attendCount/totalPlayers*100) : 0}%"></div>
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
     }
-}
 
-function showAttendanceModal(weekKey) {
-    db.ref('teams/j2018/players').once('value', function(snapshot) {
-        var players = snapshot.val() || {};
-        var keys = Object.keys(players);
+    function openTrainingModal(id) {
+        editingId = id || null;
+        document.getElementById('trainingModalTitle').textContent = id ? 'Rediger økt' : 'Ny treningsøkt';
+        if (id) {
+            ref(`training/${id}`).once('value').then(snap => {
+                const t = snap.val() || {};
+                document.getElementById('trainingDate').value = t.date || '';
+                document.getElementById('trainingTime').value = t.time || '17:00';
+                document.getElementById('trainingFocus').value = t.focus || '';
+                document.getElementById('trainingNotes').value = t.notes || '';
+            });
+        } else {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('trainingDate').value = today;
+            document.getElementById('trainingTime').value = '17:00';
+            document.getElementById('trainingFocus').value = '';
+            document.getElementById('trainingNotes').value = '';
+        }
+        openModal('trainingModal');
+    }
 
-        db.ref('teams/j2018/training/' + weekKey + '/attendance').once('value', function(attSnap) {
-            var attendance = attSnap.val() || {};
+    function editTraining(id) { openTrainingModal(id); }
 
-            var modal = document.getElementById('modalContent');
-            var html = '<h3>📋 Oppmøte</h3><div class="attendance-list">';
-            for (var i = 0; i < keys.length; i++) {
-                var checked = attendance[keys[i]] ? 'checked' : '';
-                html += '<div class="attendance-item">' +
-                    '<input type="checkbox" id="att_' + keys[i] + '" ' + checked + '>' +
-                    '<label for="att_' + keys[i] + '">' + players[keys[i]].name + '</label>' +
-                '</div>';
+    async function saveTraining() {
+        const date = document.getElementById('trainingDate').value;
+        if (!date) { showToast('Velg dato', 'error'); return; }
+        const data = {
+            date: date,
+            time: document.getElementById('trainingTime').value,
+            focus: document.getElementById('trainingFocus').value.trim(),
+            notes: document.getElementById('trainingNotes').value.trim()
+        };
+        try {
+            if (editingId) {
+                await ref(`training/${editingId}`).update(data);
+                showToast('Økt oppdatert!', 'success');
+            } else {
+                await ref('training').push(data);
+                showToast('Økt opprettet!', 'success');
             }
-            html += '</div>' +
-                '<div class="modal-buttons">' +
-                    '<button class="btn-cancel" onclick="closeModal()">Lukk</button>' +
-                    '<button class="btn-save" onclick="saveAttendance(\'' + weekKey + '\')">Lagre</button>' +
-                '</div>';
-            modal.innerHTML = html;
-            document.getElementById('modalOverlay').classList.add('active');
+            closeModal('trainingModal');
+        } catch (err) {
+            showToast('Feil: ' + err.message, 'error');
+        }
+    }
+
+    async function deleteTraining(id) {
+        if (!confirm('Slett denne økten?')) return;
+        try {
+            await ref(`training/${id}`).remove();
+            showToast('Økt slettet', 'info');
+        } catch (err) {
+            showToast('Feil: ' + err.message, 'error');
+        }
+    }
+
+    // ===== ATTENDANCE =====
+    function openAttendanceModal(trainingId) {
+        attendanceTrainingId = trainingId;
+        ref(`training/${trainingId}`).once('value').then(snap => {
+            const t = snap.val() || {};
+            document.getElementById('attendanceTitle').textContent = `Trening: ${formatDate(t.date)} ${t.time || ''}`;
+            const attendance = t.attendance || {};
+            const container = document.getElementById('attendanceCheckboxes');
+            const players = Object.entries(playersCache);
+            if (players.length === 0) {
+                container.innerHTML = '<p style="color:var(--text-secondary);">Ingen spillere registrert</p>';
+            } else {
+                container.innerHTML = players.map(([pid, p]) => `
+                    <label style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--bg-input);border-radius:var(--radius-xs);margin-bottom:6px;cursor:pointer;">
+                        <input type="checkbox" id="att_${pid}" ${attendance[pid] ? 'checked' : ''} style="width:20px;height:20px;accent-color:var(--accent);">
+                        <span>${p.name}</span>
+                    </label>
+                `).join('');
+            }
+            openModal('attendanceModal');
         });
-    });
-}
+    }
 
-function saveAttendance(weekKey) {
-    db.ref('teams/j2018/players').once('value', function(snapshot) {
-        var players = snapshot.val() || {};
-        var keys = Object.keys(players);
-        var attendance = {};
-        for (var i = 0; i < keys.length; i++) {
-            var cb = document.getElementById('att_' + keys[i]);
-            if (cb && cb.checked) attendance[keys[i]] = true;
-        }
-        db.ref('teams/j2018/training/' + weekKey + '/attendance').set(attendance);
-        closeModal();
-    });
-}
-
-// MATCHES
-function loadMatches() {
-    var content = document.getElementById('mainContent');
-    content.innerHTML = '<div class="loading">Laster...</div>';
-
-    db.ref('teams/j2018/matches').on('value', function(snapshot) {
-        var matches = snapshot.val() || {};
-        var keys = Object.keys(matches);
-
-        var html = '<div class="section-title">🏟️ Kamper</div>';
-        if (isAdmin) {
-            html += '<div class="action-buttons"><button class="btn-action btn-add" onclick="showAddMatchModal()">+ Ny kamp</button></div>';
-        }
-
-        if (keys.length === 0) {
-            html += '<div class="card"><p style="text-align:center;padding:20px;">Ingen kamper lagt til ennå</p></div>';
-        }
-
-        keys.sort(function(a, b) {
-            var da = matches[a].date || '';
-            var db2 = matches[b].date || '';
-            return db2.localeCompare(da);
+    async function saveAttendance() {
+        const attendance = {};
+        Object.keys(playersCache).forEach(pid => {
+            const cb = document.getElementById(`att_${pid}`);
+            if (cb) attendance[pid] = cb.checked;
         });
-
-        for (var i = 0; i < keys.length; i++) {
-            var m = matches[keys[i]];
-            var goalsFor = m.goalsFor !== undefined ? m.goalsFor : '-';
-            var goalsAgainst = m.goalsAgainst !== undefined ? m.goalsAgainst : '-';
-
-            html += '<div class="card">' +
-                '<div style="text-align:center;font-size:12px;color:#64748b;margin-bottom:8px;">' + (m.date || '') + '</div>' +
-                '<div class="match-score">' +
-                    '<div class="match-team"><div class="match-team-name">Nord J2018</div></div>' +
-                    '<div class="match-vs">' + goalsFor + ' - ' + goalsAgainst + '</div>' +
-                    '<div class="match-team"><div class="match-team-name">' + (m.opponent || '?') + '</div></div>' +
-                '</div>' +
-                (isAdmin ? '<div style="text-align:center;margin-top:8px;">' +
-                    '<button class="btn-action btn-edit" onclick="showEditMatchModal(\'' + keys[i] + '\')" style="padding:4px 10px;font-size:11px;">Rediger</button> ' +
-                    '<button class="btn-action btn-danger" onclick="deleteMatch(\'' + keys[i] + '\')" style="padding:4px 10px;font-size:11px;">Slett</button>' +
-                '</div>' : '') +
-            '</div>';
+        try {
+            await ref(`training/${attendanceTrainingId}/attendance`).set(attendance);
+            showToast('Oppmøte lagret!', 'success');
+            closeModal('attendanceModal');
+        } catch (err) {
+            showToast('Feil: ' + err.message, 'error');
         }
-        content.innerHTML = html;
-    });
-}
-
-function showAddMatchModal() {
-    var modal = document.getElementById('modalContent');
-    modal.innerHTML =
-        '<h3>Ny kamp</h3>' +
-        '<div class="form-group"><label>Motstander</label><input type="text" id="matchOpponent" placeholder="Lagsnavn"></div>' +
-        '<div class="form-group"><label>Dato</label><input type="date" id="matchDate"></div>' +
-        '<div class="form-group"><label>Mål for oss</label><input type="number" id="matchGoalsFor" min="0" value="0"></div>' +
-        '<div class="form-group"><label>Mål imot</label><input type="number" id="matchGoalsAgainst" min="0" value="0"></div>' +
-        '<div class="modal-buttons">' +
-            '<button class="btn-cancel" onclick="closeModal()">Avbryt</button>' +
-            '<button class="btn-save" onclick="addMatch()">Lagre</button>' +
-        '</div>';
-    document.getElementById('modalOverlay').classList.add('active');
-}
-
-function addMatch() {
-    var opponent = document.getElementById('matchOpponent').value.trim();
-    var date = document.getElementById('matchDate').value;
-    var goalsFor = document.getElementById('matchGoalsFor').value;
-    var goalsAgainst = document.getElementById('matchGoalsAgainst').value;
-    if (!opponent) return;
-    db.ref('teams/j2018/matches').push({
-        opponent: opponent,
-        date: date,
-        goalsFor: parseInt(goalsFor) || 0,
-        goalsAgainst: parseInt(goalsAgainst) || 0,
-        createdAt: firebase.database.ServerValue.TIMESTAMP
-    });
-    closeModal();
-}
-
-function showEditMatchModal(key) {
-    db.ref('teams/j2018/matches/' + key).once('value', function(snapshot) {
-        var m = snapshot.val();
-        var modal = document.getElementById('modalContent');
-        modal.innerHTML =
-            '<h3>Rediger kamp</h3>' +
-            '<div class="form-group"><label>Motstander</label><input type="text" id="matchOpponent" value="' + (m.opponent || '') + '"></div>' +
-            '<div class="form-group"><label>Dato</label><input type="date" id="matchDate" value="' + (m.date || '') + '"></div>' +
-            '<div class="form-group"><label>Mål for oss</label><input type="number" id="matchGoalsFor" min="0" value="' + (m.goalsFor || 0) + '"></div>' +
-            '<div class="form-group"><label>Mål imot</label><input type="number" id="matchGoalsAgainst" min="0" value="' + (m.goalsAgainst || 0) + '"></div>' +
-            '<div class="modal-buttons">' +
-                '<button class="btn-cancel" onclick="closeModal()">Avbryt</button>' +
-                '<button class="btn-save" onclick="updateMatch(\'' + key + '\')">Oppdater</button>' +
-            '</div>';
-        document.getElementById('modalOverlay').classList.add('active');
-    });
-}
-
-function updateMatch(key) {
-    var opponent = document.getElementById('matchOpponent').value.trim();
-    var date = document.getElementById('matchDate').value;
-    var goalsFor = document.getElementById('matchGoalsFor').value;
-    var goalsAgainst = document.getElementById('matchGoalsAgainst').value;
-    db.ref('teams/j2018/matches/' + key).update({
-        opponent: opponent,
-        date: date,
-        goalsFor: parseInt(goalsFor) || 0,
-        goalsAgainst: parseInt(goalsAgainst) || 0
-    });
-    closeModal();
-}
-
-function deleteMatch(key) {
-    if (confirm('Slette denne kampen?')) {
-        db.ref('teams/j2018/matches/' + key).remove();
     }
-}
 
-// TROPHY
-function showTrophyModal() {
-    db.ref('teams/j2018/players').once('value', function(snapshot) {
-        var players = snapshot.val() || {};
-        var keys = Object.keys(players);
-        var options = '<option value="">Velg spiller</option>';
-        for (var i = 0; i < keys.length; i++) {
-            options += '<option value="' + players[keys[i]].name + '">' + players[keys[i]].name + '</option>';
-        }
-        var modal = document.getElementById('modalContent');
-        modal.innerHTML =
-            '<h3>🏆 Ukens Spiller</h3>' +
-            '<div class="form-group"><label>Spiller</label><select id="trophyPlayer">' + options + '</select></div>' +
-            '<div class="form-group"><label>Begrunnelse</label><input type="text" id="trophyReason" placeholder="Fantastisk innsats!"></div>' +
-            '<div class="modal-buttons">' +
-                '<button class="btn-cancel" onclick="closeModal()">Avbryt</button>' +
-                '<button class="btn-save" onclick="saveTrophy()">Lagre</button>' +
-            '</div>';
-        document.getElementById('modalOverlay').classList.add('active');
-    });
-}
-
-function saveTrophy() {
-    var name = document.getElementById('trophyPlayer').value;
-    var reason = document.getElementById('trophyReason').value.trim();
-    if (!name) return;
-    db.ref('teams/j2018/trophy').set({
-        name: name,
-        reason: reason,
-        updatedAt: firebase.database.ServerValue.TIMESTAMP
-    });
-    closeModal();
-    loadDashboard();
-}
-
-// SETTINGS
-function loadSettings() {
-    var content = document.getElementById('mainContent');
-    content.innerHTML = '<div class="loading">Laster...</div>';
-
-    db.ref('teams/j2018/coaches').on('value', function(snapshot) {
-        var coaches = snapshot.val() || {};
-        var keys = Object.keys(coaches);
-
-        var html = '<div class="section-title">⚙️ Innstillinger</div>';
-
-        // Active coaches
-        html += '<div class="card"><h3>Aktive trenere</h3>';
-        for (var i = 0; i < keys.length; i++) {
-            var c = coaches[keys[i]];
-            if (c.role === 'admin' || c.role === 'coach') {
-                var badge = c.role === 'admin' ? '<span class="badge badge-admin">Admin</span>' : '<span class="badge badge-coach">Trener</span>';
-                html += '<div class="coach-item">' +
-                    '<div><div class="coach-email">' + (c.name || c.email) + '</div><div class="coach-role">' + (c.email || '') + '</div></div>' +
-                    badge +
-                '</div>';
+    function updateAttendanceOverview() {
+        ref('training').once('value').then(snap => {
+            const trainings = snap.val() || {};
+            const players = Object.entries(playersCache);
+            if (players.length === 0) {
+                document.getElementById('attendanceOverview').innerHTML = '<p style="color:var(--text-secondary);text-align:center;padding:20px;">Legg til spillere først</p>';
+                return;
             }
-        }
-        html += '</div>';
-
-        // Pending
-        if (isAdmin) {
-            var hasPending = false;
-            var pendingHtml = '<div class="card"><h3>⏳ Ventende forespørsler</h3>';
-            for (var j = 0; j < keys.length; j++) {
-                var pc = coaches[keys[j]];
-                if (pc.role === 'pending') {
-                    hasPending = true;
-                    pendingHtml += '<div class="coach-item">' +
-                        '<div><div class="coach-email">' + (pc.name || pc.email) + '</div><div class="coach-role">' + (pc.email || '') + '</div></div>' +
-                        '<div>' +
-                            '<button class="btn-action btn-add" onclick="approveCoach(\'' + keys[j] + '\')" style="padding:4px 10px;font-size:11px;">Godkjenn</button> ' +
-                            '<button class="btn-action btn-danger" onclick="rejectCoach(\'' + keys[j] + '\')" style="padding:4px 10px;font-size:11px;">Avvis</button>' +
-                        '</div>' +
-                    '</div>';
-                }
+            const trainingEntries = Object.values(trainings);
+            const totalSessions = trainingEntries.length;
+            if (totalSessions === 0) {
+                document.getElementById('attendanceOverview').innerHTML = '<p style="color:var(--text-secondary);text-align:center;padding:20px;">Ingen treningsøkter registrert</p>';
+                return;
             }
-            pendingHtml += '</div>';
-            if (hasPending) html += pendingHtml;
 
-            // Invite
-            html += '<div class="card"><h3>📧 Inviter trener</h3>' +
-                '<div class="form-group"><input type="email" id="inviteEmail" placeholder="trener@epost.no"></div>' +
-                '<button class="btn-action btn-add" onclick="inviteCoach()">Send invitasjon</button>' +
-            '</div>';
-        }
+            let totalAttendancePct = 0;
+            const rows = players.map(([pid, p]) => {
+                let attended = 0;
+                trainingEntries.forEach(t => {
+                    if (t.attendance && t.attendance[pid]) attended++;
+                });
+                const pct = Math.round((attended / totalSessions) * 100);
+                totalAttendancePct += pct;
+                return { name: p.name, pct, attended, total: totalSessions };
+            }).sort((a, b) => b.pct - a.pct);
 
-        content.innerHTML = html;
-    });
-}
+            const avgPct = Math.round(totalAttendancePct / players.length);
+            document.getElementById('statAttendance').textContent = avgPct + '%';
 
-function approveCoach(uid) {
-    db.ref('teams/j2018/coaches/' + uid + '/role').set('coach');
-}
-
-function rejectCoach(uid) {
-    if (confirm('Avvise denne brukeren?')) {
-        db.ref('teams/j2018/coaches/' + uid).remove();
+            document.getElementById('attendanceOverview').innerHTML = `
+                <div class="attendance-grid">
+                    ${rows.map(r => `
+                        <div class="attendance-row">
+                            <div class="attendance-name">${r.name}</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width:${r.pct}%;${r.pct < 50 ? 'background:linear-gradient(90deg,var(--danger),var(--warning))' : ''}"></div>
+                            </div>
+                            <div class="attendance-pct" style="${r.pct < 50 ? 'color:var(--danger)' : ''}">${r.pct}%</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        });
     }
-}
 
-function inviteCoach() {
-    var email = document.getElementById('inviteEmail').value.trim();
-    if (!email) return;
-    db.ref('teams/j2018/invitations').push({
-        email: email,
-        invitedBy: currentUser.uid,
-        createdAt: firebase.database.ServerValue.TIMESTAMP
-    });
-    document.getElementById('inviteEmail').value = '';
-    alert('Invitasjon registrert for ' + email);
-}
+    function showTrainingTab(tab) {
+        document.querySelectorAll('#pageTraining .tab-btn').forEach((b, i) => {
+            b.classList.toggle('active', (tab === 'plans' && i === 0) || (tab === 'attendance' && i === 1));
+        });
+        document.getElementById('tabPlans').classList.toggle('active', tab === 'plans');
+        document.getElementById('tabAttendance').classList.toggle('active', tab === 'attendance');
+        if (tab === 'attendance') updateAttendanceOverview();
+    }
 
-// MODAL
-function closeModal() {
-    document.getElementById('modalOverlay').classList.remove('active');
-}
+    // ===== MATCHES =====
+    function loadMatches() {
+        ref('matches').orderByChild('date').on('value', (snap) => {
+            const data = snap.val() || {};
+            renderMatches(data);
+            updateMatchStats(data);
+            renderSeasonChart(data);
+        });
+    }
 
-document.getElementById('modalOverlay').addEventListener('click', function(e) {
-    if (e.target === this) closeModal();
-});
-</script>
+    function renderMatches(data) {
+        const container = document.getElementById('matchesList');
+        const entries = Object.entries(data).sort((a, b) => (b[1].date || '').localeCompare(a[1].date || ''));
+        if (entries.length === 0) {
+            container.innerHTML = `<div class="empty-state"><div class="icon">🏟️</div><h3>Ingen kamper registrert</h3><p>Legg til din første kamp!</p></div>`;
+            return;
+        }
+        container.innerHTML = entries.map(([id, m]) => {
+            const gf = parseInt(m.goalsFor) || 0;
+            const ga = parseInt(m.goalsAgainst) || 0;
+            const result = gf > ga ? 'Seier' : gf < ga ? 'Tap' : 'Uavgjort';
+            const resultClass = gf > ga ? 'success' : gf < ga ? 'danger' : 'warning';
+            return `
+            <div class="card">
+                <div class="card-header">
+                    <h3>📅 ${formatDate(m.date)}</h3>
+                    <div style="display:flex;gap:6px;">
+                        <button class="btn-icon" onclick="editMatch('${id}')" title="Rediger">✏️</button>
+                        <button class="btn-icon" onclick="deleteMatch('${id}')" title="Slett">🗑️</button>
+                    </div>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                    <span style="font-weight:700;">Nord J2018</span>
+                    <span style="font-size:28px;font-weight:800;">${gf} - ${ga}</span>
+                    <span style="font-weight:700;">${m.opponent || 'Ukjent'}</span>
+                </div>
+                <div style="text-align:center;"><span class="badge badge-${resultClass}">${result}</span></div>
+                ${m.notes ? `<p style="color:var(--text-secondary);font-size:13px;margin-top:10px;">${m.notes}</p>` : ''}
+            </div>`;
+        }).join('');
+    }
 
+    function updateMatchStats(data) {
+        const matches = Object.values(data);
+        const total = matches.length;
+        const wins = matches.filter(m => (parseInt(m.goalsFor)||0) > (parseInt(m.goalsAgainst)||0)).length;
+        document.getElementById('statMatches').textContent = total;
+        document.getElementById('statWins').textContent = wins;
+    }
+
+    function renderSeasonChart(data) {
+        const container = document.getElementById('seasonChart');
+        const matches = Object.values(data).sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+        if (matches.length === 0) {
+            container.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-muted);font-size:14px;">Ingen kamper ennå</div>';
+            return;
+        }
+        const maxGoals = Math.max(...matches.map(m => Math.max(parseInt(m.goalsFor)||0, parseInt(m.goalsAgainst)||0)), 1);
+        container.innerHTML = matches.map((m, i) => {
+            const gf = parseInt(m.goalsFor) || 0;
+            const ga = parseInt(m.goalsAgainst) || 0;
+            const type = gf > ga ? 'win' : gf < ga ? 'loss' : 'draw';
+            const height = Math.max((gf / maxGoals) * 100, 8);
+            const label = m.opponent ? m.opponent.substring(0, 4) : `K${i+1}`;
+            return `
+                <div class="bar-col">
+                    <div class="bar-value">${gf}-${ga}</div>
+                    <div class="bar ${type}" style="height:${height}%"></div>
+                    <div class="bar-label">${label}</div>
+                </div>`;
+        }).join('');
+    }
+
+    function openMatchModal(id) {
+        editingId = id || null;
+        document.getElementById('matchModalTitle').textContent = id ? 'Rediger kamp' : 'Ny kamp';
+        if (id) {
+            ref(`matches/${id}`).once('value').then(snap => {
+                const m = snap.val() || {};
+                document.getElementById('matchDate').value = m.date || '';
+                document.getElementById('matchOpponent').value = m.opponent || '';
+                document.getElementById('matchGoalsFor').value = m.goalsFor || 0;
+                document.getElementById('matchGoalsAgainst').value = m.goalsAgainst || 0;
+                document.getElementById('matchNotes').value = m.notes || '';
+            });
+        } else {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('matchDate').value = today;
+            document.getElementById('matchOpponent').value = '';
+            document.getElementById('matchGoalsFor').value = 0;
+            document.getElementById('matchGoalsAgainst').value = 0;
+            document.getElementById('matchNotes').value = '';
+        }
+        openModal('matchModal');
+    }
+
+    function editMatch(id) { openMatchModal(id); }
+
+    async function saveMatch() {
+        const date = document.getElementById('matchDate').value;
+        const opponent = document.getElementById('matchOpponent').value.trim();
+        if (!date || !opponent) { showToast('Fyll ut dato og motstander', 'error'); return; }
+        const data = {
+            date: date,
+            opponent: opponent,
+            goalsFor: parseInt(document.getElementById('matchGoalsFor').value) || 0,
+            goalsAgainst: parseInt(document.getElementById('matchGoalsAgainst').value) || 0,
+            notes: document.getElementById('matchNotes').value.trim()
+        };
+        try {
+            if (editingId) {
+                await ref(`matches/${editingId}`).update(data);
+                showToast('Kamp oppdatert!', 'success');
+            } else {
+                await ref('matches').push(data);
+                showToast('Kamp registrert!', 'success');
+            }
+            closeModal('matchModal');
+        } catch (err) {
+            showToast('Feil: ' + err.message, 'error');
+        }
+    }
+
+    async function deleteMatch(id) {
+        if (!confirm('Slett denne kampen?')) return;
+        try {
+            await ref(`matches/${id}`).remove();
+            showToast('Kamp slettet', 'info');
+        } catch (err) {
+            showToast('Feil: ' + err.message, 'error');
+        }
+    }
+
+    // ===== TROPHY =====
+    function loadTrophy() {
+        ref('trophy').on('value', (snap) => {
+            const t = snap.val();
+            const container = document.getElementById('trophyContent');
+            if (t && t.playerName) {
+                container.innerHTML = `
+                    <div style="font-size:48px;margin-bottom:10px;">⭐</div>
+                    <h2 style="font-size:22px;margin-bottom:6px;">${t.playerName}</h2>
+                    ${t.reason ? `<p style="color:var(--text-secondary);font-style:italic;">"${t.reason}"</p>` : ''}
+                `;
+            } else {
+                container.innerHTML = '<p style="color:var(--text-secondary);">Ingen valgt ennå</p>';
+            }
+        });
+    }
+
+    function openTrophyModal() {
+        const select = document.getElementById('trophyPlayer');
+        const players = Object.entries(playersCache);
+        select.innerHTML = players.map(([id, p]) => `<option value="${id}">${p.name}</option>`).join('');
+        document.getElementById('trophyReason').value = '';
+        openModal('trophyModal');
+    }
+
+    async function saveTrophy() {
+        const pid = document.getElementById('trophyPlayer').value;
+        if (!pid) { showToast('Velg en spiller', 'error'); return; }
+        const player = playersCache[pid];
+        try {
+            await ref('trophy').set({
+                playerId: pid,
+                playerName: player.name,
+                reason: document.getElementById('trophyReason').value.trim(),
+                date: Date.now()
+            });
+            showToast('Ukens spiller valgt!', 'success');
+            closeModal('trophyModal');
+        } catch (err) {
+            showToast('Feil: ' + err.message, 'error');
+        }
+    }
+
+    // ===== CHAT =====
+    function loadChat() {
+        ref('chat').orderByChild('timestamp').limitToLast(100).on('value', (snap) => {
+            const data = snap.val() || {};
+            renderChat(data);
+        });
+    }
+
+    function renderChat(data) {
+        const container = document.getElementById('chatMessages');
+        const entries = Object.entries(data).sort((a, b) => (a[1].timestamp || 0) - (b[1].timestamp || 0));
+        if (entries.length === 0) {
+            container.innerHTML = '<div class="empty-state"><div class="icon">💬</div><h3>Ingen meldinger</h3><p>Start en samtale!</p></div>';
+            return;
+        }
+        container.innerHTML = entries.map(([id, msg]) => {
+            const isOwn = msg.uid === currentUser.uid;
+            const time = msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString('nb-NO', { hour: '2-digit', minute: '2-digit' }) : '';
+            const date = msg.timestamp ? new Date(msg.timestamp).toLocaleDateString('nb-NO', { day: 'numeric', month: 'short' }) : '';
+            return `
+                <div class="chat-msg ${isOwn ? 'own' : 'other'}">
+                    <div class="chat-bubble">${msg.text}</div>
+                    <div class="chat-meta">${isOwn ? '' : (msg.name || 'Ukjent') + ' • '}${date} ${time}</div>
+                </div>`;
+        }).join('');
+        container.scrollTop = container.scrollHeight;
+    }
+
+    async function sendMessage() {
+        const input = document.getElementById('chatInput');
+        const text = input.value.trim();
+        if (!text) return;
+        try {
+            await ref('chat').push({
+                text: text,
+                uid: currentUser.uid,
+                name: currentUserName,
+                timestamp: firebase.database.ServerValue.TIMESTAMP
+            });
+            input.value = '';
+        } catch (err) {
+            showToast('Feil: ' + err.message, 'error');
+        }
+    }
+
+    // ===== DOCUMENTS =====
+    function loadDocs() {
+        ref('documents').orderByChild('uploaded').on('value', (snap) => {
+            const data = snap.val() || {};
+            renderDocs(data);
+        });
+    }
+
+    function renderDocs(data) {
+        const container = document.getElementById('docsList');
+        const entries = Object.entries(data).sort((a, b) => (b[1].uploaded || 0) - (a[1].uploaded || 0));
+        if (entries.length === 0) {
+            container.innerHTML = '<div class="empty-state"><div class="icon">📁</div><h3>Ingen dokumenter</h3><p>Last opp ditt første dokument!</p></div>';
+            return;
+        }
+        container.innerHTML = entries.map(([id, doc]) => {
+            const ext = (doc.name || '').split('.').pop().toLowerCase();
+            let iconClass = 'other';
+            let icon = '📄';
+            if (['pdf'].includes(ext)) { iconClass = 'pdf'; icon = '📕'; }
+            else if (['jpg','jpeg','png','gif','webp'].includes(ext)) { iconClass = 'img'; icon = '🖼️'; }
+            else if (['doc','docx'].includes(ext)) { iconClass = 'doc'; icon = '📘'; }
+            const size = doc.size ? (doc.size / 1024).toFixed(1) + ' KB' : '';
+            const date = doc.uploaded ? formatDate(new Date(doc.uploaded)) : '';
+            return `
+                <div class="doc-item" onclick="downloadDoc('${id}')">
+                    <div class="doc-icon ${iconClass}">${icon}</div>
+                    <div class="doc-info">
+                        <h4>${doc.name || 'Ukjent fil'}</h4>
+                        <span>${size}${size && date ? ' • ' : ''}${date}${doc.uploadedBy ? ' • ' + doc.uploadedBy : ''}</span>
+                    </div>
+                    <button class="btn-icon" onclick="event.stopPropagation();deleteDoc('${id}')" title="Slett">🗑️</button>
+                </div>`;
+        }).join('');
+    }
+
+    function handleFileUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        if (file.size > 5 * 1024 * 1024) {
+            showToast('Filen er for stor (maks 5 MB)', 'error');
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            try {
+                await ref('documents').push({
+                    name: file.name,
+                    size: file.size,
+                    type: file.type,
+                    data: e.target.result,
+                    uploaded: Date.now(),
+                    uploadedBy: currentUserName,
+                    uploadedUid: currentUser.uid
+                });
+                showToast('Dokument lastet opp!', 'success');
+                event.target.value = '';
+            } catch (err) {
+                showToast('Feil: ' + err.message, 'error');
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function downloadDoc(id) {
+        ref(`documents/${id}`).once('value').then(snap => {
+            const doc = snap.val();
+            if (doc && doc.data) {
+                const a = document.createElement('a');
+                a.href = doc.data;
+                a.download = doc.name || 'dokument';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            }
+        });
+    }
+
+    async function deleteDoc(id) {
+        if (!confirm('Slett dette dokumentet?')) return;
+        try {
+            await ref(`documents/${id}`).remove();
+            showToast('Dokument slettet', 'info');
+        } catch (err) {
+            showToast('Feil: ' + err.message, 'error');
+        }
+    }
+
+    // ===== COACHES / SETTINGS =====
+    function loadCoaches() {
+        ref('coaches').on('value', (snap) => {
+            const data = snap.val() || {};
+            renderCoaches(data);
+        });
+    }
+
+    function renderCoaches(data) {
+        const container = document.getElementById('coachesList');
+        const entries = Object.entries(data);
+        container.innerHTML = entries.map(([uid, c]) => {
+            const isMe = uid === currentUser.uid;
+            const isPending = c.role === 'pending';
+            const roleBadge = c.role === 'admin' ? 'badge-accent' : isPending ? 'badge-warning' : 'badge-success';
+            const roleLabel = c.role === 'admin' ? 'Admin' : isPending ? 'Venter' : 'Trener';
+            let actions = '';
+            if (currentRole === 'admin' && !isMe && isPending) {
+                actions = `
+                    <button class="btn btn-sm btn-success" onclick="approveCoach('${uid}')">Godkjenn</button>
+                    <button class="btn btn-sm btn-danger" onclick="removeCoach('${uid}')">Fjern</button>`;
+            } else if (currentRole === 'admin' && !isMe && c.role === 'coach') {
+                actions = `<button class="btn btn-sm btn-danger" onclick="removeCoach('${uid}')">Fjern</button>`;
+            }
+            return `
+                <div class="list-item">
+                    <div class="list-item-info">
+                        <div class="list-item-avatar">👤</div>
+                        <div class="list-item-text">
+                            <h4>${c.name || c.email}${isMe ? ' (deg)' : ''}</h4>
+                            <span>${c.email || ''}</span>
+                        </div>
+                    </div>
+                    <div class="list-item-actions">
+                        <span class="badge ${roleBadge}">${roleLabel}</span>
+                        ${actions}
+                    </div>
+                </div>`;
+        }).join('');
+    }
+
+    async function approveCoach(uid) {
+        try {
+            await ref(`coaches/${uid}/role`).set('coach');
+            showToast('Trener godkjent!', 'success');
+        } catch (err) {
+            showToast('Feil: ' + err.message, 'error');
+        }
+    }
+
+    async function removeCoach(uid) {
+        if (!confirm('Fjerne denne treneren?')) return;
+        try {
+            await ref(`coaches/${uid}`).remove();
+            showToast('Trener fjernet', 'info');
+        } catch (err) {
+            showToast('Feil: ' + err.message, 'error');
+        }
+    }
+
+    async function sendInvite() {
+        const email = document.getElementById('inviteEmail').value.trim();
+        if (!email) { showToast('Skriv inn e-post', 'error'); return; }
+        try {
+            await ref('invitations').push({
+                email: email,
+                invitedBy: currentUserName,
+                date: Date.now()
+            });
+            document.getElementById('inviteEmail').value = '';
+            showToast(`Invitasjon registrert for ${email}`, 'success');
+        } catch (err) {
+            showToast('Feil: ' + err.message, 'error');
+        }
+    }
+    </script>
 </body>
 </html>

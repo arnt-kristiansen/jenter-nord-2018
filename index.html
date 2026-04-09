@@ -640,7 +640,7 @@ function handleLogout() {
     auth.signOut();
 }
 
-/ AUTH STATE
+// AUTH STATE
 auth.onAuthStateChanged(function(user) {
     if (user) {
         currentUser = user;

@@ -560,10 +560,7 @@ function showSuccess(msg) {
     document.getElementById('authError').style.display = 'none';
 }
 
-// AUTH HANDLERS
 function handleLogin() {
-    alert('Knappen virker! Starter innlogging...');
-    
     var email = document.getElementById('loginEmail').value.trim();
     var password = document.getElementById('loginPassword').value;
     hideMessages();
@@ -575,19 +572,10 @@ function handleLogin() {
 
     showError('Logger inn... vennligst vent');
 
-    try {
-        auth.signInWithEmailAndPassword(email, password)
-            .then(function(result) {
-                alert('Innlogging vellykket! UID: ' + result.user.uid);
-            })
-            .catch(function(error) {
-                alert('Firebase feil: ' + error.code + ' - ' + error.message);
-                showError('Login feilet: ' + error.code + ' — ' + error.message);
-            });
-    } catch(e) {
-        alert('JavaScript feil: ' + e.message);
-        showError('JS feil: ' + e.message);
-    }
+    auth.signInWithEmailAndPassword(email, password)
+        .catch(function(error) {
+            showError('Login feilet: ' + error.code + ' — ' + error.message);
+        });
 }
 
 function handleRegister() {
@@ -652,29 +640,61 @@ function handleLogout() {
     auth.signOut();
 }
 
-// AUTH STATE
+/ AUTH STATE
 auth.onAuthStateChanged(function(user) {
     if (user) {
         currentUser = user;
-        db.ref('teams/j2018/coaches/' + user.uid).on('value', function(snapshot) {
-            currentUserData = snapshot.val();
-            if (!currentUserData) {
-                showUnauthorized();
-                return;
-            }
-            if (currentUserData.role === 'pending') {
-                showUnauthorized();
-                return;
-            }
-            isAdmin = currentUserData.role === 'admin';
-            showApp();
-        });
+        db.ref('teams/j2018/coaches/' + user.uid).once('value')
+            .then(function(snapshot) {
+                if (!snapshot.exists()) {
+                    // Bruker finnes i Auth men ikke i databasen — opprett automatisk
+                    var isFirstUser = false;
+                    return db.ref('teams/j2018/coaches').once('value')
+                        .then(function(coachesSnap) {
+                            isFirstUser = !coachesSnap.exists();
+                            var userData = {
+                                name: user.displayName || user.email.split('@')[0],
+                                email: user.email,
+                                role: isFirstUser ? 'admin' : 'pending',
+                                createdAt: firebase.database.ServerValue.TIMESTAMP
+                            };
+                            return db.ref('teams/j2018/coaches/' + user.uid).set(userData);
+                        })
+                        .then(function() {
+                            // Nå starter vi lytteren
+                            startUserListener(user.uid);
+                        });
+                } else {
+                    // Brukerdata finnes allerede
+                    startUserListener(user.uid);
+                }
+            })
+            .catch(function(error) {
+                console.error('Auth state error:', error);
+                alert('Database feil: ' + error.message);
+            });
     } else {
         currentUser = null;
         currentUserData = null;
         showAuth();
     }
 });
+
+function startUserListener(uid) {
+    db.ref('teams/j2018/coaches/' + uid).on('value', function(snapshot) {
+        currentUserData = snapshot.val();
+        if (!currentUserData) {
+            showUnauthorized();
+            return;
+        }
+        if (currentUserData.role === 'pending') {
+            showUnauthorized();
+            return;
+        }
+        isAdmin = currentUserData.role === 'admin';
+        showApp();
+    });
+}
 
 function showAuth() {
     document.getElementById('authContainer').style.display = 'flex';
